@@ -1,10 +1,10 @@
 {
   "name": "pm-copilot-skills",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "29 structured PM Skills for Claude Code — covering the full product management lifecycle",
   "license": "Apache-2.0",
   "bin": {
-    "pm-copilot-skills": "./install.js"
+    "pm-copilot-skills": "install.js"
   },
   "files": [
     "skills/",
@@ -21,6 +21,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/aimatrixling-bot/pm-copilot-skills.git"
+    "url": "git+https://github.com/aimatrixling-bot/pm-copilot-skills.git"
   }
 }
