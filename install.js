@@ -29,7 +29,8 @@ if (mode === "project") {
   targetDir = path.join(home, ".claude", "skills");
 }
 
-console.log(`\n  PM Copilot Skills Installer v0.2.3`);
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
+console.log(`\n  PM Copilot Skills Installer v${pkg.version}`);
 console.log(`  Mode: ${mode}`);
 console.log(`  Target: ${targetDir}\n`);
 
