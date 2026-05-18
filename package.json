@@ -1,6 +1,6 @@
 {
   "name": "pm-copilot-skills",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "35 structured PM Skills for Claude Code — three tracks (PM / Engineering / Growth) covering the full product management lifecycle",
   "license": "Apache-2.0",
   "bin": {

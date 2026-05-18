@@ -10,14 +10,15 @@
 
 | 场景 | 书数 | 首选书 |
 | --- | --- | --- |
-| 问题验证 | 2 | The Mom Test |
+| 问题验证 | 3 | The Mom Test |
 | 需求定义 | 4 | 俞军产品方法论 |
 | 用户体验 | 3 | Don't Make Me Think |
 | 数据驱动 | 4 | 增长黑客 |
-| AI 产品 | 4 | Reimagined |
-| 战略与架构 | 5 | The Product Book |
+| AI 产品 | 5 | Reimagined |
+| 战略与架构 | 6 | The Product Book |
+| 创业与 MVP | 1 | The Founder's Playbook |
 
-**跨场景参考**：The Lean Startup（问题验证+需求定义+数据驱动）、Hooked（体验+需求）、Product Operations（战略+数据）、策略产品经理（战略+需求）、Anthropic_Skill_Guide（AI产品+需求）
+**跨场景参考**：The Lean Startup（问题验证+需求定义+数据驱动）、Hooked（体验+需求）、Product Operations（战略+数据）、策略产品经理（战略+需求）、Anthropic_Skill_Guide（AI产品+需求）、The Founder's Playbook（创业全流程+问题验证+AI产品）
 
 ---
 
@@ -29,6 +30,7 @@
 
 - **The Mom Test** — 用户访谈方法论：如何问对问题、避免误导性反馈、从对话中提取真实需求信号
 - **The Lean Startup** — MVP 验证、构建-测量-学习循环、创新核算、转型 vs 坚持
+- **The Founder's Playbook** — Problem-Solution Fit 四问验证、MVP 四大反模式、PMF 检验工具（Sean Ellis 40% Test + Effort Test）
 
 ### 需求定义
 
@@ -56,6 +58,7 @@
 - **Generative AI Design Patterns** — 生成式 AI 设计模式、Prompt 工程、RAG 架构、多模态交互
 - **Reimagined: Building Products with Generative AI** — AI 时代产品重构、AI-Native 产品设计原则
 - **The AI Product Playbook** — AI 产品 Playbook、从模型选择到产品化的完整流程、评估体系
+- **The Founder's Playbook** — AI-Native 创业四阶段、三层护城河、创始人角色演变
 
 ### 战略与架构
 
@@ -64,6 +67,11 @@
 - **PMBOK指南第6版** — 项目管理框架、范围管理、风险管理、干系人管理
 - **TOGAF_10** — 企业架构方法论、业务架构设计、IT 战略规划
 - **策略产品经理** — 策略产品方法论、定价策略、市场定位、竞争博弈
+- **The Founder's Playbook** — 三层护城河模型（Domain Knowledge → Data Compounding → Workflow Lock-in）
+
+### 创业与 MVP
+
+- **The Founder's Playbook** — AI-Native 创业四阶段（Idea→MVP→Launch→Scale）、PSF 四问验证、MVP 四大反模式、PMF 检验（Sean Ellis 40% + Effort Test）、创始人角色演变（IC→Orchestrator→Executive）
 
 ---
 
@@ -94,4 +102,7 @@ Agent 触发 Skill 时，先查此表定位应查询的 KB 场景，再按 Layer
 | pm-comp | 战略与架构 | 需求定义 |
 | pm-retro | 问题验证 | 数据驱动 |
 | pm-sync | 需求定义 | — |
-| pm-writer-* | 按内容主题匹配 | — |
+| pm-critique | 创业与 MVP | 战略与架构 |
+| pm-discovery | 问题验证 | 创业与 MVP |
+| pm-gap-analysis | 战略与架构 | 创业与 MVP |
+| pm-experiment | 数据驱动 | 创业与 MVP |
