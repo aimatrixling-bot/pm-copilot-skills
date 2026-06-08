@@ -1,6 +1,7 @@
 # 交互原型反模式参考
 
 > **识别并避免常见的交互原型设计错误**
+> **完整 55 条清单见 [de-ai-checklist.md](de-ai-checklist.md)**（本文件保留前 15 条作为快速参考，后 40 条在 de-ai-checklist.md 中按类别详细展开）
 
 ---
 
@@ -236,5 +237,5 @@ const score = users[0].engagement_score;
 
 ---
 
-**Version**: 2.3.0
-**Last Updated**: 2026-03-12
+**Version**: 3.0.0
+**Last Updated**: 2026-06-08

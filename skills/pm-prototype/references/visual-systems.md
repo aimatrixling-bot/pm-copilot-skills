@@ -212,5 +212,5 @@ Small: 14px (0.875rem)
 
 ---
 
-**Version**: 2.3.0
-**Last Updated**: 2026-03-12
+**Version**: 3.0.0
+**Last Updated**: 2026-06-08
