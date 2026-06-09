@@ -1,6 +1,6 @@
 {
   "name": "pm-copilot-skills",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "description": "36 PM Skills (4 tracks) + 3 Utilities for Claude Code — covering the full product management lifecycle from discovery to launch",
   "license": "Apache-2.0",
   "bin": {
