@@ -2,9 +2,9 @@
 
 [![npm version](https://img.shields.io/npm/v/pm-copilot-skills.svg)](https://www.npmjs.com/package/pm-copilot-skills)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Skills](https://img.shields.io/badge/skills-34_PM_%2B_3_utilities-green.svg)](skills/)
+[![Skills](https://img.shields.io/badge/skills-36_PM_%2B_3_utilities-green.svg)](skills/)
 
-34 production-ready PM Skills for [Claude Code](https://claude.ai/claude-code) + 3 utility skills, covering the full product management lifecycle from discovery to launch.
+36 production-ready PM Skills for [Claude Code](https://claude.ai/claude-code) + 3 utility skills, covering the full product management lifecycle from discovery to launch.
 
 ## Why PM Copilot Skills?
 
@@ -33,7 +33,7 @@ npm link
 
 ## Skills Overview
 
-### PM Core (18 skills)
+### PM Core (20 skills)
 
 Core product management skills — from problem framing to launch planning.
 
@@ -56,7 +56,9 @@ Core product management skills — from problem framing to launch planning.
 | `pm-testing` | `/pm-testing` | Test plans — happy paths, edge cases, error handling |
 | `pm-launch` | `/pm-launch` | Launch plans and release checklists |
 | `pm-critique` | `/pm-critique` | Critical review of products, designs, PRDs |
-| `pm-ai-patterns` | `/pm-ai-patterns` | AI product design patterns — completion, generation, recommendation |
+| `pm-ai-patterns` | `/pm-ai-patterns` | AI product design patterns — interaction, trust, personalization, evaluation |
+| `pm-agent-patterns` | `/pm-agent-patterns` | AI Agent architecture & security patterns — identity, memory, tools, safety |
+| `pm-deconstruct` | `/pm-deconstruct` | Reverse-engineer products — interaction layer to strategic intent |
 
 ### Decision & Analysis (4 skills)
 
@@ -130,7 +132,7 @@ After installation, invoke any skill in Claude Code:
 
 ```
 pm-copilot-skills/
-├── skills/                    # 34 PM skills + 3 utilities
+├── skills/                    # 36 PM skills + 3 utilities
 │   ├── pm-prd/               # Each skill has its own directory
 │   │   └── SKILL.md          # Skill definition (YAML + instructions)
 │   ├── references/           # Shared knowledge base
@@ -152,7 +154,7 @@ pm-copilot-skills/
 
 ## License
 
-- **PM Skills** (34): [Apache-2.0](LICENSE)
+- **PM Skills** (36): [Apache-2.0](LICENSE)
 - **pdf & pptx utilities**: Proprietary, (c) Anthropic, PBC — see `skills/pdf/LICENSE.txt` and `skills/pptx/LICENSE.txt`
 
 ## Links
