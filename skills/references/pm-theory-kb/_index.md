@@ -81,17 +81,9 @@ Agent 触发 Skill 时，先查此表定位应查询的 KB 场景，再按 Layer
 
 | Skill | 首选场景 | 次选场景 |
 | --- | --- | --- |
-| pm-problem-frame | 问题验证 | — |
+| pm-feature-frame | 问题验证 | 需求定义 |
 | pm-prd | 需求定义 | 用户体验 |
-| pm-wireframe | 用户体验 | 需求定义 |
-| pm-persona | 需求定义 | 用户体验 |
-| pm-rice | 需求定义 | 数据驱动 |
-| pm-testing | 问题验证 | 数据驱动 |
-| pm-experiment | 数据驱动 | 问题验证 |
-| pm-metrics | 数据驱动 | — |
+| pm-prototype | 用户体验 | 需求定义 |
+| pm-prioritize | 需求定义 | 数据驱动 |
 | pm-decision | 战略与架构 | 数据驱动 |
-| pm-roadmap | 战略与架构 | 需求定义 |
 | pm-comp | 战略与架构 | 需求定义 |
-| pm-retro | 问题验证 | 数据驱动 |
-| pm-sync | 需求定义 | — |
-| pm-writer-* | 按内容主题匹配 | — |

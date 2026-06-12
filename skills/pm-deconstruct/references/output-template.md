@@ -27,7 +27,7 @@
   置信度：[高/中/低] | 证据来源：L1+L2+L4 交叉验证
 
 **差异化机会**：[基于拆解发现的切入点]
-  → 建议衔接：pm-prd / pm-rice / pm-prototype
+  → 建议衔接：pm-prd / pm-prioritize / pm-prototype
 ```
 
 ---
@@ -394,9 +394,9 @@
 | 方向 | 衔接 Skill | 输入 |
 |------|-----------|------|
 | 差异化功能定义 | → pm-prd | 差异化机会清单 |
-| 优先级排序 | → pm-rice | 差异化机会作为 feature 输入 |
+| 优先级排序 | → pm-prioritize | 差异化机会作为 feature 输入 |
 | 交互原型 | → pm-prototype | Layer 1 交互架构推断 |
-| 信息架构 | → pm-wireframe | Layer 1 IA 逆向结果 |
+| 信息架构 | → pm-prototype --fidelity=low | Layer 1 IA 逆向结果 |
 | AI 设计模式 | → pm-ai-patterns | Layer 5 产出直接输入 |
 
 ### 行动建议（按优先级）

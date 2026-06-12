@@ -178,7 +178,7 @@ Step 7: 产出整合 + 作战地图
   ├── 整合 L0-L5 为 13 章结构化战报
   ├── 使用 output-template.md 格式
   ├── 所有推断标注置信度 + 信息源
-  ├── 生成"差异化机会清单"（可直接输入 pm-rice）
+  ├── 生成"差异化机会清单"（可直接输入 pm-prioritize）
   └── 输出：产品拆解作战地图
 
 Step 8: 对比视角映射（条件步，需 --target）
@@ -334,7 +334,7 @@ teardown-[产品名]/
 |-------|------|----------|
 | pm-comp | 互补 | pm-deconstruct = 纵向深度拆解；pm-comp = 横向快速对比。组合使用：先 deconstruct 关键竞品，再 comp 多产品横向 |
 | pm-prd | 下游 | 拆解产出的差异化机会清单可直接输入 pm-prd |
-| pm-rice | 下游 | 差异化机会可作为 feature 输入 pm-rice 排优先级 |
+| pm-prioritize | 下游 | 差异化机会可作为 feature 输入 pm-prioritize 排优先级 |
 | pm-researcher | 并行 | 大规模数据采集 spawn pm-researcher |
 | pm-ai-patterns | 互补 | AI 产品拆解后，用 pm-ai-patterns 匹配设计模式 |
 | pm-discovery | 上游 | 产品发现阶段可用 teardown 验证竞品假设 |

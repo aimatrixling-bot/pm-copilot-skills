@@ -372,8 +372,7 @@ Step 7: 产出模式建议
 | pm-deconstruct | 上游 | 拆解 AI 产品时，Layer 1 交互架构推断 → 匹配本 Skill 的 L1 模式 |
 | pm-prd | 下游 | 模式建议可直接输入 PRD 的"AI 功能设计"章节 |
 | pm-prototype | 下游 | 模式建议指导原型设计——交互模式决定原型框架 |
-| pm-wireframe | 下游 | UI 范式选择直接影响线框图结构 |
-| pm-testing | 下游 | 评估指标定义后，用于设计 AI 功能的测试用例 |
+| pm-testing | 下游 | 评估指标定义后，用于设计 AI 功能的测试用例（→ pm-prd --include-acceptance） |
 
 ---
 

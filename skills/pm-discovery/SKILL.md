@@ -38,13 +38,13 @@ argument-hint: "[产品/功能名称或想法描述]"
 ## 工作流阶段
 
 ### Phase 1: 问题定义
-**调用 Skill**: pm-problem-frame
+**调用 Skill**: pm-feature-frame
 - 从对话上下文提取想法核心描述
 - 产出结构化 Problem Statement
 - **门控**: 问题有数据支撑 + 受影响用户已量化 + 根因已分析
 
 ### Phase 2: 用户画像
-**调用 Skill**: pm-persona
+**调用 Skill**: pm-feature-frame（问题验证 + 用户定义）
 - 输入 Phase 1 的 Target Users
 - 产出 3-7 个用户画像，含痛点和场景
 - **门控**: 画像有痛点 ≥ 1 个/画像 + Primary Persona 已识别

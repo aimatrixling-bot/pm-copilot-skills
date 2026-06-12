@@ -39,7 +39,7 @@ argument-hint: "[功能/模块名称]"
 | 输入项 | 来源 | 必须？ |
 | --- | --- | --- |
 | PRD / 需求文档 | pm-prd 或用户提供 | 是 |
-| Tech Spec | pm-tech-spec 或用户提供 | 推荐 |
+| Tech Spec | 用户提供（如已有 pm-prd 可作为输入） | 推荐 |
 | 现有项目代码结构 | Glob + Read | 是 |
 | 项目 CLAUDE.md | Read | 是 |
 
@@ -131,14 +131,14 @@ src/
 | 场景 | 推荐 Skill |
 | --- | --- |
 | 开始编码实现 | pm-code-implement |
-| 架构需要先验证技术可行性 | pm-tech-spec |
+| 架构需要先验证技术可行性 | pm-prd（需求文档） |
 | 架构涉及重大取舍 | pm-decision |
 
 ## Metadata
 
 ```yaml
 track: engineering
-depends_on: [pm-tech-spec]
+depends_on: [pm-prd]
 schema_type: enforced
 persist_to: ["projects/{project}/docs/architecture.md"]
 guardrails:

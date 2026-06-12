@@ -1,10 +1,10 @@
 ---
 name: pm-prd
 displayName: PRD
-displayDescription: 撰写或改进产品需求文档
-description: "Write or improve Product Requirements Documents. Use this skill whenever the user wants to create, review, refine, or iterate on a PRD — including saying 'write PRD', 'help with PRD', '需求文档', '写PRD', 'product requirements', 'feature spec', or describing a product feature they want to build. Also trigger when the user shares competitive analysis, user research, or problem statements that naturally lead to PRD creation. Even if they just say 'we need to build X', this skill helps turn that into a structured PRD."
+displayDescription: 撰写或改进产品需求文档，支持测试计划和工程需求单
+description: "Write or improve Product Requirements Documents, with optional test plans and engineering requests. Use this skill whenever the user wants to create, review, refine, or iterate on a PRD — including saying 'write PRD', 'help with PRD', '需求文档', '写PRD', 'product requirements', 'feature spec', or describing a product feature they want to build. Also trigger on: 'test plan', '测试计划', '验收测试', 'QA plan', '用户测试', '可用性测试', 'engineering request', '开发任务', 'Jira ticket', '工程需求', '需求单'. Use --include-acceptance flag to add a Test Plan & Acceptance Criteria section. Use --eng-request flag to output an Engineering Request instead of a full PRD."
 user-invocable: true
-argument-hint: "[产品/功能名称或描述]"
+argument-hint: "[产品/功能名称或描述] [--include-acceptance] [--eng-request]"
 ---
 
 # PRD 编写
@@ -17,23 +17,32 @@ argument-hint: "[产品/功能名称或描述]"
 
 **核心原则**：模糊的 PRD 比没有 PRD 更危险。
 
+**输出模式**（通过参数或触发词自动选择）：
+- **默认**：标准 PRD 文档
+- `--include-acceptance`：PRD 附加测试计划与验收标准章节
+- `--eng-request`：工程需求单（替代完整 PRD，面向开发交付）
+
 ## Iron Law（铁律）
 
 | 铁律 | 违反后果 |
 | --- | --- |
 | 没有"为什么"的 PRD 不是 PRD | 立即停止——补充 Problem Statement 和 Why Now 后继续 |
 | 每个 User Story 必须有验收标准 | 立即停止——补全 Given-When-Then 后继续 |
-| 没有成功指标的 PRD 无法验证 | 立即停止——定义 ≥ 1 个可量化成功指标 **及其测量方法**后继续 |
+| 没有成功指标的 PRD 无法验证 | 立即停止——定义 >= 1 个可量化成功指标 **及其测量方法**后继续 |
+| P0 功能验收标准必须 100% 有测试覆盖 | 立即停止——P0 不能有测试缺口 |
 
 ## 反合理化
 
 | 你可能在想的 | 真相 |
 | --- | --- |
 | "用户说了需求，直接写" | 用户说的是解决方案，不是问题——先验证问题存在 |
-| "这个功能大家都需要" | "大家都需要" ≠ "大家愿意付钱/花时间"——用数据证明 |
-| "PRD 写完就交" | 写完 → Iron Law 检查 → 标注 → 交付，缺一不可 |
+| "这个功能大家都需要" | "大家都需要" != "大家愿意付钱/花时间"——用数据证明 |
+| "PRD 写完就交" | 写完 -> Iron Law 检查 -> 标注 -> 交付，缺一不可 |
 | "技术细节让开发自己决定" | PM 必须定义约束边界，否则开发会按最容易的方式实现 |
-| "竞品这么做，我们也应该" | 竞品这么做 ≠ 对你的用户正确——回归用户问题验证 |
+| "竞品这么做，我们也应该" | 竞品这么做 != 对你的用户正确——回归用户问题验证 |
+| "开发者自己测过了" | 开发者测的是"能跑"，不是"用户能用" |
+| "时间紧，跳过测试" | 上线后发现的 bug 修复成本是测试的 10-100 倍 |
+| "验收标准写太细了" | 越细越不容易做偏。"功能正常" 不是验收标准 |
 
 ## 保真度级别
 
@@ -45,43 +54,43 @@ argument-hint: "[产品/功能名称或描述]"
 | **High-fi** | 工程开发、正式交付、干系人评审 | 8-15 页 | 全部干系人 |
 
 保真度选择逻辑：
-- 用户明确指定 → 按指定
-- 对话上下文表明在探索阶段 → Low-fi
-- 对话上下文表明准备开发 → High-fi
-- 不确定 → 先问
+- 用户明确指定 -> 按指定
+- 对话上下文表明在探索阶段 -> Low-fi
+- 对话上下文表明准备开发 -> High-fi
+- 不确定 -> 先问
 
 ## Entry Mode
 
 ### Guided（引导模式）— 预计 8-10 个问题
 
 **Step 1: 产品背景** — "这个产品/功能解决什么问题？谁会用它？"
-→ 记录 Problem、Target User
+-> 记录 Problem、Target User
 
 **Step 2: 为什么是现在** — "为什么现在做这个而不是 6 个月后？有什么外部变化？"
-→ 记录 Why Now、Market Context
+-> 记录 Why Now、Market Context
 
 **Step 3: 成功指标** — "你怎么知道这个产品成功了？请选择：A. 用户增长 B. 收入增长 C. 用户留存 D. 运营效率 E. 其他"
-→ 记录 Success Metrics + 测量方法（数据来源、计算方式、频率）
+-> 记录 Success Metrics + 测量方法（数据来源、计算方式、频率）
 
 **Step 4: 目标用户** — "核心用户是谁？他们的典型场景是什么？"
-→ 记录 Target User、Use Cases
+-> 记录 Target User、Use Cases
 
 **Step 5: 功能范围** — "第一期需要哪些功能？（逐个列出，我会帮你区分 P0/P1/P2）"
-→ 记录 Features、优先级
+-> 记录 Features、优先级
 
 **Step 6: 非功能需求** — "有性能、安全、合规方面的特殊要求吗？（如无特殊要求，将使用默认值）"
-→ 记录 NFR（默认：响应 < 2s，99.9% 可用）
+-> 记录 NFR（默认：响应 < 2s，99.9% 可用）
 
 **Step 7: 依赖与风险** — "这个功能依赖哪些外部系统或团队？你知道哪些风险？"
-→ 记录 Dependencies、Risks
+-> 记录 Dependencies、Risks
 
 **Step 8-9: User Stories + 验收标准**
-基于前 7 步自动生成 User Stories（As a... I want to... So that...）+ Given-When-Then 验收标准 → 用户确认
+基于前 7 步自动生成 User Stories（As a... I want to... So that...）+ Given-When-Then 验收标准 -> 用户确认
 
 **Step 10: 评审确认**
-展示完整 PRD → 用户最终确认 → 交付
+展示完整 PRD -> 用户最终确认 -> 交付
 
-### Quick（快速模式）— ≤ 3 个问题后直接产出
+### Quick（快速模式）— <= 3 个问题后直接产出
 
 **问题 1**: "产品/功能名称和一句话描述？"
 **问题 2**: "核心用户和他们的主要问题？"
@@ -99,24 +108,24 @@ argument-hint: "[产品/功能名称或描述]"
 
 | 产品类型 | 推理骨架 | 推理逻辑 |
 | --- | --- | --- |
-| B2B 企业功能 | Working Backwards | 从客户新闻稿 → FAQ → User Stories。强迫先想客户怎么描述价值 |
+| B2B 企业功能 | Working Backwards | 从客户新闻稿 -> FAQ -> User Stories。强迫先想客户怎么描述价值 |
 | B2C 消费端功能 | JTBD | 从用户要完成的"任务"出发。防止"功能堆砌" |
 | 平台/基础设施 | Lean Canvas | 从问题-解决方案-独特价值开始。验证商业逻辑先于功能设计 |
-| AI 原生功能 | 假设驱动 | 先列"如果 AI 能做 X"的假设 → 验证方法 → 再写需求 |
+| AI 原生功能 | 假设驱动 | 先列"如果 AI 能做 X"的假设 -> 验证方法 -> 再写需求 |
 | 不确定 | 标准 PRD | 默认模板，包含所有最小必要字段 |
 
 **高级选项**（用户可覆盖自动选择）：
 A. Amazon Working Backwards | B. Lean Canvas PRD | C. JTBD PRD | D. 假设驱动 PRD | E. 标准 PRD | F. 自定义模板
 
 推理骨架如何影响产出：
-- Working Backwards → PRD 先写 Press Release 和 FAQ，User Stories 从 FAQ 衍生
-- JTBD → PRD 先写 Job Statements，功能列表是 Job 的解决方案
-- Lean Canvas → PRD 以 9 格画布为骨架，填充后再展开
-- 假设驱动 → PRD 嵌入假设列表和验证计划，每个功能关联一个假设
+- Working Backwards -> PRD 先写 Press Release 和 FAQ，User Stories 从 FAQ 衍生
+- JTBD -> PRD 先写 Job Statements，功能列表是 Job 的解决方案
+- Lean Canvas -> PRD 以 9 格画布为骨架，填充后再展开
+- 假设驱动 -> PRD 嵌入假设列表和验证计划，每个功能关联一个假设
 
 每种骨架的详细定义和使用方法，见 `references/methodology-skeletons.md`。
 
-## Scope Gate（范围门控）— ⚠️ 在任何执行之前必须先通过
+## Scope Gate（范围门控）— 在任何执行之前必须先通过
 
 **此检查在模式判断、保真度选择、任何输出之前执行。违反以下任一规则时，不得进入任何模式，不得生成任何 PRD 内容。**
 
@@ -125,9 +134,9 @@ A. Amazon Working Backwards | B. Lean Canvas PRD | C. JTBD PRD | D. 假设驱动
 | 请求类型 | 信号词/特征 | 正确响应 |
 | --- | --- | --- |
 | 用 AI 替代某个职业的全部工作 | "替代PM"、"替代产品经理"、"AI取代"、"不要PM了"、"全自动" | **硬拒绝**："这个请求超出了 PRD 的范畴。AI 无法替代产品经理的全部工作——PM 的核心价值在于理解用户、做取舍决策、跨团队协调。我可以帮你设计'AI辅助PM提升效率'的具体功能，但不能帮你设计'让PM下岗'的系统。" |
-| 从零设计完整系统（前端+后端+数据库+支付+…） | 10+ 功能模块 + "一期全部上线" | **硬拒绝**："这个范围不是单个PRD能覆盖的——这是一个完整产品矩阵。14个模块一期上线在工程和商业上都不现实。我帮你从最核心的3个模块开始定义MVP，其余进入backlog分阶段规划。" |
+| 从零设计完整系统（前端+后端+数据库+支付+...） | 10+ 功能模块 + "一期全部上线" | **硬拒绝**："这个范围不是单个PRD能覆盖的——这是一个完整产品矩阵。我帮你从最核心的3个模块开始定义MVP，其余进入backlog分阶段规划。" |
 | 荒谬/不现实的前提 | "火星上的"、"永动机"、"预测股票"、"读心术" | **硬拒绝**：指出前提不现实，回到可行的产品定义范围 |
-| 生成代码、部署系统、黑客攻击 | "写代码"、"部署"、"攻击" | 拒绝 → 回到产品定义层面讨论 |
+| 生成代码、部署系统、黑客攻击 | "写代码"、"部署"、"攻击" | 拒绝 -> 回到产品定义层面讨论 |
 | 包含违法、不道德内容的请求 | | 明确拒绝 |
 
 **硬拒绝的执行方式**：
@@ -148,11 +157,11 @@ A. Amazon Working Backwards | B. Lean Canvas PRD | C. JTBD PRD | D. 假设驱动
 
 ```
 收到请求
-  → 硬拒绝检查（第1优先级）
-    → 匹配硬拒绝 → 立即拒绝 + 解释 + 替代方向 → 结束（不进入任何模式）
-    → 不匹配 → 软质疑检查
-      → 匹配软质疑 → 先质疑 → 用户确认后才继续
-      → 不匹配 → 正常进入模式判断
+  -> 硬拒绝检查（第1优先级）
+    -> 匹配硬拒绝 -> 立即拒绝 + 解释 + 替代方向 -> 结束（不进入任何模式）
+    -> 不匹配 -> 软质疑检查
+      -> 匹配软质疑 -> 先质疑 -> 用户确认后才继续
+      -> 不匹配 -> 正常进入模式判断
 ```
 
 **关键原则**：
@@ -164,29 +173,34 @@ A. Amazon Working Backwards | B. Lean Canvas PRD | C. JTBD PRD | D. 假设驱动
 
 ```
 触发 pm-prd
-    ├── 0. Scope Gate（范围门控）
-    │     ├── 检测请求是否在 PM 工作范畴内
-    │     ├── 超范围 → 拒绝并解释原因，建议替代路径
-    │     └── 在范围内 → 继续
-    ├── 1. 模式判断（Guided/Quick/Expert）
-    │     └── 根据用户输入量和明确度自动判断
-    ├── 2. 确定保真度（Low-fi/High-fi）
-    │     └── 根据使用场景和受众判断
-    ├── 3. 读取上下文
-    │     ├── Glob 搜索项目已有文档
-    │     ├── Read 相关 PRD/Roadmap/Research
-    │     └── 提取对话中的关键信息
-    ├── 4. 按模式 × 保真度执行引导/产出
-    │     ├── Low-fi: 使用精简模板（见 references/prd-template.md）
-    │     └── High-fi: 使用完整模板
-    ├── 5. Iron Law 检查
-    │     ├── Problem Statement + Why Now 是否存在？
-    │     ├── 每个 User Story 是否有验收标准？
-    │     └── 是否有可量化成功指标？
-    ├── 6. 标注检查（[默认] [假设] [待确认]）
-    └── 7. 交付 + 后续推荐
-          ├── pm-comp（竞品分析）、pm-rice（优先级细化）
-          └── pm-wireframe（线框图）、pm-prototype（原型）
+    |-- 0. Scope Gate（范围门控）
+    |     |-- 检测请求是否在 PM 工作范畴内
+    |     |-- 超范围 -> 拒绝并解释原因，建议替代路径
+    |     +-- 在范围内 -> 继续
+    |-- 1. 输出模式判断
+    |     |-- --eng-request 或触发词匹配 -> 工程需求单模式
+    |     +-- 默认或 --include-acceptance -> PRD 模式
+    |-- 2. 模式判断（Guided/Quick/Expert）
+    |     +-- 根据用户输入量和明确度自动判断
+    |-- 3. 确定保真度（Low-fi/High-fi）
+    |     +-- 根据使用场景和受众判断
+    |-- 4. 读取上下文
+    |     |-- Glob 搜索项目已有文档
+    |     |-- Read 相关 PRD/Roadmap/Research
+    |     +-- 提取对话中的关键信息
+    |-- 5. 按模式 x 保真度 x 输出模式执行
+    |     |-- PRD 模式: 按 PRD 模板产出
+    |     |-- --include-acceptance: 附加测试计划章节（见附录 A）
+    |     +-- --eng-request: 按工程需求单模板产出（见附录 B）
+    |-- 6. Iron Law 检查
+    |     |-- Problem Statement + Why Now 是否存在？
+    |     |-- 每个 User Story 是否有验收标准？
+    |     |-- 是否有可量化成功指标？
+    |     +-- P0 功能验收标准是否有测试覆盖？
+    |-- 7. 标注检查（[默认] [假设] [待确认]）
+    +-- 8. 交付 + 后续推荐
+          |-- pm-comp（竞品分析）、pm-prioritize（优先级细化）
+          +-- pm-prototype（原型，--fidelity=low 可做线框图）
 ```
 
 ## 输出规范
@@ -201,7 +215,7 @@ PRD 必须使用 `references/prd-template.md` 中的模板结构。核心章节�
 2. **问题陈述** — 谁、什么、为什么现在、不解决的后果
 3. **目标和成功指标** — 指标表格（指标/基线/目标/时间框架/测量方式）+ 护栏指标
 4. **解决方案概述** — 方案描述 + 关键功能列表 + 用户旅程
-5. **范围边界** — In Scope / Out Scope / 未来迭代
+5. **范围边界** -- 范围内 / 范围外 / 未来迭代
 6. **残酷风险区** — 牺牲了什么 + 最大失败风险 + 防御方案
 
 ### 高保真额外章节
@@ -220,13 +234,139 @@ PRD 必须使用 `references/prd-template.md` 中的模板结构。核心章节�
 | `[默认]` | 自动填充的默认值，用户可覆盖 |
 | `[待确认]` | 需要进一步讨论的开放问题 |
 
-## 交付前检查
+---
+
+## 附录 A：测试计划与验收标准（--include-acceptance）
+
+当使用 `--include-acceptance` 标志时，在 PRD 的功能需求章节后附加以下测试计划章节。从 PRD 的 User Stories 和 Acceptance Criteria 派生测试用例。
+
+### 测试覆盖策略
+
+| 优先级 | 覆盖范围 | 测试类型 |
+| --- | --- | --- |
+| P0 | 100% 全覆盖 | 手动 + 自动 |
+| P1 | 核心路径覆盖 | 手动为主 |
+| P2 | 探索性抽检 | 探索性测试 |
+
+### 附加章节模板
+
+```markdown
+## 测试计划
+
+> **关联 PRD**: [PRD 路径]
+> **测试范围**: P0 全覆盖，P1 核心路径，P2 抽检
+> **通过标准**: P0 全部通过 + P1 >=90% 通过
+
+### 测试用例
+| # | User Story | 测试项 | 类型 | 前置条件 | 测试步骤 | 预期结果 | 优先级 |
+|---|------------|--------|------|----------|----------|----------|--------|
+| 1 | US-01 | 正向：正常流程 | 手动 | [条件] | [步骤] | [结果] | P0 |
+| 2 | US-01 | 边界：空输入 | 自动 | [条件] | [步骤] | [结果] | P0 |
+| 3 | US-01 | 异常：网络断开 | 手动 | [条件] | [步骤] | [结果] | P1 |
+
+### 测试环境
+| 环境 | 要求 |
+|------|------|
+| 测试数据 | [描述] |
+| 账号 | [描述] |
+
+### 测试风险
+| 风险 | 影响 | 缓解 |
+|------|------|------|
+```
+
+### 测试计划交付前检查
+
+- [ ] 每个 User Story 有对应测试用例
+- [ ] 包含正向 + 边界 + 异常测试
+- [ ] 测试用例有明确的前置条件和预期结果
+- [ ] 按 P0/P1/P2 排序
+- [ ] 通过标准已定义
+- [ ] P0 功能 100% 测试覆盖
+
+---
+
+## 附录 B：工程需求单模式（--eng-request）
+
+当使用 `--eng-request` 标志时，**不输出完整 PRD**，而是输出以下工程需求单。从已有的 PRD 或用户输入中提取需求，生成面向开发的结构化需求单。
+
+### 需求类型
+
+| 类型 | 说明 | 优先级范围 |
+| --- | --- | --- |
+| Feature | 新功能 | P0-P2 |
+| Bugfix | 缺陷修复 | P0-P1 |
+| Spike | 技术调研 | P1-P2 |
+| Investigation | 问题排查 | P0-P2 |
+
+### 工程需求单模板
+
+```markdown
+# 工程需求: [功能名]
+
+**Request ID**: ENG-[XXX]
+**Priority**: P0/P1/P2
+**Type**: Feature/Bugfix/Spike/Investigation
+**Requested By**: [PM]
+
+## 元数据
+| 字段 | 值 |
+|------|-----|
+| 优先级 | P0/P1/P2 |
+| 关联 PRD | [路径] |
+| Sprint | [目标 Sprint] |
+| 标签 | [功能标签] |
+
+## 背景
+[为什么做这个需求，用户问题是什么。自包含，不依赖 PRD]
+
+## 需求描述
+[做什么，功能范围。具体到开发可执行]
+
+## 验收标准
+- [ ] Given [前置条件] When [操作] Then [预期结果]
+- [ ] Given [前置条件] When [操作] Then [预期结果]
+- [ ] Given [异常场景] When [操作] Then [预期错误处理]
+
+## 技术约束
+| 约束 | 要求 |
+|------|------|
+| 性能 | [响应时间/吞吐量] |
+| 安全 | [认证/授权] |
+| 兼容 | [浏览器/版本] |
+
+## 依赖
+| 依赖 | 团队 | 状态 |
+|------|------|------|
+| [依赖 1] | [团队] | 已沟通/待沟通 |
+
+## 估时
+| 任务 | 估时 | 置信度 |
+|------|------|--------|
+| [任务 1] | [X 天] | 高/中/低 |
+
+**[待确认]** [需要开发确认的估时和技术方案]
+**[假设]** [推断的内容，需要验证]
+```
+
+### 工程需求单交付前检查
+
+- [ ] 背景说明清晰（为什么做）— 自包含，不依赖 PRD
+- [ ] 需求描述具体（做什么）— 开发可执行
+- [ ] 验收标准 Given-When-Then 可直接测试
+- [ ] 依赖已列出且标注沟通状态
+- [ ] 推断项标注 [假设]
+- [ ] 估时标注置信度
+
+---
+
+## 交付前检查（通用）
 
 - [ ] Problem Statement 清晰且基于用户问题（非解决方案）
 - [ ] Why Now 有具体的外部变化或数据支撑
 - [ ] 成功指标可量化（数字 + 时间范围）且有明确测量方法
 - [ ] User Stories 使用标准格式（As a... I want to... So that...）
-- [ ] 每个 User Story 有 ≥ 1 个 Given-When-Then 验收标准
+- [ ] 每个 User Story 有 >= 1 个 Given-When-Then 验收标准
 - [ ] 功能范围有明确的 P0/P1/P2 优先级
 - [ ] 依赖和风险已列出
 - [ ] 所有推断已标注 [假设]，自动填充已标注 [默认]
@@ -234,10 +374,22 @@ PRD 必须使用 `references/prd-template.md` 中的模板结构。核心章节�
 - [ ] **User Journey / 使用流程中每个步骤都在 In Scope 有对应功能**
 - [ ] **输出中无 Magic Step**（对照 `references/quality-gates-shared.md` 触发词表检查）
 - [ ] **如有触发词，【技术实现猜想】已补充**
-- [ ] **每个风险项的缓解措施 ≥ 1 句可执行描述**（不是"持续监控"）
+- [ ] **每个风险项的缓解措施 >= 1 句可执行描述**（不是"持续监控"）
 
 更完整的质量检查标准见 `references/quality-checklist.md`。
 实际 PRD 案例参考见 `references/examples.md`。
+
+## 常见错误
+
+| 错误 | 后果 | 正确做法 |
+| --- | --- | --- |
+| 只测正常流程 | 遗漏边界和异常 | 每个功能 3 类测试（正向+边界+异常） |
+| 验收标准模糊 | "功能正常"不可测试 | 用 Given-When-Then |
+| 无背景说明 | 开发不理解 Why | 需求单自包含背景 |
+| 不标注依赖 | 被阻塞才知道 | 列出所有外部依赖 |
+| 估时太乐观 | 排期不准 | 粗估 + 标注置信度 |
+| 测试用例太笼统 | 无法执行 | 具体：步骤+预期结果 |
+| 自己测自己 | 盲点遗漏 | 交叉测试或找非开发人员 |
 
 ## 后续推荐
 
@@ -246,7 +398,7 @@ PRD 必须使用 `references/prd-template.md` 中的模板结构。核心章节�
 | 场景 | 推荐 Skill |
 |------|-----------|
 | 需要竞品参考 | pm-comp |
-| 需要优先级排序 | pm-rice |
-| 需要可视化 | pm-wireframe → pm-prototype |
-| 需要技术方案 | pm-tech-spec |
+| 需要优先级排序 | pm-prioritize |
+| 需要可视化 | pm-prototype (--fidelity=low 可做线框图) |
+| 需要技术方案 | pm-code-architect |
 | 需要决策记录 | pm-decision |

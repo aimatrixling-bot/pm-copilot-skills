@@ -320,7 +320,7 @@ Step 5: 架构决策总结（10 min）
 |-------|------|----------|
 | pm-ai-patterns | 互补 | 本 skill = 后端架构安全；pm-ai-patterns = 前端交互设计。组合使用 |
 | pm-deconstruct | 上游 | AI 产品拆解后，用本 skill 匹配架构模式 |
-| pm-tech-spec | 下游 | 架构决策可输入 tech-spec 的技术方案 |
+| pm-code-architect | 下游 | 架构决策可输入 code-architect 的架构设计 |
 | pm-prd | 下游 | 安全需求可输入 PRD 的非功能需求 |
 | pm-prototype | 并行 | 架构确定后，用 prototype 验证可行性 |
 

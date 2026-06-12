@@ -2,7 +2,7 @@
 name: pm-feature-frame
 displayName: 特性构想
 displayDescription: 从想法到可原型的构想，自适应复杂度
-description: "Bridge the gap between validated problem and prototype. Use this skill whenever the user needs to define WHAT to build before prototyping — says 'feature frame', 'feature list', '功能构想', '特性设计', 'what to build', 'user flow', 'magic moment', '画原型之前先想想', or has a validated problem/idea but hasn't specified what the product should actually do. Also trigger when the user says 'skip PRD' or 'go straight to prototype' — help them capture the conception first. This is the missing step between problem validation (pm-problem-frame) and visual output (pm-wireframe/pm-prototype). Supports three complexity tiers: Simple (single feature, 200-300 words), Standard (multi-screen app, 500-800 words), and Complex (enterprise/multi-agent/multi-phase, 1000-1500 words). Output feeds directly into pm-prototype with --principles-confirmed."
+description: "From problem to prototype-ready conception. Use this skill whenever the user needs to define WHAT to build — says 'feature frame', 'feature list', '功能构想', '特性设计', 'what to build', 'user flow', 'magic moment', '画原型之前先想想', or has a problem/idea but hasn't specified what the product should do. Also trigger when the user says 'define the problem', '问题定义', '真问题', 'is this a real problem', 'we need X', or starts discussing a feature without articulating why — help validate the problem first, then conceive the feature. This skill combines problem validation (5 Whys, evidence check) with feature conception (Magic Moment, User Flow, Edge Cases). Supports three complexity tiers: Simple (200-300 words), Standard (500-800 words), Complex (1000-1500 words). Output feeds directly into pm-prototype."
 user-invocable: true
 argument-hint: "[问题陈述 / PRD链接 / 项目描述]"
 ---
@@ -50,6 +50,7 @@ argument-hint: "[问题陈述 / PRD链接 / 项目描述]"
 
 | 铁律 | 违反后果 |
 | --- | --- |
+| 没有用户的问题不是问题 | 立即停止——明确受影响的用户群体后继续 |
 | 没有 Magic Moment 的构想没有灵魂 | 停下来找——如果说不清用户什么时候会 "wow"，说明还没想透 |
 | 字数超标 = 你在写 PRD | 按复杂度分级上限砍——Feature Frame 只捕获构想，不捕获实现细节 |
 | 没说"不做什么" = 什么都想做 | 补充 Non-Goals——砍功能比加功能更重要 |
@@ -70,6 +71,20 @@ argument-hint: "[问题陈述 / PRD链接 / 项目描述]"
 ## Entry Mode
 
 ### Guided（引导模式）— 5+ 个问题，预计 3-10 分钟
+
+**Step 0: Problem Validation（前置问题验证）**
+
+如果用户没有经过 pm-discovery 或没有明确的问题定义，先快速验证：
+
+1. 问："你观察到的现象是什么？（不要包含解决方案）"
+   → 检查是否混入方案 → 如果混入，剥离方案，保留现象
+2. 问："谁遇到了这个问题？多久一次？严重吗？"
+   → 记录：用户群体 + 频率(每天/每周/偶尔) + 严重程度(阻塞/严重/轻微)
+3. 简化 5 Whys（≤ 3 层追问）→ 触达根因
+4. 证据强度评估：强（多源数据）/ 中（单一来源）/ 弱（仅直觉）
+   → 弱证据标注 [待验证]
+
+如果用户已经有明确的问题定义（如刚完成 pm-discovery），跳过 Step 0，直接进入 Q1。
 
 **Q1: Problem→Outcome**
 问："用户现在遇到什么问题？用了你的产品之后，什么改变了？"
@@ -118,7 +133,7 @@ argument-hint: "[问题陈述 / PRD链接 / 项目描述]"
 
 ### Expert（专家模式）— AI 从上下文生成
 
-用户在对话中已讨论过需求/问题/方案（如刚完成 pm-problem-frame 或 pm-discovery），AI 从对话上下文直接生成 Feature Frame。
+用户在对话中已讨论过需求/问题/方案（如刚完成 pm-discovery），AI 从对话上下文直接生成 Feature Frame。
 
 执行：
 1. 从对话历史提取：问题、用户、场景、关键需求
@@ -256,7 +271,7 @@ Magic Moment 是整个 Feature Frame 的灵魂——它决定了原型的差异�
 - [ ] User Flow 步骤 ≤7（超过 7 步 → 合并或拆分为多个 Frame）
 - [ ] Edge Cases 包含至少 1 个"新用户/首次使用"场景
 - [ ] Non-Goals 包含至少 1 个"有人可能想要但你不做"的功能
-- [ ] 可以直接喂给 pm-prototype/pm-wireframe（不需要额外解释）
+- [ ] 可以直接喂给 pm-prototype（不需要额外解释）
 
 ### 字数检查（按复杂度）
 - [ ] Simple: ≤300 字
@@ -275,10 +290,8 @@ Feature Frame 完成后，可直接触发：
 
 | 下游 Skill | 衔接方式 |
 | --- | --- |
-| `pm-wireframe` | 输入 Feature Frame → `--principles-confirmed` 跳过 Layer 0 四问 |
 | `pm-prototype` | 输入 Feature Frame → `--principles-confirmed` 跳过 Layer 0 四问 |
 | `pm-prd` | 如果需要更正式的文档 → Feature Frame 作为核心输入 |
-| `pm-solution-brief` | 如果需要向干系人汇报 → 从 Feature Frame 提炼一页纸 |
 
 **衔接命令示例**：
 ```
@@ -289,24 +302,17 @@ Feature Frame 完成后，可直接触发：
 
 ```
 pm-discovery (问题发现全链路)
-  └── pm-problem-frame (定义问题)
-        └── ★ pm-feature-frame (构想特性) ★ ← 你在这里
-              ├── pm-wireframe (线框图)
-              ├── pm-prototype (高保真原型)
-              └── pm-prd (正式文档)
+  └── ★ pm-feature-frame (验证问题 + 构想特性) ★ ← 你在这里
+        ├── pm-prototype (高保真原型)
+        └── pm-prd (正式文档)
 
-pm-feature-cycle (功能开发全周期)
-  └── pm-rice (优先级排序)
-        └── pm-feature-frame (可选，已有优先级后快速构想)
+pm-prioritize (优先级排序)
+  └── pm-feature-frame (可选，已有优先级后快速构想)
 ```
 
-**与 pm-discovery 的关系**：pm-feature-frame 是 discovery 链的终点——问题验证完后，用它定义"做什么"。
-
-**与 pm-feature-cycle 的关系**：pm-feature-cycle 是工程交付链（rice→prd→tech-spec→eng-request），pm-feature-frame 是更轻量的构想工具。当已有明确的功能列表时，feature-cycle 更合适；当还在"想做什么"阶段时，feature-frame 更合适。
+**与 pm-discovery 的关系**：pm-feature-frame 包含前置问题验证（简化版 5 Whys + 证据检查），也可以作为 discovery 链的终点。如果用户已经过 pm-discovery，Step 0 自动跳过。
 
 **与 pm-prd 的关系**：Feature Frame 不是 PRD 的替代，是 PRD 的前身。一个小功能可能只需要 Feature Frame → 直接原型；一个复杂功能需要 Feature Frame → PRD → 原型。Complex 模式的 Feature Frame 已覆盖 PRD 约 60% 的核心内容，可以直接喂给原型工具。
-
-**与 pm-solution-brief 的关系**：solution-brief 是对外汇报工具（给老板/客户看），feature-frame 是对内构想工具（给自己/AI 工具看）。方向不同，内容可以复用。
 
 ## 常见错误
 

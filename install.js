@@ -3,7 +3,7 @@
 /**
  * PM Copilot Skills Installer
  *
- * Copies 29 PM Skills to Claude Code's skills directory.
+ * Copies 16 PM Skills to Claude Code's skills directory.
  * Usage: npx pm-copilot-skills [target]
  *   target: "global" (default) → ~/.claude/skills/
  *          "project"            → ./.claude/skills/
