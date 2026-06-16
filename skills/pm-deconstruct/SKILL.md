@@ -15,8 +15,17 @@ argument-hint: "[产品名称或 URL] [--mode deep|rapid|ai|cross] [--target 你
 
 不是"他们有什么功能"，而是"他们为什么这么设计，这暴露了什么战略意图"。
 
-**输入**: 产品名称 / URL / 截图 / 使用体验描述
-**输出**: 产品拆解作战地图（13 章结构化战报）
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 深度理解一个产品**为什么**这样设计，从中提炼可学习的差异化机会（≠ 照抄） | 用户输入剥离"分析 X"后的问题本质 |
+| **Constraints** | 时间预算、可用信息源、是否含 AI 产品、是否有 --target 对比视角 | 用户明示 + 参数（--mode/--target/--layers） |
+| **Context Sources** | 产品 URL / 截图 / 用户使用体验 / 公开文档 / 招聘信息 / 融资历史 | WebSearch + WebFetch + 用户提供素材 |
+| **Depth** | Draft（Rapid Scan）/ Review（Deep Dive 默认）/ Release（含 Pass 2 人机协同 + Loophole 检测） | 用户声明或按 --mode 推断 |
+| **Output Target** | PM 自己做差异化决策 / 团队学习竞品 / 喂给 pm-prioritize 排差异化机会 | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
 
 ## Iron Law（铁律）
 
@@ -40,6 +49,16 @@ argument-hint: "[产品名称或 URL] [--mode deep|rapid|ai|cross] [--target 你
 | 5 | "这个数据足够了" | 单一来源不可靠。核心结论至少 2 个来源 |
 | 6 | "我可以猜出他们的 Prompt" | 真实 Prompt 是结构化系统（角色/格式/安全/工具/记忆），单句猜测没有意义 |
 | 7 | "逆向结果可以直接复用" | 逆向给你"理解"，不是"蓝图"。做不同的决策，不是相同的架构 |
+
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 单产品纵向深度拆解（L0-L5）、AI 产品逆向、多产品 Cross Compare、差异化机会提炼 | 多产品横向快速对比 → pm-comp；写 PRD → pm-prd；写代码 → pm-code-implement |
+| **输出格式** | Markdown 结构化战报（13 章）、事实→推断分栏表格、交叉验证矩阵 | HTML 原型 → pm-prototype；docx/pptx → pm-content-general |
+| **深度范围** | 从"产品身份"到"战略意图"全链路拆解；含 AI 产品的 Prompt/Harness/Eval 逆向 | 大规模用户调研（需访谈多位用户）→ pm-researcher；运营数据获取（非公开）→ 人工补充 |
+
+**边界原则**: pm-deconstruct 的产物是**理解**（why & how），不是**蓝图**（what to copy）。差异化机会提炼后立即转交 pm-prioritize 或 pm-prd，不在拆解阶段编写实施方案。
 
 ## Scope Gate（范围门控）
 
@@ -226,6 +245,17 @@ Step 3: 生成对比矩阵 + 差异化定位图
 输出：多产品对比作战地图
 ```
 
+## Gates
+
+| Gate | 位置 | 通过条件 | 失败处理 |
+|---|---|---|---|
+| **G1: 入口验证** | Step 0 后 | 目标产品明确 + 模式已选（默认 Deep Dive）+ 产品姿态已判断（Sovereign/Transient） | Pause→补充目标信息；Nudge→未指定 --mode 时提示用户确认 |
+| **G2: 层级完整** | 各 Layer 完成后 | 当前层至少使用 2 个分析工具 + 产出符合"事实→推断"分栏格式 + 信息缺口已标注 | Pause→补做缺失工具；Risk→工具不足时标注置信度降低 |
+| **G3: 战略交叉验证** | Layer 4 后 | L4 每个推断有 ≥2 层证据支撑 + 标注置信度 | Pause→必须交叉验证；单源推断直接删除（含混比无知更危险） |
+| **G4: 出口验证** | Step 7 后 | 五层完整覆盖（Deep Dive）+ 战略意图含交叉验证矩阵 + 差异化机会清单已生成 + 所有结论标注信息源 | Pause→补齐缺失层；Risk→Rapid Scan 模式允许仅 L0+L1+关键洞察 |
+
+Gate 失败 ≠ 终止：标注原因 → 回对应 Step → 最多重试 2 次 → 仍失败向用户报告。
+
 ## 参数
 
 | 参数 | 类型 | 必需 | 默认值 | 说明 |
@@ -363,12 +393,51 @@ Accio Work（阿里巴巴 AI Agent 工作台）的 4-Pass 完整拆解，覆盖 
 | 信息茧房 | 只分析同类型产品 | Cross Compare 跨品类产品 |
 | AI 逆向越界 | 尝试还原精确 Prompt/训练数据 | 仅分析公开可观察行为，标注 [推断] |
 
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：所选模式的执行流程是否完整跑完？（Deep Dive 必须 L0-L4 + 条件 L5；Rapid Scan 至少 L0+L1+关键洞察）
+2. **反理实化警惕**：7 条借口（"我了解这个产品，不需要查"/"产品做得很好，我们学它"/"没有公开数据"等）是否真的被警惕了？
+3. **Iron Law 验证**：6 条铁律是否已验证满足？尤其"每个结论必须有来源 + 区分事实/推断"和"战略意图推断必须有 ≥2 层证据支撑"
+
+**扩展问题（分析类 skill）**：战略意图推断是否有数据/来源支撑，非仅凭直觉？差异化机会是否经过用户视角验证（不是"我觉得这是个机会"）？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应 Step 修正。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：五层架构是否有不够贴合实际的地方？（如某层经常被跳过、某工具产出不稳定）
+2. **反理实化补充**：是否遇到了 7 条借口表未覆盖的新合理化模式？
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类产品本应转交 pm-comp 但被硬撑）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-deconstruct — [产品/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: pm
+phase: 0
 depends_on: []
+feeds_to: [pm-prioritize, pm-prd, pm-prototype]
 schema_type: free
-persist_to: []
-guardrails: [scope_gate, iron_law, anti_rationalization]
+persist_to:
+  - "teardown-{product-name}/README.md"
+  - "teardown-{product-name}/*.md"
+guardrails:
+  - scope_gate
+  - iron_law
+  - anti_rationalization
+  - AI 逆向仅限公开可观察行为，不使用非法手段
 ```

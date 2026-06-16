@@ -17,6 +17,18 @@ argument-hint: "[功能/模块名称]"
 
 **核心原则**：没有目录树的架构不是架构。
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 把 PRD/需求翻译为可执行的代码结构（目录树 + 组件关系 + 数据模型 + 接口契约） | 用户输入剥离"设计架构"后的问题本质 |
+| **Constraints** | 项目已有框架（Next.js / Tauri / 等）、已有依赖清单、团队熟悉度 | 项目 CLAUDE.md + package.json/Cargo.toml 推断 |
+| **Context Sources** | 上游 PRD / Tech Spec / Feature Frame / 项目已有代码结构 / 项目 CLAUDE.md | Glob + Read；pipeline 模式引用上游 Output Packet |
+| **Depth** | Draft（目录骨架）/ Review（完整 6 章节输出，默认）/ Release（含边缘场景和降级方案） | 用户声明或推断 |
+| **Output Target** | 开发团队（执行 pm-code-implement 的工程师） | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## Iron Law（铁律）
 
 | 铁律 | 违反后果 |
@@ -34,14 +46,15 @@ argument-hint: "[功能/模块名称]"
 | "用最流行的技术栈" | 技术栈选项目已有的，不引入新依赖——除非有充分的取舍论证 |
 | "架构设计要覆盖所有细节" | 架构定方向和边界，细节留给实现——但边界必须清晰 |
 
-## 输入
+## Capability Index
 
-| 输入项 | 来源 | 必须？ |
-| --- | --- | --- |
-| PRD / 需求文档 | pm-prd 或用户提供 | 是 |
-| Tech Spec | 用户提供（如已有 pm-prd 可作为输入） | 推荐 |
-| 现有项目代码结构 | Glob + Read | 是 |
-| 项目 CLAUDE.md | Read | 是 |
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 系统架构设计、目录结构规划、组件拆分、数据模型定义、API 契约、技术取舍分析 | 写 PRD → pm-prd；写代码 → pm-code-implement；代码审查 → pm-code-review |
+| **输出格式** | Markdown 架构文档（6 章节：overview / directory / component / data / api / tech_choices） | 可运行代码 → pm-code-implement；高保真原型 → pm-prototype |
+| **深度范围** | 从 PRD 到可执行代码结构（架构级，不到实现级） | 单文件实现细节 → pm-code-implement；架构级取舍决策记录 → pm-decision |
+
+**边界原则**：架构定方向和边界，实现细节留给 pm-code-implement。但边界必须清晰——下游工程师能照此搭骨架。
 
 ## 执行流程
 
@@ -134,13 +147,58 @@ src/
 | 架构需要先验证技术可行性 | pm-prd（需求文档） |
 | 架构涉及重大取舍 | pm-decision |
 
+## Output Packet
+
+- **artifact_path**: `projects/{project}/docs/architecture.md`
+- **artifact_type**: `architecture`
+- **key_decisions**: [技术栈选择 + 关键取舍结论 + 目录结构核心决策 ≤ 3 条]
+- **open_assumptions**: [标注 `[假设]` 的待验证项（如团队对新依赖的熟悉度）]
+- **next_skill_hint**: `pm-code-implement`（按架构开始编码）
+- **handoff_context**: 下游需要但不在架构正文中的上下文（如被否决的备选架构、性能预算约束、团队技术债背景）
+
+**下游消费方式**：pm-code-implement 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 上下文读取 → 架构分析 → 技术取舍 → 6 章节产出 → Iron Law 检查 的完整流程？技术选型是否来自项目已有依赖？
+2. **反理实化警惕**：4 条"你可能在想的"是否真的被警惕了？（重点检查"先写代码再说架构"、"用最流行的技术栈"、"架构设计要覆盖所有细节"）
+3. **Iron Law 验证**：3 条铁律（目录树完整 / 兼容现有框架 / 每个决策有取舍分析）是否已验证满足？
+
+**扩展问题（pipeline skill）**：Output Packet 的 `key_decisions` 是否可追溯到技术取舍分析表？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正，不在 Meta-Review 阶段打补丁。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：6 章节输出结构是否有不够贴合实际的地方？（如某章节经常空、某类项目需要额外章节）
+2. **反理实化补充**：是否遇到了表格未覆盖的新借口模式？
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类架构本应转交但被硬撑）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-code-architect — [项目/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: engineering
+phase: 3
 depends_on: [pm-prd]
+feeds_to: [pm-code-implement]
 schema_type: enforced
-persist_to: ["projects/{project}/docs/architecture.md"]
+persist_to:
+  - projects/{project}/docs/architecture.md
 guardrails:
   - 目录结构必须兼容现有项目框架（Next.js / Tauri / 等）
   - 不引入项目未使用的新依赖，除非有充分论证

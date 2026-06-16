@@ -17,6 +17,18 @@ argument-hint: "[--mode=analysis|critique] [竞品名称/行业领域 或 待评
 
 **核心原则**：竞品分析的目的不是模仿，是找到差异化空间。好的竞品分析告诉你"不该做什么"和"可以做得更好"。产品评审的价值在于发现盲点，不是挑毛病。
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 系统化竞品分析（Analysis 模式）或批判性产品评审（Critique 模式） | 用户输入剥离"帮我看看竞品"后的任务本质 |
+| **Constraints** | Analysis: 每个结论有来源 + 时效标注 + 每竞品 ≥ 1 优劣势；Critique: ≥ 3 个改进点 + 每个有 P0/P1/P2 + 基于标准维度 | Iron Law（双模式专属） + Scope Gate |
+| **Context Sources** | 竞品名称/行业（Analysis）或 待评审文档/截图（Critique）+ WebSearch/WebFetch 公开信息 + 项目已有竞品文档 + `references/output-template.md` + `references/quality-checklist.md` | 用户提供 + Glob + Read + WebSearch |
+| **Depth** | Analysis（Quick ≤ 2 问 / Guided 6-8 问）/ Critique（Review 结构化评分 / Coaching 引导挑战） | 用户声明（--mode）或关键词推断 |
+| **Output Target** | 产品决策者（差异化/优先级参考）或文档作者（改进建议） | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## 双模式：Analysis vs Critique
 
 `--mode` 参数控制行为，根据用户意图自动选择：
@@ -57,6 +69,16 @@ argument-hint: "[--mode=analysis|critique] [竞品名称/行业领域 或 待评
 | "没有竞品数据" | 没有公开数据 ≠ 没有信息。可以分析官网、定价页、用户评价 |
 | "小竞品不用看" | 今天的忽略 = 明天的威胁。小竞品可能代表趋势 |
 | "这个数据足够了" | 单一来源的数据不可靠。核心结论至少 2 个来源 |
+
+### Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | Analysis: 竞品对比矩阵、差异化机会分析、SWOT；Critique Review: 6 维度结构化评分；Critique Coaching: 5 种挑战原型引导 | 用户研究/访谈 → pm-persona；市场容量估算 → pm-discovery；技术选型评审 → pm-code-architect |
+| **输出格式** | Analysis: Markdown 报告（概览表+对比矩阵+差异化+战略建议）；Critique Review: 评分+优先改进项表；Critique Coaching: 引导性问题 | docx/pdf 排版 → 用户自行排版；可视化竞品图谱 → 设计工具 |
+| **深度范围** | 单次处理 1 个分析主题；竞品 3-8 个（>8 建议分批）；评审单份文档/截图 | 长期竞品监测体系 → 用户自行搭建；多产品组合战略评审 → pm-strategy-session |
+
+**边界原则**：分析价值在"客观中立"，不在"证明我们更好"。偏向性请求直接硬拒绝（Scope Gate）。
 
 ### Entry Mode
 
@@ -325,4 +347,44 @@ A. 功能对比 B. 定价策略 C. 用户体验 D. 技术架构 E. 市场定位 
 
 ---
 💡 回答后可切换 Review 模式获取结构化评审。
+```
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 模式检测（Analysis/Critique）→ Scope Gate → 子模式路由 → Iron Law 检查 → 交付 的完整流程？
+2. **反理实化警惕**：Analysis 的 5 条（我了解竞品/竞品做得好学它/没数据/小竞品不看/数据足够）+ Critique 的潜在"只说好话"倾向是否真的被警惕了？
+3. **Iron Law 验证**：双模式专属铁律是否已验证满足（来源+时效+优劣势 / ≥ 3 改进点+优先级+标准维度）？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：双模式（Analysis/Critique）的自动检测是否准确？Scope Gate 的硬拒绝场景是否覆盖完整？
+2. **反理实化补充**：是否发现新的"分析乐观主义"或"评审和稀泥"借口模式？
+3. **边界调整信号**：CAN/CANNOT 边界是否需要调整（如 Coaching 频繁被转交到 pm-strategy-session）？
+
+记录格式：`## YYYY-MM-DD — pm-comp — [模式/场景]`
+
+无观察时跳过此章节，不强写。
+
+## Metadata
+
+```yaml
+track: pm
+phase: 4
+depends_on: []
+feeds_to: []
+schema_type: structured
+persist_to: []
+guardrails:
+  - Analysis: 每个结论必须有来源，无法补充标注 [未验证]
+  - Analysis: 数据必须标注收集日期
+  - Analysis: 每个竞品 ≥ 1 优势 + ≥ 1 劣势
+  - Critique: ≥ 3 个改进点，每个标注 P0/P1/P2
+  - Critique: 必须基于 6 个标准维度
+  - Scope Gate: 偏向性请求硬拒绝，不给"诚实版"选项
 ```

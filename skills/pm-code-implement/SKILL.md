@@ -17,6 +17,18 @@ argument-hint: "[任务描述]"
 
 **核心原则**：没有架构设计的代码不写。
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 按架构设计精确执行代码变更（新增/修改文件，可 typecheck+lint+build 通过） | 用户输入剥离"写代码"后的任务本质 |
+| **Constraints** | 项目框架、变更文件数 ≤ 10、不修改 .env、不 force push | 项目 CLAUDE.md + 全局安全红线 |
+| **Context Sources** | 上游 architecture.md / Feature Frame / PRD / 项目已有代码 / 项目 CLAUDE.md | Glob + Read；pipeline 模式引用 pm-code-architect 的 Output Packet |
+| **Depth** | Draft（能跑通即可）/ Review（符合项目规范 + typecheck+lint 通过，默认）/ Release（含边缘场景处理 + 测试覆盖） | 用户声明或推断 |
+| **Output Target** | 开发团队（提交 PR 前的代码变更 + 变更报告） | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## Iron Law（铁律）
 
 | 铁律 | 违反后果 |
@@ -34,14 +46,15 @@ argument-hint: "[任务描述]"
 | "代码写完就行，测试之后再说" | 写完 → typecheck/lint → 验证 → 报告完成，缺一不可 |
 | "先让代码跑起来，之后重构" | 跑起来 + 代码质量不矛盾——写的时候就该对齐项目规范 |
 
-## 输入
+## Capability Index
 
-| 输入项 | 来源 | 必须？ |
-| --- | --- | --- |
-| 架构设计 | pm-code-architect 产出 | 是 |
-| 单个任务描述 | 用户指定 | 是 |
-| 项目代码结构 | Glob + Read | 是 |
-| 项目 CLAUDE.md | Read | 是 |
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 按架构执行代码变更、新增/修改文件、运行验证（typecheck/lint/build）、产出变更报告 | 架构设计 → pm-code-architect；代码审查 → pm-code-review；写 PRD → pm-prd |
+| **输出格式** | 实际代码文件修改 + inline Markdown 变更报告 | 独立架构文档 → pm-code-architect；docx/pdf → pm-content-general |
+| **深度范围** | 单次实现 ≤ 10 文件，聚焦一个子任务 | 超过 10 文件的大范围重构 → 拆分为多次实现；跨仓库变更 → 人工协调 |
+
+**边界原则**：实现是架构的精确执行。发现架构有缺漏时停下来回到 pm-code-architect，不在实现阶段即兴改架构。
 
 ## 执行流程
 
@@ -73,6 +86,17 @@ argument-hint: "[任务描述]"
           ├── 验证结果
           └── 后续推荐
 ```
+
+## Gates
+
+| Gate | 位置 | 通过条件 | 失败处理 |
+|---|---|---|---|
+| **G1: 架构前置门** | Step 1 后 | 架构设计存在（pm-code-architect 产出或用户提供的 architecture.md） | Pause→无架构时建议先执行 pm-code-architect，停止当前实现 |
+| **G2: 范围控制门** | Step 3 后 | 变更文件清单 ≤ 10 个；每个文件有明确的变更类型和说明 | Pause→超过 10 文件必须拆分；Nudge→关联但非必要的变更记入 backlog |
+| **G3: 规范对齐门** | Step 4 后 | 代码风格与项目已有代码一致；无硬编码值；错误已处理；无静默吞错 | Pause→不规范项必须修正后才能进入验证 |
+| **G4: 验证门** | Step 5 后 | typecheck 通过 + lint 通过 + build 通过（或项目无此配置） | Pause→验证失败必须修复根因，不为通过而绕过报错（全局规范：同一问题失败 3 次停手） |
+
+Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重试 2 次 → 仍失败向用户报告。
 
 ## 输出规范
 
@@ -126,11 +150,55 @@ argument-hint: "[任务描述]"
 | 发现架构需要调整 | pm-code-architect |
 | 发现技术决策需要记录 | pm-decision |
 
+## Output Packet
+
+- **artifact_path**: inline 变更报告（对话中输出）+ 实际代码文件变更
+- **artifact_type**: `code_diff`
+- **key_decisions**: [本次实现的关键决策 ≤ 3 条（如选了哪个库、用了哪种模式）]
+- **open_assumptions**: [标注 `[假设]` 的待验证项（如性能影响、兼容性假设）]
+- **next_skill_hint**: `pm-code-review`（实现完成后审查代码质量）
+- **handoff_context**: 下游需要但不在变更报告中的上下文（如被推迟到 backlog 的关联变更、已知的边缘场景缺口、架构偏差的原因）
+
+**下游消费方式**：pm-code-review 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 前置检查 → 读取上下文 → 实现规划 → 执行变更 → 验证 → 交付报告 的完整流程？变更文件数是否 ≤ 10？
+2. **反理实化警惕**：4 条"你可能在想的"是否真的被警惕了？（重点检查"顺手多改几个文件"、"这个 bug 顺手修了"、"先让代码跑起来之后重构"）
+3. **Iron Law 验证**：3 条铁律（无架构不写 / ≤ 10 文件 / 不改 .env 不 force push）是否已验证满足？
+
+**扩展问题（pipeline skill）**：Output Packet 的 `key_decisions` 是否可追溯到架构设计？是否有偏离架构的即兴决策？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正，不在 Meta-Review 阶段打补丁。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：6 步执行流程是否有不够贴合实际的地方？（如某步骤经常被跳过、10 文件限制是否合理）
+2. **反理实化补充**：是否遇到了表格未覆盖的新借口模式？（如"这个变更很小不需要验证"）
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类实现本应转交但被硬撑）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-code-implement — [项目/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: engineering
+phase: 3
 depends_on: [pm-code-architect]
+feeds_to: [pm-code-review]
 schema_type: free
 persist_to: []
 guardrails:

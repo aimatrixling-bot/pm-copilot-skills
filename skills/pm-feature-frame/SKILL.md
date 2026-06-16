@@ -17,8 +17,17 @@ argument-hint: "[问题陈述 / PRD链接 / 项目描述]"
 
 **为什么需要这个 Skill**：PRD 太重（动辄几千字），脑子里的想法太轻（一句话）。AI 时代的 PM 需要一个中间态：足够具体让 AI 工具生成原型，足够轻量让你不抗拒写。
 
-**输入**: 已验证的问题 / 粗略想法 / 项目背景 / PRD 片段
-**输出**: Feature Frame（5 个核心要素 + 可选扩展章节）
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 定义"要做什么"（WHAT），介于问题验证与原型生成之间的构想层 | 用户输入剥离"我要做 X"后的问题本质 |
+| **Constraints** | 复杂度信号（单功能/多页面/多阶段）、字数上限、扩展章节需求 | 用户明示 + 描述关键词推断 |
+| **Context Sources** | 上游 pm-discovery 产出（如刚完成）、项目背景、已有 PRD 片段 | 上游 Output Packet + 用户输入 |
+| **Depth** | Draft（Quick 模式直觉判断）/ Review（Guided 5 问）/ Release（Expert + Complex 扩展章节） | 用户声明或 Entry Mode 推断 |
+| **Output Target** | pm-prototype（直接喂入）或 pm-prd（需正式文档化时） | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
 
 ## 复杂度分级
 
@@ -67,6 +76,16 @@ argument-hint: "[问题陈述 / PRD链接 / 项目描述]"
 | "300 字说不清楚" | 简单功能 300 字够了。复杂产品用 Complex 模式，上限 1500 字——但每句话都要有用 |
 | "功能列表就够了" | 列表 ≠ 构想。需要流程和边界，不只是名字 |
 | "扩展章节太重了" | 不是每节都写——只写对原型生成最关键的 1-2 个。比 PRD 轻得多 |
+
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 问题验证（简化 5 Whys）、Magic Moment 设计、User Flow 构想、Edge Cases 识别、Non-Goals 划界 | 写 PRD → pm-prd；画原型 → pm-prototype；竞品分析 → pm-comp |
+| **输出格式** | Feature Frame Markdown（Simple/Standard/Complex 三档） | HTML/React 原型 → pm-prototype；docx/pptx → pm-content-general |
+| **深度范围** | 从"有想法/有问题描述"到"可喂给 pm-prototype 的结构化构想"（≤1500 字） | 已有 PRD 需要迭代 → pm-prd；需要技术可行性深挖 → pm-code-architect |
+
+**边界原则**：Feature Frame 是构想的轻量载体，不是 PRD。一旦构想稳定且需要正式文档化，立即转交 pm-prd。
 
 ## Entry Mode
 
@@ -261,6 +280,17 @@ Magic Moment 是整个 Feature Frame 的灵魂——它决定了原型的差异�
 2. 从竞品差异推：竞品做不到/做不好的那个点，你的产品第一次做到的瞬间
 3. 从用户焦虑推：用户最担心的那个事情被消除的瞬间
 
+## Gates
+
+| Gate | 位置 | 通过条件 | 失败处理 |
+|---|---|---|---|
+| **G1: 问题验证门** | Step 0 后（仅 Guided 模式） | 问题有用户群体 + 频率 + 严重程度；根因触达（≤ 3 层 5 Whys）；证据强度 ≥ 中 | Pause→补充数据；Risk→证据弱时标注 `[待验证]` 继续 |
+| **G2: Magic Moment 门** | Q2 后 | Aha 瞬间与 Outcome 因果相关 + 可在原型中演示（5 秒内可感知） | Pause→追问"只保留一个功能你最想让用户体验到什么"；Nudge→如果用户反复说不出，提示是否拆分 Frame |
+| **G3: 范围完整门** | Q3-Q5 后 | User Flow ≤ 7 步 + Edge Cases ≥ 1 个"新用户/首次使用"场景 + Non-Goals ≥ 1 个"有人想要但你不做"的功能 | Pause→补齐缺失要素；Nudge→User Flow 7-10 步时提示是否拆分为多个 Frame |
+| **G4: 复杂度匹配门** | 交付前 | 复杂度判断正确 + 字数在分级上限内 + Complex 模式至少完成 1 个扩展章节 | Pause→字数超标按上限砍；Risk→Complex 全部跳过扩展章节时降级为 Standard 并标注 |
+
+Gate 失败 ≠ 终止：标注原因 → 回到对应 Step → 最多重试 2 次 → 仍失败向用户报告。
+
 ## 验证检查
 
 生成 Feature Frame 后，逐项检查：
@@ -328,12 +358,59 @@ pm-prioritize (优先级排序)
 | Screen Inventory 写成页面列表 | 缺乏交互信息 | 每个页面要说明"核心交互"和"优先级" |
 | State Machine 画所有状态 | 流程图爆炸 | 只画关键的 3-8 个状态和转换 |
 
+## Output Packet
+
+- **artifact_path**: Feature Frame 直接在对话中呈现（schema_type: free，不强制持久化）；如需存档建议 `docs/conception/feature-frame-{feature-name}.md`
+- **artifact_type**: `feature_frame`
+- **key_decisions**: [选定的复杂度档位 + Magic Moment 设计 + Non-Goals 边界，≤ 3 条]
+- **open_assumptions**: [标注 `[假设]` 或 `[推断]` 的待确认项列表，如 Quick 模式下 AI 填充的 Magic Moment]
+- **next_skill_hint**: `pm-prototype`（默认）—— 输入 Feature Frame + `--principles-confirmed` 跳过 Layer 0 四问；若需正式文档化则 `pm-prd`
+- **handoff_context**: 下游需要但不在 Frame 正文中的上下文（如被否决的复杂度档位、用户口头补充的约束、Step 0 验证出的根因）
+
+**下游消费方式**：pm-prototype 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：复杂度是否正确判断？5 要素（Problem→Outcome / Magic Moment / User Flow / Edge Cases / Non-Goals）是否都按对应 Entry Mode 产出？
+2. **反理实化警惕**：表格中"我脑子里已经有了"/"直接画原型更快"/"功能列表就够了"是否真的被警惕了？（对照检查）
+3. **Iron Law 验证**：每条铁律（无用户问题 / 无 Magic Moment / 字数超标 / 无 Non-Goals / User Flow >7 步 / Complex 跳过扩展章节）是否已验证满足？
+
+**扩展问题（pipeline skill）**：Output Packet 的 `key_decisions`（尤其复杂度档位和 Magic Moment 设计）是否可追溯到 G1-G4 的判定？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应 Step 修正，不在 Meta-Review 阶段打补丁。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：复杂度判断逻辑是否贴合实际？（如某类描述经常被误判为 Simple/Standard/Complex）
+2. **反理实化补充**：是否遇到了表格未覆盖的新借口模式？（如"Frame 太轻不够严肃"等）
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类需求本应转交 pm-prd 但被硬撑写 Frame）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-feature-frame — [项目/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: pm
-depends_on: []
+phase: 1
+depends_on: [pm-discovery]
+feeds_to: [pm-prototype, pm-prd]
 schema_type: free
 persist_to: []
-guardrails: []
+guardrails:
+  - Feature Frame 是构想不是 PRD——字数超标按复杂度上限砍
+  - Magic Moment 必须可演示，不可是抽象描述
+  - Non-Goals 至少包含 1 个"有人想要但你不做"的功能
 ```

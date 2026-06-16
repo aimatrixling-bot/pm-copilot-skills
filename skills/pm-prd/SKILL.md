@@ -22,6 +22,18 @@ argument-hint: "[产品/功能名称或描述] [--include-acceptance] [--eng-req
 - `--include-acceptance`：PRD 附加测试计划与验收标准章节
 - `--eng-request`：工程需求单（替代完整 PRD，面向开发交付）
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 把产品想法转化为开发可执行的需求合约（PRD / 工程需求单） | 用户输入剥离"写文档"后的问题本质 |
+| **Constraints** | 技术栈限制、时间窗口、合规边界、已有系统依赖 | 用户明示 + 项目 CLAUDE.md 推断 |
+| **Context Sources** | 上游 PRD / Feature Frame / Discovery Report / Roadmap / 用户原话 | Glob + Read 项目文档；pipeline 模式引用上游 Output Packet |
+| **Depth** | Low-fi（2-4 页，对齐用）/ High-fi（8-15 页，交付用）| 用户声明或从使用场景推断，默认 High-fi |
+| **Output Target** | PRD 模式 → 全干系人；`--eng-request` → 开发团队；`--include-acceptance` → QA + 开发 | 用户明示或从 flag 推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## Iron Law（铁律）
 
 | 铁律 | 违反后果 |
@@ -43,6 +55,16 @@ argument-hint: "[产品/功能名称或描述] [--include-acceptance] [--eng-req
 | "开发者自己测过了" | 开发者测的是"能跑"，不是"用户能用" |
 | "时间紧，跳过测试" | 上线后发现的 bug 修复成本是测试的 10-100 倍 |
 | "验收标准写太细了" | 越细越不容易做偏。"功能正常" 不是验收标准 |
+
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 撰写 PRD、生成工程需求单、派生测试计划与验收标准 | 竞品对比分析 → pm-comp；优先级排序 → pm-prioritize；可视化原型 → pm-prototype |
+| **输出格式** | Markdown PRD 文档（默认 / `--include-acceptance` / `--eng-request`） | docx/pdf/pptx → pm-content-general；高保真交互原型 → pm-prototype |
+| **深度范围** | 从 Problem Statement 到 User Stories + 验收标准 + 依赖风险 | 技术架构深挖 → pm-code-architect；Go/No-Go 决策 → pm-decision |
+
+**边界原则**：PRD 是合约不是愿望清单。一旦需求确认进入实施级细节，立即转交 pm-code-architect。
 
 ## 保真度级别
 
@@ -360,6 +382,19 @@ PRD 必须使用 `references/prd-template.md` 中的模板结构。核心章节�
 
 ---
 
+## Gates
+
+| Gate | 位置 | 通过条件 | 失败处理 |
+|---|---|---|---|
+| **G1: 范围门** | Scope Gate 后（Step 0） | 请求不匹配硬拒绝场景；软质疑已用户确认或排除 | Pause→硬拒绝场景停止；Nudge→软质疑场景 1 问确认后继续 |
+| **G2: 模式匹配门** | Step 1-2 后 | 输出模式（PRD/eng-request/include-acceptance）+ Entry Mode + 保真度三者已确定 | Pause→模式不确定时必须先问，不默认 Expert |
+| **G3: 上下文完整门** | Step 4 后 | 已读上游 packet / 项目已有 PRD / 用户提供的背景；Problem Statement 有数据或用户原话支撑 | Risk→缺失标注 `[假设]`；Pause→完全无上下文时回到 Step 2 Guided |
+| **G4: Iron Law 门** | Step 6 后 | 4 条铁律全部验证：Why 存在、User Story 有验收标准、成功指标可量化、P0 测试覆盖 | Pause→缺哪条补哪条，不进入标注检查 |
+| **G5: 标注门** | Step 7 后 | 所有推断标 `[假设]`、自动填充标 `[默认]`、开放问题标 `[待确认]` | Pause→未标注项必须补标 |
+| **G6: 一致性门** | 交付前 | User Journey ⊆ In Scope；功能引用自洽；指标可追溯；风险缓解可执行（对照 quality-gates-shared.md §一） | Pause→违反任一条立即修正后才能交付 |
+
+Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重试 2 次 → 仍失败向用户报告。
+
 ## 交付前检查（通用）
 
 - [ ] Problem Statement 清晰且基于用户问题（非解决方案）
@@ -402,3 +437,61 @@ PRD 必须使用 `references/prd-template.md` 中的模板结构。核心章节�
 | 需要可视化 | pm-prototype (--fidelity=low 可做线框图) |
 | 需要技术方案 | pm-code-architect |
 | 需要决策记录 | pm-decision |
+
+## Output Packet
+
+- **artifact_path**: `docs/prd/[feature-name].md`（或工程需求单路径）
+- **artifact_type**: `prd` / `eng_request` / `prd_with_acceptance`
+- **key_decisions**: [Why Now 结论 + P0 功能集 + 成功指标 ≤ 3 条]
+- **open_assumptions**: [标注 `[假设]` 的待验证项列表]
+- **next_skill_hint**: `pm-code-architect`（需要技术方案拆解）/ `pm-prototype`（需要可视化）/ `pm-prioritize`（需要优先级细化）
+- **handoff_context**: 下游需要但不在 PRD 正文中的上下文（如被否决的备选方案、Scope Gate 拒绝记录、用户口头补充的约束）
+
+**下游消费方式**：pm-code-architect 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 Scope Gate → 模式判断 → 上下文读取 → 执行 → Iron Law → 标注 → 交付的完整流程？所选 Entry Mode 和推理骨架是否贴合产品类型？
+2. **反理实化警惕**：8 条"你可能在想的"是否真的被警惕了？（重点检查"用户说了需求直接写"、"这个功能大家都需要"、"技术细节让开发自己决定"）
+3. **Iron Law 验证**：4 条铁律（Why / 验收标准 / 成功指标 / P0 测试覆盖）是否已验证满足？
+
+**扩展问题（pipeline skill）**：Output Packet 的 `key_decisions` 是否可追溯到 Iron Law 和 Scope Gate 的判定？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正，不在 Meta-Review 阶段打补丁。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：Scope Gate / Entry Mode / 推理骨架选择是否有不够贴合实际的地方？（如某 Entry Mode 经常被跳过、某类产品类型没有合适的骨架）
+2. **反理实化补充**：是否遇到了表格未覆盖的新借口模式？
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类需求本应转交但被硬撑）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-prd — [项目/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
+## Metadata
+
+```yaml
+track: pm
+phase: 2
+depends_on: [pm-feature-frame, pm-prototype]
+feeds_to: [pm-code-architect]
+schema_type: free
+persist_to:
+  - docs/prd/
+guardrails:
+  - 没有"为什么"的 PRD 不是 PRD——必须先有 Problem Statement + Why Now
+  - P0 功能验收标准必须 100% 有测试覆盖
+  - Scope Gate 硬拒绝场景不生成任何 PRD 内容
+```

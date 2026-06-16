@@ -43,6 +43,18 @@ Q4 Differentiation：竞品按时间排序，我们按风险等级排序 + 一�
 如果是子代理派发执行此 Skill，直接按下方指令执行，不重新加载入口 Skill。
 </SUBAGENT-STOP>
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 将构想/PRD 转化为可感知的视觉产物（线框或可交互原型） | 用户输入"做个原型"/"画线框" |
+| **Constraints** | 保真度（low/high）、技术栈（html-tailwind/react）、scene、设备、合规 | 用户明示 + `--fidelity`/`--scene` 参数 + PRD 推断 |
+| **Context Sources** | 上游 pm-feature-frame 的 Output Packet / pm-prd / 项目背景 / 已有线框图 | 上游 packet + 用户输入路径 |
+| **Depth** | Draft（low-fidelity 快速对齐）/ Review（high-fidelity 默认）/ Release（high-fidelity + Layer 4 合规 + 去AI味检查） | 用户声明或 `--fidelity` 推断 |
+| **Output Target** | 团队对齐（low）/ 用户测试或外部演示（high） | 用户明示或场景推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## 保真度模式
 
 通过 `--fidelity` 参数选择输出模式：
@@ -68,6 +80,16 @@ Q4 Differentiation：竞品按时间排序，我们按风险等级排序 + 一�
 | 视觉服务于产品目标，不是反过来 | 产品目标 > 视觉美感，时刻回到"用户要完成什么" |
 | **原则先于场景规则** | 如果场景规则与 Layer 0 原则冲突 → 以原则为准，记录冲突原因 |
 | **反馈闭环不可跳过（除非显式声明）** | 未确认方向直接出完整原型 → 返工概率 >70% |
+
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | Layer 0 设计原则推理、场景判断（B2B/C2C/AI-Agent × 设备）、低保真线框、高保真可交互原型、IA 信息架构分析、AI Agent 场景 UI | 写 PRD → pm-prd；定义 WHAT → pm-feature-frame；视觉品牌系统 → 设计师 |
+| **输出格式** | HTML + Tailwind CSS（CDN）/ React / ASCII 线框 / MAPPING.md | Figma/Sketch 文件 → 设计师；docx/pptx → pm-content-general；后端代码 → pm-code-implement |
+| **深度范围** | 从"PRD/构想/描述"到"可点击演示的 HTML 原型"（含 Layer 1-4 全栈）；最多 2 轮迭代 | 复杂 3D/动画/WebGL → 专业前端；真实后端集成 → pm-code-implement |
+
+**边界原则**：原型是"可感知的产品构想"，不是生产代码。Layer 3 的 API 就绪指数据结构匹配，不是真实接口实现。
 
 ## 输入源模式
 
@@ -356,6 +378,19 @@ wireframe/
 | **跳过 Layer 0 原则四问** | AI 盲目套规则 | **必须先回答 Q1-Q4** |
 | **反馈节点全部跳过** | 返工概率 >70% | **首次使用不跳过** |
 
+## Gates
+
+| Gate | 位置 | 通过条件 | 失败处理 |
+|---|---|---|---|
+| **G1: Layer 0 原则门** | Phase 0 后 | Q1-Q4 全部回答 + 展示 + 原则与场景规则无冲突 | Pause→补齐缺失问题；Nudge→`--principles-confirmed` 时跳过但标注 `[默认值]` |
+| **G2: 场景判断门** | Phase 1 后 | scene 已确定（用户指定或推断）+ 推断理由已展示 | Risk→无法确定时默认 `B2B-PC` 并标注 `[auto-detected]`；Nudge→推断置信度低时提示用户确认 |
+| **G3: 方向预览门**（仅 high-fidelity） | Phase 2 后 | 场景 + 产品姿态 + 美学基调 + 信息密度 + 差异化记忆点已展示并确认 | Pause→未确认不进入编码；Nudge→`--no-preview` 时跳过但首次使用建议不跳过 |
+| **G4: 骨架预览门**（反馈节点） | Phase 5 后（high）/ Phase 6 后（low） | HTML 骨架/线框已展示 + 用户反馈已收集 | Pause→未收集反馈不进入完整实现；Risk→`--no-preview` 时跳过但返工风险标注 |
+| **G5: 合规验证门**（仅 high-fidelity） | Phase 7 后 | Layer 4 检查全通过（语义化 HTML + 键盘导航 + WCAG AA + 触摸 ≥44px）+ 去AI味检查完成 | Pause→合规项失败必须修复；Nudge→去AI味检查可标注 `[手动复查]` 继续 |
+| **G6: PRD 联动门** | Phase 9 后 | MAPPING.md 已生成（User Story ↔ 页面映射）+ 设计决策记录已生成 | Risk→无 PRD 输入时跳过 MAPPING 并标注；Nudge→仅生成设计决策记录 |
+
+Gate 失败 ≠ 终止：标注原因 → 回到对应 Phase → 最多重试 2 次 → 仍失败向用户报告。
+
 ## 交付前检查
 
 ### 通用检查（两种模式）
@@ -404,12 +439,61 @@ wireframe/
 | pm-prd | 上游 | PRD → 提取页面和流程 |
 | pm-comp | 参考 | 竞品 UI 可参考美学方向 |
 
+## Output Packet
+
+- **artifact_path**: High-fidelity → `prototype/{index.html, page-*.html, data.js, MAPPING.md}`；Low-fidelity → `wireframe/{wireframe.html, user-flow.md}`
+- **artifact_type**: `prototype`（high-fidelity）或 `wireframe`（low-fidelity）
+- **key_decisions**: [scene 选定值 + 美学基调 + Layer 0 四问核心答案，≤ 3 条]
+- **open_assumptions**: [标注 `[假设]` 或 `[auto-detected]` 的待确认项，如 scene 推断、美学基调自动推荐]
+- **next_skill_hint**: `pm-prd`（若原型验证后需正式文档化）或 `pm-code-architect`（若直接进入技术架构设计）
+- **handoff_context**: 下游需要但不在产出物中的上下文（如被否决的美学方向、用户口头补充的合规要求、Layer 0 原则推导过程）
+
+**下游消费方式**：pm-prd 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path`（特别是 MAPPING.md）和 `key_decisions`（Layer 0 原则）。
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：Layer 0 → 场景判断 → 视觉系统 → 原型架构 → 工程合规，五层是否都执行了？反馈节点是否按用户意愿处理？
+2. **反理实化警惕**：常见错误表中"通用美学（紫色渐变+Inter）"/"跳过 Layer 0 原则四问"/"反馈节点全部跳过"是否真的被警惕了？（对照检查）
+3. **Iron Law 验证**：每条铁律（无 PRD/意图、高保真必须可交互、低保真不含视觉、视觉服务目标、原则先于场景、反馈闭环）是否已验证满足？
+
+**扩展问题（pipeline skill）**：Output Packet 的 `key_decisions`（scene + 美学基调）是否可追溯到 G1（Layer 0 原则门）和 G2（场景判断门）的判定？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应 Phase 修正，不在 Meta-Review 阶段打补丁。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：Layer 0-4 五层架构是否有不够贴合实际的地方？（如某场景经常跳过 Layer 2 视觉系统）
+2. **反理实化补充**：是否遇到了常见错误表未覆盖的新模式？（如"AI 味检查太严"等）
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类原型本应转交设计师但被硬撑）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-prototype — [项目/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: pm
-depends_on: []
+phase: 1
+depends_on: [pm-feature-frame, pm-prd]
+feeds_to: [pm-prd, pm-code-architect]
 schema_type: free
-persist_to: []
-guardrails: []
+persist_to:
+  - prototype/
+  - wireframe/
+guardrails:
+  - Layer 0 设计原则四问不可跳过（除非 --principles-confirmed）
+  - 高保真原型必须可交互，纯静态降级为线框图
+  - 反馈节点首次使用不跳过（返工概率 >70%）
 ```

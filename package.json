@@ -1,6 +1,6 @@
 {
   "name": "pm-copilot-skills",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "16 Pipeline-aligned PM Skills + 3 Utilities for Claude Code — from discovery to launch",
   "license": "Apache-2.0",
   "bin": {

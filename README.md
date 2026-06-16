@@ -6,6 +6,8 @@
 
 16 PM Skills for [Claude Code](https://claude.ai/claude-code) + 3 utility skills, organized as a **product building pipeline** — from discovery to launch.
 
+> v0.6.0 integrates Meta_Kim methodology layer (Intent Packet / Capability Index / Gates / Meta-Review / Output Packet / Evolution Writeback) into all 16 skills. See [Skill Structure](#skill-structure) for the unified blueprint.
+>
 > v0.5.0 restructured from 36 skills to 16 pipeline-aligned skills based on real AI Native PM workflow research ([QoderWork case study](research/QoderWorkPM%E5%88%86%E4%BA%AB/)).
 
 ## Why PM Copilot Skills?
@@ -31,18 +33,18 @@ npx pm-copilot-skills project
 Phase 0: Discovery          Phase 1: Design & Build
 +------------------+        +------------------+
 | pm-discovery     |------->| pm-feature-frame |
-| pm-deconstruct   |        | pm-prototype     |
-+------------------+        +--------+---------+
-                                     |
-Phase 2: Quality & PRD              v
-+------------------+        +------------------+
+| pm-deconstruct   | packet | pm-prototype     |
++------------------+  +---> +--------+---------+
+                             |
+Phase 2: Quality & PRD       | packet
++------------------+         v
 | pm-code-review   |<-------| pm-prd           |
-+------------------+        +--------+---------+
-                                     |
-Phase 3: Construct                  v
-+------------------+        +------------------+
++------------------+ packet +--------+---------+
+                             |
+Phase 3: Construct           | packet
++------------------+         v
 | pm-code-architect|<-------| pm-code-implement|
-+------------------+        +------------------+
++------------------+ packet +------------------+
 
 Phase 4: Ship & Decide
 +------------------+
@@ -55,6 +57,8 @@ Cross-cutting: pm-decision | pm-prioritize (RICE + roadmap + backlog)
 Special: pm-ai-patterns | pm-agent-patterns
 Personal: pm-job-search
 ```
+
+**Packet flow**: Pipeline skills emit an `Output Packet` (artifact_path + key_decisions + next_skill_hint + handoff_context) that the downstream skill consumes via its Intent Packet "Context Sources" field. Terminal skills (Phase 4 + cross-cutting) do not emit packets.
 
 ## Skills by Phase
 
@@ -129,6 +133,23 @@ Every skill has access to a shared knowledge base in `skills/references/`:
 - **Methodology KB** -- 23 classic PM books distilled into actionable patterns
 - **Quality Gates** -- Iron Law validation rules and output quality standards
 - **Design KB** -- UI patterns and component references
+
+## Skill Structure
+
+Every SKILL.md follows a unified blueprint defined in [`skills/skill-template.md`](skills/skill-template.md). The blueprint absorbs the Meta_Kim methodology layer (v0.6.0) into 6 structural sections:
+
+| Section | Coverage | Purpose |
+|---------|----------|---------|
+| **Intent Packet** | 14/16 (reference 类豁免) | Formally capture user intent -- Want / Constraints / Context / Depth / Output Target |
+| **Capability Index** | 16/16 | Explicit CAN / CANNOT → HANDOFF boundaries (merges Agent boundaries) |
+| **Gates** | 7/16 | Decision checkpoints with Pause / Risk / Nudge failure handling (merges Dynamic cards) |
+| **Output Packet** | 8 pipeline skills | Chain-link artifact handoff to downstream skill |
+| **Meta-Review** | 16/16 | Post-delivery methodology self-audit (not re-checking requirements) |
+| **Evolution Writeback** | 16/16 | Lightweight observation capture for methodology iteration |
+
+Plus universal sections inherited from v0.5.0: Iron Law / 反理实化 / 交付前检查 / Metadata.
+
+See `skills/skill-template.md` for the authoritative section order and format specs, and `skills/references/quality-gates-shared.md` (sections 八~十二) for "how to write each section".
 
 ## Usage
 

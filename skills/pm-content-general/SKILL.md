@@ -17,6 +17,18 @@ argument-hint: "[内容类型: blog/landing/release/social] [主题]"
 
 **核心原则**：内容必须有目标受众，没有受众定义的内容是噪音。
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 按内容类型（blog/landing/release/social）生成结构化通用内容草稿 | 用户输入剥离"写一篇博客"后的任务本质 |
+| **Constraints** | 不编造数据/引用、必须标注 [Draft, pending review]、CTA 明确且与内容衔接 | Iron Law + 内容类型规范 |
+| **Context Sources** | 用户提供的主题 + 项目已有文档（Glob 搜索）+ 产品/功能信息 + 目标平台规范 | 用户提供 + Glob + Read |
+| **Depth** | Draft（结构化大纲）/ Review（完整草稿 + SEO 友好，默认）/ Release（含多平台适配版本 + 发布就绪） | 用户声明或推断 |
+| **Output Target** | 内容消费者（博客读者/落地页访客/社媒粉丝）+ 发布审阅者（human review 后发布） | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## Iron Law（铁律）
 
 | 铁律 | 违反后果 |
@@ -34,13 +46,15 @@ argument-hint: "[内容类型: blog/landing/release/social] [主题]"
 | "一个模板适用所有渠道" | 博客、落地页、社交媒体的格式、语气、CTA 完全不同 |
 | "CTA 放最后就行" | CTA 必须明确且与内容自然衔接，不是硬塞在末尾 |
 
-## Input
+## Capability Index
 
-| 输入项 | 必需 | 说明 |
-| --- | --- | --- |
-| 内容类型 | 是 | blog / landing / release / social |
-| 主题 | 是 | 内容的核心主题或产品/功能名称 |
-| 目标受众 | 否 | 如未提供，推断并标注 [假设] |
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 博客文章、落地页文案、发布说明、社交媒体帖子的结构化草稿 | 公众号长文 → pm-writer-draft（垂直领域）；深度 SEO 优化 → pm-seo；PRD → pm-prd；竞品内容参考 → pm-comp |
+| **输出格式** | inline Markdown + HTML 注释元数据（Type/Audience/Status/Generated） | docx/pdf 排版 → 用户自行排版工具；视频脚本/音频脚本 → 视频脚本工具 |
+| **深度范围** | 单次处理 1 个内容类型 + 1 个主题；从大纲到发布就绪草稿 | 多渠道一次性发布调度 → 用户自行管理；内容运营全周期（选题→发布→复盘）→ 用户自行管理 |
+
+**边界原则**：AI 生成的内容是草稿，不是终稿。所有内容必须标注 [Draft, pending review]，数据/引用必须可溯源。
 
 ## 内容类型规范
 
@@ -143,16 +157,40 @@ Generated: YYYY-MM-DD
 | 产品发布 PRD | pm-prd |
 | 竞品内容参考 | pm-comp |
 
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 内容类型确认 → 目标受众定义 → 上下文读取 → 按类型规范生成 → Iron Law 检查 的完整流程？
+2. **反理实化警惕**：4 条"你可能在想的"（长度即价值 / 可直接发布 / 一模板走天下 / CTA 硬塞）是否真的被警惕了？
+3. **Iron Law 验证**：3 条铁律是否已验证满足（受众已定义、数据有来源、标注 [Draft, pending review]）？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：内容类型规范（blog/landing/release/social）是否不够贴合实际场景？
+2. **反理实化补充**：是否发现新的"AI 内容万能"借口模式？
+3. **边界调整信号**：CAN/CANNOT 边界是否需要调整（如某个内容类型频繁被转交）？
+
+记录格式：`## YYYY-MM-DD — pm-content-general — [内容类型/场景]`
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: growth
+phase: 4
 depends_on: []
+feeds_to: []
 schema_type: free
+persist_to: ["projects/{project}/docs/content/"]
 guardrails:
   - 不编造数据或引用，无来源标注"需验证"
   - CTA 必须明确且与内容自然衔接
   - 内容 SEO 友好（标题含关键词、heading 清晰）
   - 标注 [Draft, pending review]
-persist_to: ["projects/{project}/docs/content/"]
 ```

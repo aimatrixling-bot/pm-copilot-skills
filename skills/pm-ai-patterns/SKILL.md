@@ -376,6 +376,16 @@ Step 7: 产出模式建议
 
 ---
 
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | L1 交互模式匹配（6 类：completion/generation/classification/extraction/recommendation/conversation）、L2 信任与个性化策略、L3 评估指标设计、L4 风险等级标注 | Agent 内部架构与安全 → pm-agent-patterns；PRD 撰写 → pm-prd；原型设计 → pm-prototype；测试用例 → pm-testing |
+| **输出格式** | inline Markdown（模式建议 + 4 层设计要点 + 风险标注），可直接复制到 PRD"AI 功能设计"章节 | 可视化交互流程图 → 设计工具；完整 PRD → pm-prd |
+| **深度范围** | 单次处理 1 个 AI 功能场景；从 L1 模式匹配到 L4 风险评估的完整 4 层分析 | 多 AI 功能组合策略 → pm-strategy-session；AI 模型选型/技术实现 → 技术团队 |
+
+**边界原则**：本 Skill 是参考目录（Reference），提供模式匹配和设计要点，不产出完整 PRD 或原型。建议直接输入下游 skill（pm-prd/pm-prototype）。
+
 ## 参数
 
 | 参数 | 类型 | 必需 | 默认值 | 说明 |
@@ -385,11 +395,35 @@ Step 7: 产出模式建议
 | --product-type | 枚举 | 否 | — | assistant / creator / coder / search / agent / analytics |
 | --risk-level | 枚举 | 否 | — | low / medium / high — 风险等级 |
 
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 L1 交互模式匹配 → L2 信任/个性化 → L3 评估指标 → L4 风险标注 的 4 层分析？
+2. **反理实化警惕**：是否避免了"AI 万能"的过度承诺？风险标注是否真实？
+3. **Iron Law 验证**：Scope Gate（场景明确）、Iron Law（4 层完整）、反理实化（未夸大 AI 能力）是否满足？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：L1-L4 四层框架是否覆盖了新兴 AI 交互模式？
+2. **反理实化补充**：是否发现新的"AI 能力幻觉"模式？
+3. **边界调整信号**：CAN/CANNOT 边界是否需要调整？
+
+记录格式：`## YYYY-MM-DD — pm-ai-patterns — [场景/产品类型]`
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: pm
+phase: null
 depends_on: []
+feeds_to: [pm-prd, pm-prototype, pm-testing]
 schema_type: free
 persist_to: []
 guardrails: [scope_gate, iron_law, anti_rationalization]

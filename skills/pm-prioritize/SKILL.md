@@ -27,6 +27,20 @@ argument-hint: "[功能列表 / PRD链接 / 项目描述]"
 
 ---
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 对功能/需求做优先级排序、路线图规划或 Sprint 任务拆分 | 用户输入剥离"先做什么"后的任务本质 |
+| **Constraints** | RICE 四维度必填、Effort ≥ 0.5、路线图预留 10-20% 缓冲、Sprint 只承诺 80% 容量、任务 ≤ 2 天 | Iron Law（全局 + 模式专属） |
+| **Context Sources** | 功能列表/PRD 链接 + 时间范围 + 团队规模 + 已有 RICE/Roadmap 数据 | 用户提供 + Glob + Read |
+| **Depth** | Prioritize（RICE 评分排序）/ Roadmap（时间线+里程碑）/ Backlog（Sprint 任务拆分）— 三选一或链式 | 用户声明（--mode）或关键词推断 |
+| **Output Target** | 产品团队（PM/工程/设计）+ 规划决策者 | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
+---
+
 ## Iron Law（铁律）
 
 **全局铁律（所有模式共用）**：
@@ -72,6 +86,18 @@ argument-hint: "[功能列表 / PRD链接 / 项目描述]"
 | "每个功能都要精确日期" | 精确日期 = 虚假确定性。用范围（Q2、3月） |
 | "这个任务大概 3-5 天" | "大概" = 没想清楚。拆到 ≤2 天 |
 | "所有 P0 都这周做" | 容量不够时，P0 里也要排优先级 |
+
+---
+
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | RICE 评分排序、路线图规划（Timeline/Portfolio/Now-Next-Later）、Sprint Backlog 任务拆分、容量估算、INVEST 检查 | 战略目标设定 → pm-strategy-session；PRD 撰写 → pm-prd；决策权衡 → pm-decision；发布计划 → pm-launch |
+| **输出格式** | inline Markdown（RICE 排序表 / 路线图三段式 / Sprint Backlog 表） | Gantt 图/项目管理工具导入 → 用户自行导出；甘特图可视化 → 可视化工具 |
+| **深度范围** | 单次处理 1 个产品的 1 个模式；功能列表 ≤ 20 个（> 20 建议分批）；可链式 Prioritize → Roadmap → Backlog | 多产品组合规划 → 用户自行管理；跨团队资源协调 → 项目管理工具 |
+
+**边界原则**：优先级是"数据驱动取舍"，不是"什么都重要"。所有估算标注 [假设]，低置信度项建议先验证。
 
 ---
 
@@ -282,3 +308,43 @@ argument-hint: "[功能列表 / PRD链接 / 项目描述]"
 
 - [ ] 每个任务 ≤ 2 天，符合 INVEST
 - [ ] Sprint 容量合理（承诺 ≤ 80%），有 1-3 个 Sprint 目标
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 模式检测 → 模式路由 → Iron Law 检查 → 标注检查 → 交付 的完整流程？
+2. **反理实化警惕**：7 条"你可能在想的"（肯定最重要/Impact 打 3/Confidence 全 80%/路线图=Gantt/精确日期/大概 3-5 天/所有 P0 这周）是否真的被警惕了？
+3. **Iron Law 验证**：全局 + 模式专属铁律是否已验证满足（数据支撑/缓冲预留/四维度填写/Effort ≥ 0.5/任务 ≤ 2 天）？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：三模式（Prioritize/Roadmap/Backlog）的自动检测规则是否准确？校准规则（Impact/Confidence）是否贴合实际？
+2. **反理实化补充**：是否发现新的"虚假确定性"借口模式？
+3. **边界调整信号**：CAN/CANNOT 边界是否需要调整（如某模式频繁被转交）？
+
+记录格式：`## YYYY-MM-DD — pm-prioritize — [模式/场景]`
+
+无观察时跳过此章节，不强写。
+
+## Metadata
+
+```yaml
+track: pm
+phase: null
+depends_on: []
+feeds_to: []
+schema_type: structured
+persist_to: []
+guardrails:
+  - RICE 四维度必填，Effort ≥ 0.5 人月
+  - Impact 校准：90% 功能 ≤ 2 分
+  - Confidence 校准：无数据=50%，访谈=80%，A/B=100%
+  - 路线图预留 10-20% 缓冲，Sprint 承诺 ≤ 80% 容量
+  - Backlog 任务 ≤ 2 天，符合 INVEST
+  - 所有推断标注 [假设]，低置信度建议验证
+```

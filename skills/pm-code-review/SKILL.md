@@ -17,6 +17,18 @@ argument-hint: "[代码变更描述或文件路径]"
 
 **核心原则**：审查者不等于实现者。
 
+## Intent Packet
+
+| 字段 | 捕获内容 | 来源 |
+|---|---|---|
+| **Want** | 独立审查代码变更，发现安全/逻辑/性能问题，产出 APPROVE 或 REQUEST_CHANGES 结论 | 用户输入剥离"审查代码"后的任务本质 |
+| **Constraints** | 审查者 ≠ 实现者；每个问题必须有 severity + suggestion；结论只有 APPROVE / REQUEST_CHANGES | Iron Law + enforced schema |
+| **Context Sources** | git diff / 用户提供的文件 + 原始需求（PRD/任务描述）+ 项目 CLAUDE.md + 上游 pm-code-implement 的 Output Packet | Glob + Read；pipeline 模式引用上游 packet |
+| **Depth** | Draft（只查 critical+major）/ Review（5 维度全覆盖，默认）/ Release（含边缘场景和安全漏洞检测） | 用户声明或推断 |
+| **Output Target** | 代码作者（修复 issues）+ 合并决策者（APPROVE/REQUEST_CHANGES 判断） | 用户明示或推断 |
+
+未提供时标注 `[假设]`，交付前确认。
+
 ## Iron Law（铁律）
 
 | 铁律 | 违反后果 |
@@ -34,13 +46,15 @@ argument-hint: "[代码变更描述或文件路径]"
 | "我不确定这是不是问题" | 不确定也要标注为 suggestion——让作者判断，比漏掉好 |
 | "实现者经验丰富，应该没问题" | 经验丰富的人也会犯低级错误——审查不看人，看代码 |
 
-## 输入
+## Capability Index
 
-| 输入项 | 来源 | 必须？ |
-| --- | --- | --- |
-| 代码变更 diff | git diff / 用户提供的文件 | 是 |
-| 原始需求 | PRD / 任务描述 | 推荐 |
-| 项目 CLAUDE.md | Read | 推荐 |
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | 代码变更审查、安全扫描、逻辑/性能/可维护性评估、产出 APPROVE/REQUEST_CHANGES 结论 | 写代码 → pm-code-implement；架构设计 → pm-code-architect；写 PRD → pm-prd |
+| **输出格式** | inline Markdown 审查报告（enforced schema：verdict + issues 表 + summary） | docx/pdf 审查文档 → pm-content-general |
+| **深度范围** | 5 维度审查（安全/逻辑/性能/可维护性/一致性），4 级 severity 分类 | 渗透测试 / 专业安全审计 → 人工安全专家；性能基准测试 → 专项工具 |
+
+**边界原则**：审查是质量最后一道门，但不替代测试。放过 critical = 对生产故障负责。
 
 ## 审查维度
 
@@ -79,6 +93,17 @@ argument-hint: "[代码变更描述或文件路径]"
           ├── APPROVE → 建议后续行动
           └── REQUEST_CHANGES → 指向 pm-code-implement 修复
 ```
+
+## Gates
+
+| Gate | 位置 | 通过条件 | 失败处理 |
+|---|---|---|---|
+| **G1: 变更获取门** | Step 1 后 | 代码 diff 已获取 + 原始需求已理解 + 项目约束已读取 | Pause→无 diff 时要求用户提供变更描述或文件路径；无需求时标注 `[假设]` 继续 |
+| **G2: 审查覆盖门** | Step 2 后 | 5 维度（安全/逻辑/性能/可维护性/一致性）全部覆盖；每文件逐行扫描完成 | Pause→维度遗漏必须补查；Risk→文件过多（>10）时标注抽样审查置信度 |
+| **G3: 问题分类门** | Step 3 后 | 每个问题都有 severity（critical/major/minor/suggestion）+ 可执行 suggestion | Pause→无 severity 的问题不计入审查结果，补全后重新计数 |
+| **G4: Verdict 门** | Step 4 后 | 结论是 APPROVE 或 REQUEST_CHANGES 二选一；critical/major ≥ 1 时必须 REQUEST_CHANGES | Pause→critical/major 存在但结论为 APPROVE 时强制改为 REQUEST_CHANGES |
+
+Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重试 2 次 → 仍失败向用户报告。
 
 ## 输出规范（enforced schema）
 
@@ -126,11 +151,55 @@ argument-hint: "[代码变更描述或文件路径]"
 | 发现架构层面问题 | pm-code-architect |
 | 发现安全漏洞 | 立即告知用户，不走 Skill |
 
+## Output Packet
+
+- **artifact_path**: inline 审查报告（对话中输出，enforced schema）
+- **artifact_type**: `review_report`
+- **key_decisions**: [审查结论 APPROVE/REQUEST_CHANGES + critical/major 问题数 + 主要风险点 ≤ 3 条]
+- **open_assumptions**: [标注 `[假设]` 的待验证项（如某段代码的意图推测、性能影响假设）]
+- **next_skill_hint**: `pm-code-implement`（若 REQUEST_CHANGES，修复后重新审查）
+- **handoff_context**: 下游需要但不在审查报告中的上下文（如被标注为 minor 但建议后续重构的方向、架构层面隐患）
+
+**下游消费方式**：pm-code-implement 的 Intent Packet "Context Sources" 字段引用此 packet 的 `key_decisions`（critical/major 问题列表）。
+
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 获取变更 → 逐文件审查 → 问题分类 → 产出报告 → 交付 的完整流程？5 个审查维度是否全部覆盖？
+2. **反理实化警惕**：4 条"你可能在想的"是否真的被警惕了？（重点检查"这个问题太小了不用说"、"我不确定这是不是问题"、"实现者经验丰富"）
+3. **Iron Law 验证**：3 条铁律（审查者 ≠ 实现者 / 每个问题有 severity + suggestion / 结论只有 APPROVE 或 REQUEST_CHANGES）是否已验证满足？
+
+**扩展问题（pipeline skill）**：Output Packet 的 `key_decisions` 中的 critical/major 问题是否都有对应的 file + line + suggestion？是否有遗漏的维度？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正，不在 Meta-Review 阶段打补丁。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：5 维度审查是否有不够贴合实际的地方？（如某维度经常无发现、某类项目需要额外维度）
+2. **反理实化补充**：是否遇到了表格未覆盖的新借口模式？（如"这个是遗留代码不是本次变更"）
+3. **边界调整信号**：CAN/CANNOT 是否需要调整？（如某类审查本应转交但被硬撑）
+
+**记录格式**：
+
+```markdown
+## YYYY-MM-DD — pm-code-review — [项目/场景]
+- **观察**: [一句话描述]
+- **建议回写**: [回写到哪个文件/章节 / "仅记录不回写"]
+- **置信度**: 高/中/低
+```
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: engineering
+phase: 3
 depends_on: [pm-code-implement]
+feeds_to: [pm-code-implement]
 schema_type: enforced
 persist_to: []
 guardrails:

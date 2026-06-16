@@ -314,6 +314,16 @@ Step 5: 架构决策总结（10 min）
 | 使用时机 | 设计交互界面时 | 设计系统架构时 |
 | 组合使用 | 先用 pm-agent-patterns 确定架构，再用 pm-ai-patterns 设计交互 |
 
+## Capability Index
+
+| 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
+|---|---|---|
+| **任务类型** | L2 架构模式匹配（单 Agent / 多 Agent / 编排器 / 层级）、L3 自主行为设计（工具调用/规划/反思）、L4 安全约束（权限边界/审计/终止条件）、与其他 skill 的组合建议 | 用户交互模式 → pm-ai-patterns；代码架构详细设计 → pm-code-architect；PRD 非功能需求 → pm-prd |
+| **输出格式** | inline Markdown（架构建议 + 自主行为策略 + 安全约束 + 组合建议），可输入 pm-code-architect | 架构图/时序图 → 可视化工具；完整技术方案 → pm-code-architect |
+| **深度范围** | 单次处理 1 个 Agent 场景；从 L2 架构到 L4 安全的完整 3 层分析 | 多 Agent 系统编排实现 → 工程团队；Agent 评估体系搭建 → pm-testing |
+
+**边界原则**：本 Skill 是参考目录（Reference），提供架构模式匹配和安全约束设计，不产出完整代码或部署方案。
+
 ## 与其他 Skill 的关系
 
 | Skill | 关系 | 协作方式 |
@@ -324,11 +334,35 @@ Step 5: 架构决策总结（10 min）
 | pm-prd | 下游 | 安全需求可输入 PRD 的非功能需求 |
 | pm-prototype | 并行 | 架构确定后，用 prototype 验证可行性 |
 
+## Meta-Review
+
+交付完成后对照方法论自审：
+
+1. **方法论骨架**：是否遵循 L2 架构模式匹配 → L3 自主行为设计 → L4 安全约束 的 3 层分析？
+2. **反理实化警惕**：是否避免了"Agent 无所不能"的过度承诺？安全约束是否真实？
+3. **Iron Law 验证**：Scope Gate（场景明确）、Iron Law（3 层完整）、反理实化（未夸大 Agent 自主性）是否满足？
+
+自审结果 1-2 句话附在交付物末尾。不通过时回到对应步骤修正。
+
+## Evolution Writeback
+
+执行后自问以下 3 个问题，有则记录到 `docs/evolution-log.md`：
+
+1. **方法论偏差**：L2-L4 三层框架是否覆盖了新兴 Agent 架构模式？
+2. **反理实化补充**：是否发现新的"Agent 自主性幻觉"模式？
+3. **边界调整信号**：CAN/CANNOT 边界是否需要调整？
+
+记录格式：`## YYYY-MM-DD — pm-agent-patterns — [Agent 场景]`
+
+无观察时跳过此章节，不强写。
+
 ## Metadata
 
 ```yaml
 track: pm
+phase: null
 depends_on: []
+feeds_to: [pm-code-architect, pm-prd, pm-prototype]
 schema_type: free
 persist_to: []
 guardrails: [scope_gate, iron_law, anti_rationalization]
