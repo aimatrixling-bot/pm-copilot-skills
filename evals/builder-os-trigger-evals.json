@@ -1,0 +1,134 @@
+{
+  "skill_name": "builder-os",
+  "purpose": "Trigger and quality seed cases for the Builder OS additions across PM Copilot Skills.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "feature-to-implementation-goal",
+      "should_trigger": true,
+      "query": "我有一个 AI 客服助手的功能想法，想让 Agent 从问题定义、Feature Frame、PRD、原型到代码实现一路推进。请先判断哪些部分可以自驱执行，哪些必须我先做产品判断，并给出可验证完成标准。",
+      "expected_checks": [
+        "captures goal suitability",
+        "separates product judgment from autonomous execution",
+        "requires verifiable completion criteria"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "prototype-fake-ui-risk",
+      "should_trigger": true,
+      "query": "基于这个 PRD 做一个高保真可交互原型，尤其要检查所有按钮、空状态、错误状态和 toast 是否真的可用，不要只是看起来像能点。",
+      "expected_checks": [
+        "uses pm-prototype",
+        "applies Fake UI sensor",
+        "requires interaction smoke evidence"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "architecture-verification-strategy",
+      "should_trigger": true,
+      "query": "请把这个 PRD 转成工程架构方案，输出目录结构、API 契约、数据模型，也要告诉实现者需要跑哪些 typecheck、test、build 和人工 smoke 步骤。",
+      "expected_checks": [
+        "uses pm-code-architect",
+        "includes Verification Strategy",
+        "maps P0 requirements to checks"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "implementation-evidence-packet",
+      "should_trigger": true,
+      "query": "按刚才的 architecture.md 实现这个功能。完成后不要只说 done，请列出改了哪些文件、跑了哪些命令、哪些没跑以及为什么、有没有人工验证和剩余风险。",
+      "expected_checks": [
+        "uses pm-code-implement",
+        "requires Evidence Packet",
+        "uses PASS/PARTIAL/BLOCKED completion claim"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "review-evidence-quality",
+      "should_trigger": true,
+      "query": "请 review 这次代码改动。除了安全、逻辑、性能，也帮我判断实现报告里的测试证据是否可信，有没有 fake test 或 fake UI。",
+      "expected_checks": [
+        "uses pm-code-review",
+        "reviews Evidence Packet",
+        "checks fake test and fake UI"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "release-go-no-go",
+      "should_trigger": true,
+      "query": "我们准备上线这个 Tauri app 版本。请做 Go/No-Go 发布检查，确认安装包/commit、测试、代码审查、隐私安全、回滚、监控和沟通计划是否齐全。",
+      "expected_checks": [
+        "uses pm-launch",
+        "requires Release Evidence Packet",
+        "blocks GO without release artifact"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "skill-change-eval-notes",
+      "should_trigger": true,
+      "query": "我要给 pm-copilot-skills 新增一个 Agent 编排类 skill，但担心和现有 pm-agent-patterns、pm-code-architect 重叠。请先做准入判断并给出正反触发样例。",
+      "expected_checks": [
+        "applies anti-bloat admission",
+        "requires should-trigger and should-not-trigger examples",
+        "does not create a skill before admission"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "doctor-preference-real-e2e",
+      "should_trigger": true,
+      "query": "基于 D:/ClarityMedic-PMS/docs/prd/doctor-preference-problem-statement.md 这个真实需求，跑一次从 Feature Frame、PRD、原型、架构、参考实现、代码审查到发布门禁的端到端验收。需要 Evidence Packet、Sensor Gates、测试和 Go/No-Go 结论。",
+      "expected_checks": [
+        "uses real source document",
+        "runs E2E Builder OS workflow",
+        "requires tests and launch gate evidence"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "ordinary-copy-polish",
+      "should_trigger": false,
+      "query": "帮我润色这段发布公告，让语气更清楚一点：我们将在周五上线新版本，主要改进了搜索体验。",
+      "expected_checks": [
+        "does not force Builder OS workflow",
+        "routes to content polishing if needed"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "simple-pm-opinion",
+      "should_trigger": false,
+      "query": "你觉得 B2B SaaS 首页应该强调 ROI 还是易用性？先聊聊观点，不需要写 PRD 或做原型。",
+      "expected_checks": [
+        "answers as consultation",
+        "does not require Evidence Packet"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "generic-roadmap-brainstorm",
+      "should_trigger": false,
+      "query": "帮我脑暴一下下季度可以做哪些产品方向，先发散，不要进入执行计划。",
+      "expected_checks": [
+        "stays in ideation",
+        "does not launch implementation or release gates"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "reference-only-request",
+      "should_trigger": false,
+      "query": "把 Meta_Kim 的 8 大流程和 11 阶段用中文给我解释一下，我只是想理解概念。",
+      "expected_checks": [
+        "summarizes reference",
+        "does not modify skills or run validation"
+      ]
+    }
+  ]
+}

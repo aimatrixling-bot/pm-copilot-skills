@@ -402,6 +402,7 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重
 - [ ] 成功指标可量化（数字 + 时间范围）且有明确测量方法
 - [ ] User Stories 使用标准格式（As a... I want to... So that...）
 - [ ] 每个 User Story 有 >= 1 个 Given-When-Then 验收标准
+- [ ] 每个 P0 验收标准都有证据路径（测试用例 / 原型页面 / 人工验收步骤 / 监控指标）
 - [ ] 功能范围有明确的 P0/P1/P2 优先级
 - [ ] 依赖和风险已列出
 - [ ] 所有推断已标注 [假设]，自动填充已标注 [默认]
@@ -410,6 +411,7 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重
 - [ ] **输出中无 Magic Step**（对照 `references/quality-gates-shared.md` 触发词表检查）
 - [ ] **如有触发词，【技术实现猜想】已补充**
 - [ ] **每个风险项的缓解措施 >= 1 句可执行描述**（不是"持续监控"）
+- [ ] **Builder Handoff 明确**：下游能知道先做原型、架构、实现还是发布准备
 
 更完整的质量检查标准见 `references/quality-checklist.md`。
 实际 PRD 案例参考见 `references/examples.md`。
@@ -446,8 +448,19 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重
 - **open_assumptions**: [标注 `[假设]` 的待验证项列表]
 - **next_skill_hint**: `pm-code-architect`（需要技术方案拆解）/ `pm-prototype`（需要可视化）/ `pm-prioritize`（需要优先级细化）
 - **handoff_context**: 下游需要但不在 PRD 正文中的上下文（如被否决的备选方案、Scope Gate 拒绝记录、用户口头补充的约束）
+- **acceptance_evidence_plan**: [P0 验收标准 -> 测试/原型/人工验收/监控的映射]
+- **builder_handoff**: [prototype_first / architecture_first / implementation_ready / needs_pm_decision + 理由]
 
 **下游消费方式**：pm-code-architect 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Sensor Gates
+
+| Sensor | 触发条件 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Spec Coverage** | 生成 PRD 或工程需求单 | P0 功能、User Story、验收标准、测试/验收证据一一可追溯 | Pause→补映射；无法补时降级为 `[待确认]` |
+| **Magic Step** | 出现自动化、AI、智能推荐、无感完成等表达 | 对照 `quality-gates-shared.md` Magic Step 触发词，补技术实现猜想或标假设 | Pause→不能让下游猜实现方式 |
+| **Builder Handoff** | 准备进入 prototype / architecture / implementation | `builder_handoff` 是否写明下一步及理由 | Pause→缺失时不交给下游 |
+| **Goal Suitability** | 用户想让 Agent 直接执行整段目标 | 检查完成标准是否可验证、风险是否可控 | Risk→产品判断未定时先回到用户决策 |
 
 ## Meta-Review
 

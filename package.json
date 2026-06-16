@@ -1,13 +1,21 @@
 {
   "name": "pm-copilot-skills",
-  "version": "0.6.0",
-  "description": "16 Pipeline-aligned PM Skills + 3 Utilities for Claude Code — from discovery to launch",
+  "version": "0.7.0",
+  "description": "面向产品经理、AI 产品经理和全栈产品构建者的 AI Product Builder OS skills",
   "license": "Apache-2.0",
+  "scripts": {
+    "validate:builder-os": "node scripts/validate-builder-os.js",
+    "validate:codex-install": "node scripts/validate-codex-install.js",
+    "validate:doctor-preference-e2e": "node scripts/validate-doctor-preference-e2e.js",
+    "test:doctor-preference-e2e": "node --test evals/doctor-preference-e2e/reference-implementation/*.test.js"
+  },
   "bin": {
     "pm-copilot-skills": "install.js"
   },
   "files": [
     "skills/",
+    "scripts/",
+    "evals/",
     "install.js",
     "README.md"
   ],

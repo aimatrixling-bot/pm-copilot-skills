@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>医生个性化推荐原型</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --border: #d7dce2;
+      --text: #1e2732;
+      --muted: #657383;
+      --primary: #146c94;
+      --danger: #a83232;
+      --ok: #226b45;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+    .subtle {
+      color: var(--muted);
+      margin: 0 0 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 380px) 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    input, select, button {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 14px;
+      background: #fff;
+    }
+    button {
+      cursor: pointer;
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      margin-top: 12px;
+    }
+    button.secondary {
+      background: #fff;
+      color: var(--primary);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .check-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 12px 0;
+      color: var(--muted);
+    }
+    .check-row input {
+      width: 18px;
+      min-height: 18px;
+    }
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #fff;
+    }
+    .card strong { display: block; margin-bottom: 6px; }
+    .score { color: var(--ok); font-weight: 700; }
+    .blocked strong { color: var(--danger); }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    pre {
+      background: #f0f3f6;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      overflow: auto;
+      min-height: 120px;
+    }
+    @media (max-width: 820px) {
+      .grid, .result-grid, .row { grid-template-columns: 1fr; }
+      main { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>医生个性化推荐</h1>
+    <p class="subtle">用于 Builder OS 医生推荐 E2E 验收的交互 smoke 原型。</p>
+
+    <div class="grid">
+      <section aria-labelledby="request-title">
+        <h2 id="request-title">预约请求</h2>
+
+        <label for="service">服务</label>
+        <select id="service">
+          <option value="SMILE">SMILE</option>
+          <option value="LASIK">LASIK</option>
+          <option value="CAT">CAT</option>
+          <option value="ICL">ICL</option>
+          <option value="dry-eye">干眼症</option>
+          <option value="general">普通诊症</option>
+        </select>
+
+        <div class="row">
+          <div>
+            <label for="date">日期</label>
+            <input id="date" type="date" value="2026-06-20">
+          </div>
+          <div>
+            <label for="time">时间</label>
+            <input id="time" type="time" value="13:30">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="location">地点</label>
+            <select id="location">
+              <option value="Mong Kok">Mong Kok</option>
+              <option value="Central">Central</option>
+              <option value="HK">HK</option>
+            </select>
+          </div>
+          <div>
+            <label for="age">患者年龄</label>
+            <input id="age" type="number" value="34" min="0">
+          </div>
+        </div>
+
+        <label for="preferredDoctor">指定医生</label>
+        <select id="preferredDoctor">
+          <option value="">不指定</option>
+          <option selected>Dr Sin</option>
+          <option>Dr Kwok</option>
+          <option>Dr Tang</option>
+          <option>Dr Ho</option>
+          <option>Dr Leung</option>
+          <option>Dr V Chu</option>
+        </select>
+
+        <label class="check-row">
+          <input id="quotaFull" type="checkbox">
+          模拟 Dr Ho 配额已满
+        </label>
+
+        <button id="recommendButton" type="button">生成推荐</button>
+        <button id="resetButton" class="secondary" type="button">重置</button>
+      </section>
+
+      <section aria-labelledby="results-title">
+        <h2 id="results-title">推荐结果</h2>
+        <div class="result-grid">
+          <div>
+            <h3>推荐医生</h3>
+            <div id="recommended"></div>
+          </div>
+          <div>
+            <h3>被阻塞医生</h3>
+            <div id="blocked"></div>
+          </div>
+        </div>
+        <h3>审计预览</h3>
+        <pre id="auditPreview">尚未生成推荐。</pre>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const doctors = [
+      { name: 'Dr Kwok', services: ['SMILE', 'LASIK', 'CAT'], locations: ['Central', 'Mong Kok'] },
+      { name: 'Dr Sin', services: ['general', 'LASIK'], locations: ['Mong Kok'] },
+      { name: 'Dr Ho', services: ['LASIK', 'CAT', 'general'], locations: ['Central', 'HK'] },
+      { name: 'Dr V Chu', services: ['dry-eye', 'CMC', 'general'], locations: ['Central', 'HK', 'Mong Kok'] }
+    ];
+
+    function recommendDoctor(request) {
+      const blocked = [];
+      const recommended = [];
+
+      doctors.forEach((doctor) => {
+        const reasons = [];
+        const rules = [];
+        let score = 50;
+
+        if (!doctor.locations.includes(request.location)) {
+          rules.push(`${doctor.name} 未配置在 ${request.location} 接诊`);
+        }
+        if (doctor.name === 'Dr Sin' && request.service === 'SMILE') {
+          rules.push('Dr Sin 不接 SMILE，应安排 Dr Kwok');
+        }
+        if (doctor.name === 'Dr Ho' && request.quotaFull) {
+          rules.push('Dr Ho 当前周期配额已满');
+        }
+        if (rules.length > 0) {
+          blocked.push({ doctor: doctor.name, rules });
+          return;
+        }
+
+        if (doctor.services.includes(request.service)) {
+          score += 20;
+          reasons.push(`医生支持 ${request.service}`);
+        }
+        if (request.preferredDoctor === doctor.name) {
+          score += 25;
+          reasons.push('患者指定该医生');
+        }
+        if (request.service === 'SMILE' && request.preferredDoctor === 'Dr Sin' && doctor.name === 'Dr Kwok') {
+          score += 35;
+          reasons.push('当患者指定 Dr Sin 做 SMILE 时，Dr Kwok 是配置的替代医生');
+        }
+        if (reasons.length === 0) {
+          reasons.push('基础可用性匹配');
+        }
+        recommended.push({ doctor: doctor.name, score, reasons });
+      });
+
+      recommended.sort((a, b) => b.score - a.score);
+      return { recommended: recommended.slice(0, 3), blocked };
+    }
+
+    function readRequest() {
+      return {
+        service: document.getElementById('service').value,
+        appointmentDate: document.getElementById('date').value,
+        time: document.getElementById('time').value,
+        location: document.getElementById('location').value,
+        patientAge: Number(document.getElementById('age').value),
+        preferredDoctor: document.getElementById('preferredDoctor').value,
+        quotaFull: document.getElementById('quotaFull').checked
+      };
+    }
+
+    function renderList(container, items, blocked) {
+      container.innerHTML = '';
+      if (items.length === 0) {
+        container.innerHTML = '<div class="card">暂无记录。</div>';
+        return;
+      }
+      items.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = blocked ? 'card blocked' : 'card';
+        const list = (blocked ? item.rules : item.reasons).map((reason) => `<li>${reason}</li>`).join('');
+        card.innerHTML = `<strong>${item.doctor}</strong>${blocked ? '' : `<span class="score">Score ${item.score}</span>`}<ul>${list}</ul>`;
+        container.appendChild(card);
+      });
+    }
+
+    function runRecommendation() {
+      const request = readRequest();
+      const result = recommendDoctor(request);
+      renderList(document.getElementById('recommended'), result.recommended, false);
+      renderList(document.getElementById('blocked'), result.blocked, true);
+      document.getElementById('auditPreview').textContent = JSON.stringify({
+        request,
+        recommendedDoctors: result.recommended.map((item) => item.doctor),
+        blockedDoctors: result.blocked.map((item) => item.doctor),
+        appliedRuleCount: result.recommended.length + result.blocked.length
+      }, null, 2);
+    }
+
+    function resetForm() {
+      document.getElementById('service').value = 'SMILE';
+      document.getElementById('date').value = '2026-06-20';
+      document.getElementById('time').value = '13:30';
+      document.getElementById('location').value = 'Mong Kok';
+      document.getElementById('age').value = '34';
+      document.getElementById('preferredDoctor').value = 'Dr Sin';
+      document.getElementById('quotaFull').checked = false;
+      document.getElementById('recommended').innerHTML = '';
+      document.getElementById('blocked').innerHTML = '';
+      document.getElementById('auditPreview').textContent = '尚未生成推荐。';
+    }
+
+    document.getElementById('recommendButton').addEventListener('click', runRecommendation);
+    document.getElementById('resetButton').addEventListener('click', resetForm);
+    runRecommendation();
+  </script>
+</body>
+</html>

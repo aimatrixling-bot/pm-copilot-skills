@@ -21,8 +21,8 @@ argument-hint: "[功能/模块名称]"
 
 | 字段 | 捕获内容 | 来源 |
 |---|---|---|
-| **Want** | 把 PRD/需求翻译为可执行的代码结构（目录树 + 组件关系 + 数据模型 + 接口契约） | 用户输入剥离"设计架构"后的问题本质 |
-| **Constraints** | 项目已有框架（Next.js / Tauri / 等）、已有依赖清单、团队熟悉度 | 项目 CLAUDE.md + package.json/Cargo.toml 推断 |
+| **Want** | 把 PRD/需求翻译为可执行的代码结构（目录树 + 组件关系 + 数据模型 + 接口契约 + 验证路径） | 用户输入剥离"设计架构"后的问题本质 |
+| **Constraints** | 项目已有框架（Next.js / Tauri / 等）、已有依赖清单、团队熟悉度、最小可验证实现边界 | 项目 CLAUDE.md + package.json/Cargo.toml 推断 |
 | **Context Sources** | 上游 PRD / Tech Spec / Feature Frame / 项目已有代码结构 / 项目 CLAUDE.md | Glob + Read；pipeline 模式引用上游 Output Packet |
 | **Depth** | Draft（目录骨架）/ Review（完整 6 章节输出，默认）/ Release（含边缘场景和降级方案） | 用户声明或推断 |
 | **Output Target** | 开发团队（执行 pm-code-implement 的工程师） | 用户明示或推断 |
@@ -50,7 +50,7 @@ argument-hint: "[功能/模块名称]"
 
 | 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
 |---|---|---|
-| **任务类型** | 系统架构设计、目录结构规划、组件拆分、数据模型定义、API 契约、技术取舍分析 | 写 PRD → pm-prd；写代码 → pm-code-implement；代码审查 → pm-code-review |
+| **任务类型** | 系统架构设计、目录结构规划、组件拆分、数据模型定义、API 契约、技术取舍分析、验证策略定义 | 写 PRD → pm-prd；写代码 → pm-code-implement；代码审查 → pm-code-review；性能压测/安全审计 → 专项工具或专家 |
 | **输出格式** | Markdown 架构文档（6 章节：overview / directory / component / data / api / tech_choices） | 可运行代码 → pm-code-implement；高保真原型 → pm-prototype |
 | **深度范围** | 从 PRD 到可执行代码结构（架构级，不到实现级） | 单文件实现细节 → pm-code-implement；架构级取舍决策记录 → pm-decision |
 
@@ -79,12 +79,17 @@ argument-hint: "[功能/模块名称]"
     │     ├── component_tree（组件/模块关系）
     │     ├── data_models（数据模型）
     │     ├── api_contracts（接口契约）
-    │     └── tech_choices（技术选型 + 取舍理由）
-    ├── 5. Iron Law 检查
+    │     ├── tech_choices（技术选型 + 取舍理由）
+    │     └── verification_strategy（测试/构建/人工验证路径）
+    ├── 5. Sensor Gate 规划
+    │     ├── Spec Coverage：PRD 条目如何映射到模块/测试？
+    │     ├── Build/Test：下游应运行哪些命令？
+    │     └── Privacy/Security：是否涉及权限、PII、日志、secret？
+    ├── 6. Iron Law 检查
     │     ├── 目录树是否完整？
     │     ├── 是否兼容现有框架？
     │     └── 每个技术选型是否有取舍分析？
-    └── 6. 交付 + 后续推荐
+    └── 7. 交付 + 后续推荐
           ├── pm-code-implement（执行实现）
           └── pm-code-review（代码审查）
 ```
@@ -129,6 +134,14 @@ src/
 | --- | --- | --- | --- | --- |
 | 状态管理 | Zustand | Context | ... | ... |
 
+### 7. Verification Strategy
+
+| 验证项 | 命令/方式 | 覆盖的需求或风险 | 负责人 |
+| --- | --- | --- | --- |
+| typecheck | `npm run typecheck` / `[项目实际命令]` | 类型契约、接口变更 | engineer |
+| unit / integration | `[项目实际命令]` | P0 验收标准、边界场景 | engineer |
+| manual smoke | `[核心路径步骤]` | 原型/PRD 的关键用户路径 | PM/QA |
+
 ## 交付前检查
 
 - [ ] 目录树完整且兼容现有项目框架
@@ -137,6 +150,9 @@ src/
 - [ ] 数据模型覆盖 PRD 中的核心实体
 - [ ] API 契约包含错误处理
 - [ ] 关键技术取舍已列出（≥ 2 选项 + 理由）
+- [ ] Verification Strategy 明确到命令/人工步骤，不只写"后续测试"
+- [ ] Spec Coverage 映射已覆盖 P0 需求或明确标注缺口
+- [ ] Privacy/Security 影响已判断（secrets、PII、权限、日志）
 - [ ] 无模糊表述（"后续优化"、"按需添加"等）
 
 ## 后续推荐
@@ -155,8 +171,21 @@ src/
 - **open_assumptions**: [标注 `[假设]` 的待验证项（如团队对新依赖的熟悉度）]
 - **next_skill_hint**: `pm-code-implement`（按架构开始编码）
 - **handoff_context**: 下游需要但不在架构正文中的上下文（如被否决的备选架构、性能预算约束、团队技术债背景）
+- **verification_strategy**: [下游必须运行或人工验证的命令/步骤；不能确定时标注 `[待确认]`]
+- **sensor_gates**: [Spec Coverage / Build-Test / Privacy-Security / Overengineering 中命中的检查]
 
 **下游消费方式**：pm-code-implement 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Sensor Gates
+
+| Sensor | 触发条件 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Spec Coverage** | PRD / Feature Frame 输入存在 | 每个 P0 需求映射到目录、数据模型、API 或验证项 | Pause→补映射；无法覆盖则在 open_assumptions 标注 |
+| **Build/Test** | 下游会进入实现 | 列出项目实际 typecheck/lint/test/build 命令或说明缺失 | Pause→无命令时写人工 smoke 路径，不得写"测试后补" |
+| **Privacy/Security** | 涉及用户数据、权限、日志、外部 API | 标记 PII、secret、auth、audit/log 风险 | Block→高风险无策略时转人工安全/架构评审 |
+| **Overengineering** | 引入新层、新依赖、新服务 | 说明为何现有结构不能覆盖 | Pause→无必要性时退回现有模式 |
+
+Release 保真度必须把 Sensor Gate 结论写入 Output Packet；Draft/Review 至少记录命中的 gate 和未验证项。
 
 ## Meta-Review
 

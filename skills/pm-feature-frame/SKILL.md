@@ -301,6 +301,8 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应 Step → 最多重试 2 �
 - [ ] User Flow 步骤 ≤7（超过 7 步 → 合并或拆分为多个 Frame）
 - [ ] Edge Cases 包含至少 1 个"新用户/首次使用"场景
 - [ ] Non-Goals 包含至少 1 个"有人可能想要但你不做"的功能
+- [ ] P0 核心路径可被原型展示或 PRD 验收标准验证
+- [ ] 已判断是否适合进入 goal-driven execution（不清楚时不得交给自驱实现）
 - [ ] 可以直接喂给 pm-prototype（不需要额外解释）
 
 ### 字数检查（按复杂度）
@@ -366,8 +368,24 @@ pm-prioritize (优先级排序)
 - **open_assumptions**: [标注 `[假设]` 或 `[推断]` 的待确认项列表，如 Quick 模式下 AI 填充的 Magic Moment]
 - **next_skill_hint**: `pm-prototype`（默认）—— 输入 Feature Frame + `--principles-confirmed` 跳过 Layer 0 四问；若需正式文档化则 `pm-prd`
 - **handoff_context**: 下游需要但不在 Frame 正文中的上下文（如被否决的复杂度档位、用户口头补充的约束、Step 0 验证出的根因）
+- **builder_readiness**: PASS / PARTIAL / BLOCKED + [是否足够进入 prototype / PRD / architecture]
+- **goal_suitability**: [是否适合 autonomous goal；不适合时列出需要人工判断的问题]
 
 **下游消费方式**：pm-prototype 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Goal Suitability
+
+Feature Frame 是 Builder OS 的最早分岔点：不是所有想法都适合立刻进入自驱实现。
+
+| 条件 | 适合进入自驱 goal | 不适合进入自驱 goal |
+|---|---|---|
+| **问题清晰度** | 用户群体、频率、严重程度、Outcome 都明确 | 只有一句"我想做个 X"，真实问题未验证 |
+| **体验闭环** | Magic Moment 可演示，User Flow ≤ 7 步 | Magic Moment 模糊，流程依赖未定业务判断 |
+| **验证方式** | P0 路径可被原型、PRD 验收标准或测试验证 | 成功标准只能靠"感觉好不好" |
+| **风险边界** | Non-Goals 清楚，不涉及不可逆/高权限动作 | 涉及生产权限、删除、资金、隐私且无人工审批 |
+
+适合时，在 Output Packet 的 `goal_suitability` 写出可执行的 goal seed：objective / scope / non_goals / verifiable_completion_criteria。
+不适合时，输出 1-3 个必须由用户或 PM 先判断的问题，不把模糊产品判断交给模型猜。
 
 ## Meta-Review
 

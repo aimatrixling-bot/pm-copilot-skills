@@ -32,6 +32,24 @@ Skill 在**对话中**直接呈现给用户的文本产出必须遵守以下规�
 
 ---
 
+## 零点六、默认语言协议（所有保真度均执行）
+
+PM Copilot 的用户可见输出默认使用**中文为主**。英文只在以下情况保留：
+
+- 代码、API、文件路径、命令、配置项、包名、字段名、枚举值、测试名、commit message 等工程标识。
+- 行业通用术语或本项目约定术语，如 `Intent Packet`、`Output Packet`、`Evidence Packet`、`Sensor Gates`、`Go/No-Go`、`MVP`、`PRD`。
+- 需要与运行时、平台、插件、技能触发描述保持兼容的英文名称。
+
+### 输出规则
+
+- 面向用户的解释、报告、验收结论、风险、建议、检查清单，应使用中文表达。
+- 首次出现的关键英文术语建议写成"中文名（English Term）"，例如"证据包（Evidence Packet）"。
+- 不要把整份验收文档、README、benchmark、原型 UI 文案写成英文，除非用户明确要求英文。
+- 状态码可保留英文，但应在上下文中给出中文含义，例如 `PASS（通过）`、`PARTIAL（部分通过）`、`BLOCKED（阻塞）`、`NO-GO（不建议发布）`。
+- 代码中的用户可见错误信息、推荐理由、阻塞原因、按钮文案，也默认中文。
+
+---
+
 ## 一、一致性检查协议
 
 当交付物包含多个部分（如 Problem Statement + User Journey + Scope + Metrics + Risks）时，交付前必须验证：
@@ -320,3 +338,146 @@ Skill 在**对话中**直接呈现给用户的文本产出必须遵守以下规�
 ```
 
 **边界原则**：宁可显式拒绝并指向更合适的 skill，不在能力边界外硬撑。CANNOT 行的存在不是缺陷，是诚实。
+
+---
+
+## 十三、Evidence Packet 协议（Builder OS）
+
+代码、发布、审查、原型验证、Agent 工作流等 Builder 类任务，完成声明必须附证据。目标是避免"应该可以"、"之前跑过"、"看起来没问题"。
+
+### 触发条件
+
+任一条件命中时，交付物必须包含 Evidence Packet：
+
+- 改动了代码、配置、脚本、构建产物
+- 声称完成了实现、修复、审查、发布准备
+- 声称通过了测试、构建、类型检查、视觉验证
+- 需要交给下游 skill、工程师、发布负责人继续执行
+
+### 最小字段
+
+| 字段 | 要求 | 不合格示例 |
+|---|---|---|
+| **Artifacts** | 文件路径、报告路径、截图路径或产物路径 | "已生成" |
+| **Checks Run** | 命令 + 关键输出；未运行必须说明原因 | "测试通过" |
+| **Manual Verification** | 需要人工确认的路径、截图、步骤 | "看起来正常" |
+| **Open Risks** | 未验证项、降级项、需要人工审查点 | "无风险"但未解释 |
+| **Completion Claim** | PASS / PARTIAL / BLOCKED + 理由 | "done" |
+
+### Completion Claim 规则
+
+- **PASS**：所有必须证据存在，且未留阻塞风险。
+- **PARTIAL**：主要产出完成，但存在未运行检查、人工待验或非阻塞风险。
+- **BLOCKED**：缺关键输入、关键检查失败、或风险不可接受。
+
+没有当场证据，不得写 PASS。
+
+---
+
+## 十四、Sensor Gates 协议（Builder OS）
+
+Sensor Gate 处理确定性检查：能用脚本、测试、清单、构建、截图或审查证明的，不依赖模型自觉。
+
+| Sensor | 触发场景 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Spec Coverage** | PRD / 原型 / 代码交付 | 对照需求条目、Feature Frame、Design Brief | Pause -> 补齐缺口或标注未覆盖 |
+| **Design-before-Code** | UI / 前端实现 | 先确认 Feature Frame / PRD / Design Brief / 截图 | Pause -> 先补设计输入 |
+| **Fake UI Detection** | 原型或前端 UI | 按钮、提示、状态、空页面是否对应真实行为 | Pause -> 实现真实行为或删除假引导 |
+| **Fake Test Detection** | 声称测试通过 | 断言是否证明真实行为；是否只测 happy path | Pause -> 重写测试或降级声明 |
+| **Build/Test Evidence** | 代码变更 | typecheck / lint / unit / build / smoke | Pause -> 修复根因；同问题 3 次失败停手重审 |
+| **Release Artifact** | 发布/打包 | 从安装包或发布产物验证，而非仅 dev 环境 | Block -> 重新构建和验证 |
+| **Privacy/Security Audit** | 发布、集成、权限、日志 | secrets、PII、开发者路径、权限、敏感日志 | Block -> 修复后重新扫描 |
+| **Overengineering Check** | 架构/实现/重构 | 是否新增不必要抽象、依赖、API、死代码 | Pause -> 简化到满足目标的最小结构 |
+
+### 使用原则
+
+- Draft 保真度可只记录建议执行的 Sensor。
+- Review 保真度执行与当前产出直接相关的 Sensor。
+- Release 保真度必须执行所有命中的 Sensor，并在 Evidence Packet 中记录证据。
+- Sensor Gate 失败不能用文字解释绕过；只能修复、降级声明、或请求人工决策。
+
+---
+
+## 十五、Goal Suitability 协议（Builder OS）
+
+Goal-driven execution 只适合标准清晰、证据可验、风险可控的任务。它不能替代产品判断。
+
+### 适合交给 Goal 的任务
+
+- 执行已确认的开发计划某个 phase
+- 按既定架构实现一个边界明确的子任务
+- 修复有复现步骤和验证命令的 bug
+- 生成可用清单验证的发布准备材料
+- 执行批量、重复、可回滚的资料整理
+
+### 不适合交给 Goal 的任务
+
+- 需求访谈、用户判断、市场定位还不清楚
+- 成功标准只能靠主观满意度判断
+- 涉及生产权限、资金、隐私、删除、不可逆迁移且无人工审批
+- 多方决策未定，任务范围会在执行中持续变化
+
+### Goal Packet 最小字段
+
+```markdown
+## Goal Packet
+
+- **objective**: [一句话目标]
+- **scope**: [包含范围]
+- **non_goals**: [明确不做]
+- **constraints**: [文件/权限/时间/风险边界]
+- **verifiable_completion_criteria**: [逐条可证明的完成条件]
+- **checks_to_run**: [命令/清单/人工验证]
+- **expected_evidence**: [需要贴出的输出/文件/截图/报告]
+- **stop_conditions**: [何时停止并请求用户]
+```
+
+---
+
+## 十六、Eval Notes 协议（Skill 变更）
+
+Skill、模板、共享门禁、触发描述、handoff 规则、Capability Index 的变更，都应留下评测意图。复杂变更再进入正式 eval 工作区；小变更至少写明人工评审点。
+
+### 触发条件
+
+- 新增 skill / 删除 skill / 合并 skill
+- 改 `description`、`argument-hint` 或触发词
+- 改输出契约、Output Packet、Evidence Packet
+- 改安全、隐私、发布、代码执行边界
+- 改共享模板或质量门禁
+
+### 最小记录
+
+```markdown
+## Eval Notes
+
+- **Change type**: [new skill / behavior change / trigger change / reference update]
+- **Should-trigger examples**: [2-3 个真实用户请求]
+- **Should-not-trigger examples**: [2-3 个相邻但不应触发的请求]
+- **Quality checks**: [人工评审点或脚本断言]
+- **Regression risk**: [可能影响的 skill / workflow]
+```
+
+**规则**：影响触发或安全边界的变更，不能只写"文档更新"。必须给出 should-trigger / should-not-trigger 样例。
+
+---
+
+## 十七、反膨胀准入规则（Builder OS）
+
+新增 skill / agent / command / hook 前，必须通过以下准入测试。
+
+| 准入问题 | 通过标准 |
+|---|---|
+| **独立触发条件** | 用户请求有清晰信号，且不会与现有 skill 高度重叠 |
+| **独立输出契约** | 产出结构、证据要求或 handoff 与现有 skill 不同 |
+| **复用频率** | 至少 3 个真实或高可信复用场景 |
+| **不可替代性** | 不能用现有 skill + reference + checklist 低成本覆盖 |
+| **平台适配性** | 不依赖单一 runtime 的私有能力，或已声明 adapter 限制 |
+| **验证路径** | 有 eval、脚本、清单或人工评审方式证明它更好 |
+
+未通过时，优先选择：
+
+1. 写入 `skills/references/` 作为 reference
+2. 加入现有 skill 的 Capability Index / Sensor Gate
+3. 作为 optional pack 记录，暂不进入 core
+4. 只作为项目级规则，不污染通用包

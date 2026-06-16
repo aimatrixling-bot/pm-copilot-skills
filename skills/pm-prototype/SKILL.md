@@ -388,6 +388,7 @@ wireframe/
 | **G4: 骨架预览门**（反馈节点） | Phase 5 后（high）/ Phase 6 后（low） | HTML 骨架/线框已展示 + 用户反馈已收集 | Pause→未收集反馈不进入完整实现；Risk→`--no-preview` 时跳过但返工风险标注 |
 | **G5: 合规验证门**（仅 high-fidelity） | Phase 7 后 | Layer 4 检查全通过（语义化 HTML + 键盘导航 + WCAG AA + 触摸 ≥44px）+ 去AI味检查完成 | Pause→合规项失败必须修复；Nudge→去AI味检查可标注 `[手动复查]` 继续 |
 | **G6: PRD 联动门** | Phase 9 后 | MAPPING.md 已生成（User Story ↔ 页面映射）+ 设计决策记录已生成 | Risk→无 PRD 输入时跳过 MAPPING 并标注；Nudge→仅生成设计决策记录 |
+| **G7: Fake UI 门** | 交付前 | 所有按钮、导航、状态、空页面、错误提示都有真实交互或明确标注不可用 | Pause→实现真实行为、删除入口或在原型内标注不可用 |
 
 Gate 失败 ≠ 终止：标注原因 → 回到对应 Phase → 最多重试 2 次 → 仍失败向用户报告。
 
@@ -398,6 +399,7 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应 Phase → 最多重试 2 
 - [ ] Layer 0 设计原则四问已回答并展示
 - [ ] 原则与场景规则无冲突
 - [ ] 场景（scene）已判断并展示理由
+- [ ] 原型证据已记录：入口文件、页面清单、核心交互 smoke 路径
 
 ### Low-Fidelity 专项检查
 
@@ -406,6 +408,7 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应 Phase → 最多重试 2 
 - [ ] 页面间导航关系已标注
 - [ ] 所有关键状态已考虑（正常/空/加载/错误）
 - [ ] 组件用占位符，无视觉设计
+- [ ] 线框中的每个流程跳转都有目标页面或明确标注待定
 
 ### High-Fidelity 专项检查
 
@@ -414,6 +417,7 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应 Phase → 最多重试 2 
 - [ ] 使用独特字体（非 Inter/Roboto/Open Sans）
 - [ ] 颜色系统使用 CSS 变量，对比度达标
 - [ ] 所有交互可点击、可导航
+- [ ] 无 fake UI：所有可点击控件都有真实状态变化、页面跳转、禁用态或说明
 - [ ] 语义化 HTML + 键盘导航
 - [ ] 去 AI 味检查已执行（`references/de-ai-checklist.md`）
 - [ ] MAPPING.md 已生成（User Story ↔ 页面映射）
@@ -447,8 +451,31 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应 Phase → 最多重试 2 
 - **open_assumptions**: [标注 `[假设]` 或 `[auto-detected]` 的待确认项，如 scene 推断、美学基调自动推荐]
 - **next_skill_hint**: `pm-prd`（若原型验证后需正式文档化）或 `pm-code-architect`（若直接进入技术架构设计）
 - **handoff_context**: 下游需要但不在产出物中的上下文（如被否决的美学方向、用户口头补充的合规要求、Layer 0 原则推导过程）
+- **evidence_packet**: [入口文件 / 页面清单 / 已验证交互 / 未验证交互 / 完成声明]
+- **sensor_gates**: [Fake-UI / Spec-Coverage / Accessibility / Mapping 的结果]
 
 **下游消费方式**：pm-prd 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path`（特别是 MAPPING.md）和 `key_decisions`（Layer 0 原则）。
+
+## Evidence Packet
+
+原型交付时用摘要形式附上证据，不需要贴完整源码。
+
+| 证据类型 | 要求 |
+|---|---|
+| **Artifacts** | 入口 HTML / wireframe 文件 / MAPPING.md / 设计决策记录路径 |
+| **Interaction smoke** | 核心路径 3-5 步：从入口到 Magic Moment，再到完成/错误态 |
+| **Mapping evidence** | PRD/User Story 或 Feature Frame 与页面/组件的映射 |
+| **Open risks** | 未实现交互、未验证浏览器、无 PRD 输入、合规待复查 |
+| **Completion claim** | PASS / PARTIAL / BLOCKED + 理由 |
+
+## Sensor Gates
+
+| Sensor | 触发条件 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Fake UI** | high-fidelity 或 clickable demo | 扫描按钮、链接、输入、菜单、toast、空/错/加载状态 | Pause→实现真实交互或移除假入口 |
+| **Spec Coverage** | 有 PRD / Feature Frame 输入 | MAPPING.md 覆盖 P0 User Story / Magic Moment / 核心状态 | Risk→缺输入时标注；缺覆盖时补页面或降级声明 |
+| **Accessibility** | high-fidelity | 键盘可达、语义 HTML、触摸尺寸、对比度 | Pause→修复后再交付 |
+| **Visual Consistency** | high-fidelity | 美学基调、字体、颜色、密度是否一致 | Pause→统一系统，避免拼贴感 |
 
 ## Meta-Review
 

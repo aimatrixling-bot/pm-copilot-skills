@@ -24,6 +24,10 @@
 ## 输出规范                   [OPTIONAL]  结构化输出 skill
 ## 交付前检查                 [REQUIRED]  pre-delivery 自检
 ## Output Packet             [8/16]      pipeline skill 专用（链式传递）
+## Evidence Packet           [OPTIONAL]  Builder/Release 类完成证据
+## Sensor Gates              [OPTIONAL]  确定性检查与传感器门禁
+## Goal Suitability          [OPTIONAL]  是否适合自驱目标执行
+## Eval Notes                [OPTIONAL]  Skill 变更评测说明
 ## Meta-Review               [UNIVERSAL] post-delivery 方法论自审（含 packet 审计）
 ## Evolution Writeback       [UNIVERSAL] 轻量观察回写
 ## 后续推荐                   [OPTIONAL]  被 Output Packet 部分替代
@@ -230,6 +234,96 @@ pipeline skill 专用（有上下游链式关系的）。终端 skill（comp/lau
 ```
 
 **适用 skill**（8/16）：pm-discovery, pm-feature-frame, pm-prototype, pm-prd, pm-code-architect, pm-code-implement, pm-code-review。
+
+---
+
+## Evidence Packet [OPTIONAL]
+
+Builder / Release / Review 类 skill 在声明完成时使用。目标是把"做完了"改成"有证据证明达标"。
+
+```markdown
+## Evidence Packet
+
+| 证据类型 | 必填 | 证据 |
+|---|---|---|
+| **Files changed / artifacts** | 是 | [文件路径 / artifact_path / 报告路径] |
+| **Checks run** | 是 | [命令 + 关键输出；未运行则说明原因] |
+| **Manual verification** | 按需 | [浏览器/截图/交互路径/人工检查项] |
+| **Open risks** | 是 | [未验证项、降级项、需要人工审查点] |
+| **Completion claim** | 是 | PASS / PARTIAL / BLOCKED + 1 句话理由 |
+```
+
+**使用原则**：
+- 没有证据，不写 PASS。
+- 不能运行检查时，必须写出具体原因和可复现的人工验证步骤。
+- 对话中只摘要关键证据；详细日志可放到 artifact 或报告文件。
+
+---
+
+## Sensor Gates [OPTIONAL]
+
+用于把"必须每次都对"的检查交给 checklist / script / test / hook，而不是靠模型自觉。
+
+```markdown
+## Sensor Gates
+
+| Sensor | 触发条件 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Spec Coverage** | 需求/设计/代码交付 | 对照 PRD / Feature Frame / Design Brief | Pause -> 补齐或标注缺口 |
+| **Fake UI** | UI/原型/前端实现 | 检查按钮、文案、提示是否对应真实行为 | Pause -> 移除假功能或实现真实逻辑 |
+| **Fake Test** | 声称已测试 | 检查断言是否证明真实行为 | Pause -> 重写测试或降级完成声明 |
+| **Build/Test** | 代码变更 | typecheck / lint / unit / build / smoke | Pause -> 修复根因；3 次失败停手重审 |
+| **Privacy/Security** | 发布/集成/权限变更 | secrets、PII、权限、日志、构建产物扫描 | Block -> 修复后重新验证 |
+```
+
+**约束**：Sensor Gate 不替代 Iron Law。Iron Law 定义不可破坏的原则；Sensor Gate 定义如何检查。
+
+---
+
+## Goal Suitability [OPTIONAL]
+
+当 skill 支持 goal-driven execution 或整段委托时使用。目标是判断任务是否适合自驱，而不是把不清楚的产品决策交给模型猜。
+
+```markdown
+## Goal Suitability
+
+| 条件 | 适合自驱 | 不适合自驱 |
+|---|---|---|
+| **目标清晰度** | 目标、范围、完成标准可写成证据 | 需求还在探索，需要用户判断 |
+| **验证方式** | 有命令、文件、截图、清单可验证 | 只能靠主观满意度判断 |
+| **风险边界** | 不涉及生产配置、权限、资金、隐私高风险 | 涉及高风险且无人工审批 |
+| **任务耦合** | 可独立完成，不依赖并行决策 | 多方决策未定、范围持续变化 |
+```
+
+**输出要求**：适合时给出 goal packet；不适合时给出需要先澄清的产品/业务决策。
+
+Goal packet 最小字段：
+- **objective**
+- **scope**
+- **non_goals**
+- **constraints**
+- **verifiable_completion_criteria**
+- **checks_to_run**
+- **expected_evidence**
+- **stop_conditions**
+
+---
+
+## Eval Notes [OPTIONAL]
+
+修改 skill 本身、模板、触发描述、共享门禁时使用。目标是让 skill 变更有评测证据，而不是只靠感觉。
+
+```markdown
+## Eval Notes
+
+- **Change type**: new skill / skill behavior change / trigger description change / reference update
+- **Should-trigger examples**: [2-3 个真实用户请求]
+- **Should-not-trigger examples**: [2-3 个相邻但不应触发的请求]
+- **Quality checks**: [人工评审点或脚本断言]
+- **Regression risk**: [可能影响的 skill / workflow]
+```
+
+**升级规则**：若变更会改变 skill 触发、输出契约、handoff 或安全边界，至少准备 2 个正例和 2 个反例。
 
 ---
 

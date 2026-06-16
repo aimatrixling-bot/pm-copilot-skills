@@ -1,0 +1,88 @@
+{
+  "skill_name": "builder-os-doctor-preference-e2e",
+  "source": "D:/ClarityMedic-PMS/docs/prd/doctor-preference-problem-statement.md",
+  "evals": [
+    {
+      "id": 1,
+      "name": "feature-frame-builder-readiness",
+      "prompt": "使用医生个性化推荐问题陈述，创建 Feature Frame，并判断它是否适合交给 Builder 自驱执行。",
+      "expected_output": "Feature Frame 需要包含 Problem->Outcome、Magic Moment、User Flow、Non-Goals、builder_readiness、goal_suitability 和 Output Packet。",
+      "files": ["outputs/01-feature-frame.md"],
+      "assertions": [
+        "包含 builder_readiness",
+        "包含 goal_suitability",
+        "明确区分 eval/reference implementation 与生产执行"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "prd-acceptance-evidence",
+      "prompt": "把医生个性化推荐问题转成 PRD handoff，必须包含验收证据计划和 Builder Handoff。",
+      "expected_output": "PRD 需要包含 P0 requirements、acceptance_evidence_plan、builder_handoff 和 Sensor Gates。",
+      "files": ["outputs/02-prd-handoff.md"],
+      "assertions": [
+        "把 P0 需求映射到测试或人工证据",
+        "包含 builder_handoff",
+        "不声明生产就绪"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "prototype-fake-ui-gate",
+      "prompt": "创建原型交接材料，并证明 fake UI 已经被检查。",
+      "expected_output": "原型证据需要包含 artifact path、interaction smoke、Fake UI check、Evidence Packet 和 Sensor Gates。",
+      "files": [
+        "outputs/03-prototype-evidence.md",
+        "artifacts/prototype/doctor-preference-prototype.html"
+      ],
+      "assertions": [
+        "原型包含真实 button event handlers",
+        "记录 SMILE + Dr Sin smoke path",
+        "包含 Fake UI check"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "architecture-verification-strategy",
+      "prompt": "设计医生个性化推荐规则引擎架构，并给出验证策略。",
+      "expected_output": "架构需要包含 data models、API contracts、plugin boundary 和 Verification Strategy。",
+      "files": ["outputs/04-architecture.md"],
+      "assertions": [
+        "使用 deterministic rule engine",
+        "保留 appointment lifecycle boundary",
+        "包含 Verification Strategy"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "reference-implementation-tests",
+      "prompt": "实现参考医生推荐引擎和测试。",
+      "expected_output": "参考实现需要通过关键医生规则的确定性测试。",
+      "files": [
+        "reference-implementation/doctorRecommendationEngine.js",
+        "reference-implementation/doctorRecommendationEngine.test.js",
+        "outputs/05-implementation-evidence.md"
+      ],
+      "assertions": [
+        "测试断言真实行为，而不只是函数存在",
+        "包含 Evidence Packet",
+        "完成声明是 PARTIAL，而不是 production PASS"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "review-and-launch-gates",
+      "prompt": "审查实现证据，并产出发布门禁判断。",
+      "expected_output": "审查只批准 eval 范围，发布门禁对生产保持 NO-GO。",
+      "files": [
+        "outputs/06-code-review-evidence.md",
+        "outputs/07-launch-gate.md"
+      ],
+      "assertions": [
+        "包含 Evidence Review",
+        "包含 Release Evidence Packet",
+        "生产发布是 NO-GO"
+      ]
+    }
+  ]
+}

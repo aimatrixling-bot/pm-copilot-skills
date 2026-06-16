@@ -22,7 +22,7 @@ argument-hint: "[任务描述]"
 | 字段 | 捕获内容 | 来源 |
 |---|---|---|
 | **Want** | 按架构设计精确执行代码变更（新增/修改文件，可 typecheck+lint+build 通过） | 用户输入剥离"写代码"后的任务本质 |
-| **Constraints** | 项目框架、变更文件数 ≤ 10、不修改 .env、不 force push | 项目 CLAUDE.md + 全局安全红线 |
+| **Constraints** | 项目框架、变更文件数 ≤ 10、不修改 .env、不 force push、必须给出证据包 | 项目 CLAUDE.md + 全局安全红线 |
 | **Context Sources** | 上游 architecture.md / Feature Frame / PRD / 项目已有代码 / 项目 CLAUDE.md | Glob + Read；pipeline 模式引用 pm-code-architect 的 Output Packet |
 | **Depth** | Draft（能跑通即可）/ Review（符合项目规范 + typecheck+lint 通过，默认）/ Release（含边缘场景处理 + 测试覆盖） | 用户声明或推断 |
 | **Output Target** | 开发团队（提交 PR 前的代码变更 + 变更报告） | 用户明示或推断 |
@@ -80,10 +80,16 @@ argument-hint: "[任务描述]"
     ├── 5. 验证
     │     ├── 运行 typecheck（如有配置）
     │     ├── 运行 lint（如有配置）
-    │     └── 构建通过（如有配置）
-    └── 6. 交付报告
+    │     ├── 构建通过（如有配置）
+    │     └── 执行架构 Output Packet 中的 verification_strategy
+    ├── 6. Sensor Gate 检查
+    │     ├── Build/Test：命令是否真实运行或明确说明未运行原因
+    │     ├── Fake Test：测试是否验证真实行为，而非只测空壳
+    │     ├── Privacy/Security：是否误改 secrets、PII、权限、日志
+    │     └── Overengineering：是否超出架构边界或引入多余抽象
+    └── 7. 交付报告
           ├── 变更文件清单 + 每个文件的变更摘要
-          ├── 验证结果
+          ├── 验证结果 + Evidence Packet
           └── 后续推荐
 ```
 
@@ -117,13 +123,25 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重
 
 ### 验证结果
 
-- typecheck: ✅ 通过
-- lint: ✅ 通过
-- build: ✅ 通过
+- typecheck: PASS / FAIL / NOT_RUN — [命令 + 关键输出或原因]
+- lint: PASS / FAIL / NOT_RUN — [命令 + 关键输出或原因]
+- test: PASS / FAIL / NOT_RUN — [命令 + 关键输出或原因]
+- build: PASS / FAIL / NOT_RUN — [命令 + 关键输出或原因]
+- manual smoke: PASS / FAIL / NOT_RUN — [核心路径步骤或原因]
 
 ### 注意事项
 
 - [如有需要用户关注的点]
+
+### Evidence Packet
+
+| 证据类型 | 证据 |
+|---|---|
+| Files changed / artifacts | [文件路径清单] |
+| Checks run | [命令 + 关键输出；未运行写 NOT_RUN + 原因] |
+| Manual verification | [浏览器/CLI/截图/人工 smoke 步骤；无则说明原因] |
+| Open risks | [未验证项、架构偏差、需要人工审查点] |
+| Completion claim | PASS / PARTIAL / BLOCKED + 理由 |
 ```
 
 ### 代码变更（实际文件修改）
@@ -137,10 +155,14 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重
 - [ ] 无 force push
 - [ ] typecheck 通过（或项目无此配置）
 - [ ] lint 通过（或项目无此配置）
+- [ ] tests/build/manual smoke 已按 verification_strategy 执行或明确 NOT_RUN 原因
+- [ ] 无 fake test（测试断言证明真实行为，不只是函数存在/页面渲染）
+- [ ] 无 fake UI（新增按钮/状态/文案有真实行为或明确标注不可用）
+- [ ] Privacy/Security 影响已检查（secrets、PII、权限、日志）
 - [ ] 代码风格与项目已有代码一致
 - [ ] 无硬编码值（应提取为常量的已提取）
 - [ ] 错误已处理（不静默吞错）
-- [ ] 变更报告已产出
+- [ ] 变更报告和 Evidence Packet 已产出
 
 ## 后续推荐
 
@@ -158,8 +180,20 @@ Gate 失败 ≠ 终止：标注原因 → 回到对应步骤修正 → 最多重
 - **open_assumptions**: [标注 `[假设]` 的待验证项（如性能影响、兼容性假设）]
 - **next_skill_hint**: `pm-code-review`（实现完成后审查代码质量）
 - **handoff_context**: 下游需要但不在变更报告中的上下文（如被推迟到 backlog 的关联变更、已知的边缘场景缺口、架构偏差的原因）
+- **evidence_packet**: [Files changed / Checks run / Manual verification / Open risks / Completion claim]
+- **sensor_gates**: [Build-Test / Fake-Test / Fake-UI / Privacy-Security / Overengineering 的结果]
 
 **下游消费方式**：pm-code-review 的 Intent Packet "Context Sources" 字段引用此 packet 的 `artifact_path` 和 `key_decisions`。
+
+## Sensor Gates
+
+| Sensor | 触发条件 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Build/Test** | 任意代码变更 | 运行项目实际命令；无命令时写 NOT_RUN + 原因 + manual smoke | Pause→失败先修根因；同一问题 3 次失败停手重审 |
+| **Fake Test** | 新增/修改测试或声称测试通过 | 断言是否覆盖真实行为、边界和失败路径 | Pause→补测试；无法补则 Completion claim 降为 PARTIAL |
+| **Fake UI** | 新增 UI、按钮、状态、提示 | 每个可见操作是否有真实行为/状态处理 | Pause→实现真实行为或移除/标注不可用入口 |
+| **Privacy/Security** | 数据、权限、日志、外部集成 | 扫描 secrets、PII、权限变化、敏感日志 | Block→修复后重新验证 |
+| **Overengineering** | 新依赖、新抽象、跨模块改动 | 与架构 Output Packet 对照，解释必要性 | Pause→回退多余抽象或请求架构更新 |
 
 ## Meta-Review
 

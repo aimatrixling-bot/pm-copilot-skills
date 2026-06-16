@@ -23,7 +23,7 @@ argument-hint: "[产品/功能名称]"
 |---|---|---|
 | **Want** | 为产品/功能制定结构化发布计划与检查清单，避免上线灾难 | 用户输入剥离"我们准备上线了"后的任务本质 |
 | **Constraints** | 必须有回滚方案、监控指标 ≥ 3 个、In-Scope/Out-of-Scope 明确 | Iron Law |
-| **Context Sources** | 产品/功能名称 + PRD/Roadmap（Glob 搜索）+ 发布策略偏好 + `references/launch-checklist-template.md` + `references/quality-checklist.md` | 用户提供 + Glob + Read |
+| **Context Sources** | 产品/功能名称 + PRD/Roadmap（Glob 搜索）+ 上游 Evidence Packet/审查报告 + 发布策略偏好 + `references/launch-checklist-template.md` + `references/quality-checklist.md` | 用户提供 + Glob + Read |
 | **Depth** | Draft（标准检查清单）/ Review（完整发布计划含时间线+沟通+回滚，默认）/ Release（含灰度阶段+责任人+签字确认） | 用户声明或推断（Guided/Quick 模式） |
 | **Output Target** | 发布团队（PM/工程/设计/运营/客服）+ 发布决策者 | 用户明示或推断 |
 
@@ -51,7 +51,7 @@ argument-hint: "[产品/功能名称]"
 
 | 维度 | CAN（可以做） | CANNOT → HANDOFF（不做，转交） |
 |---|---|---|
-| **任务类型** | 发布计划（范围+策略+时间线）、发布检查清单（工程/设计/营销/支持/运营/合规）、回滚方案、监控指标定义、沟通计划 | PRD/技术方案撰写 → pm-prd/pm-code-architect；运维告警系统配置 → SRE/DevOps；营销文案撰写 → pm-content-general |
+| **任务类型** | 发布计划（范围+策略+时间线）、发布检查清单（工程/设计/营销/支持/运营/合规）、回滚方案、监控指标定义、沟通计划、发布就绪证据审查 | PRD/技术方案撰写 → pm-prd/pm-code-architect；运维告警系统配置 → SRE/DevOps；营销文案撰写 → pm-content-general；实际发布执行 → 人工负责人/CI |
 | **输出格式** | inline Markdown + 检查清单表格 + 时间线 | Gantt 图/项目管理工具导入文件 → 用户自行导出；新闻稿 → pm-content-general |
 | **深度范围** | 单次处理 1 个产品/功能的发布计划；从标准清单到含灰度阶段的完整计划 | 多产品并行发布编排 → 用户自行管理；发布后复盘 → pm-retro |
 
@@ -86,12 +86,16 @@ argument-hint: "[产品/功能名称]"
     ├── 1. 模式判断（Guided/Quick）
     ├── 2. 读取上下文（Glob 搜索 PRD/Roadmap）
     ├── 3. 按模式执行
-    ├── 4. Iron Law 检查
+    ├── 4. Release Evidence 检查
+    │     ├── 构建/安装包/部署制品是否存在？
+    │     ├── 上游测试、代码审查、原型/PRD 映射证据是否齐全？
+    │     └── privacy/security 扫描是否覆盖 secrets、PII、权限、日志？
+    ├── 5. Iron Law 检查
     │     ├── 回滚方案已定义？
     │     ├── 监控指标 ≥ 3 个有阈值？
     │     └── In-Scope/Out-of-Scope 明确？
-    ├── 5. 标注检查（[默认] [假设] [待确认]）
-    └── 6. 交付 + 建议下一步（→ pm-prd 迭代）
+    ├── 6. 标注检查（[默认] [假设] [待确认]）
+    └── 7. 交付 + 建议下一步（→ pm-prd 迭代）
 ```
 
 ## 交付前检查
@@ -100,11 +104,15 @@ argument-hint: "[产品/功能名称]"
 - [ ] 目标用户群体和影响范围已定义
 - [ ] 发布策略已选择
 - [ ] 发布前检查清单完整（技术+产品+合规）
+- [ ] 发布制品存在并可定位（构建产物、安装包、部署版本、commit/tag）
+- [ ] 上游 Evidence Packet / 代码审查 / 测试结果已检查
 - [ ] 回滚方案已定义（触发条件+步骤+时间）
+- [ ] 回滚/降级路径已演练或明确未演练原因
 - [ ] 内外部沟通计划已列出
 - [ ] 监控指标 ≥ 3 个，含告警阈值
 - [ ] 发布时间线有关键里程碑
 - [ ] 发布后验证步骤可执行
+- [ ] Privacy/Security 检查覆盖 secrets、PII、权限、日志、第三方集成
 - [ ] 所有推断标注 [假设]，自动填充标注 [默认]
 
 ## 发布策略选择
@@ -141,6 +149,39 @@ Launch Checklist
 | 不通知客服 | 用户来电客服不知道 | 提前培训客服、准备 FAQ |
 | 忘记监控 | 发布后不知道是否有问题 | 发布前配置 ≥3 个关键指标告警 |
 | 文档滞后 | 用户看到新功能但无文档 | 文档与功能同步发布 |
+
+## Release Evidence Packet
+
+发布计划如果用于上线决策，必须附上发布证据；如果只是 Draft 计划，明确标注还缺哪些证据。
+
+| 证据类型 | 要求 |
+|---|---|
+| **Release artifact** | 构建产物、安装包、部署版本、commit/tag、下载地址或 CI run |
+| **Checks run** | typecheck/lint/test/build/review/security/privacy 的状态和来源 |
+| **Rollback readiness** | 回滚触发条件、操作步骤、预计恢复时间、是否演练 |
+| **Monitoring readiness** | ≥3 个业务/系统指标、阈值、看板/告警位置、负责人 |
+| **Open risks** | 未验证项、需要签字项、延期项、人工审批点 |
+| **Go/No-Go claim** | GO / NO-GO / GO-WITH-RISKS + 理由 |
+
+## Sensor Gates
+
+| Sensor | 触发条件 | 检查方式 | 失败处理 |
+|---|---|---|---|
+| **Release Artifact** | 用户说 ready to ship / 上线 / 发布 | 必须定位具体构建产物、commit/tag 或 CI run | Block→没有制品不得给 GO |
+| **Evidence Completeness** | 有上游实现/审查 | 检查 Evidence Packet、代码审查、测试/构建结果 | Block→关键证据缺失时 NO-GO |
+| **Rollback Drill** | 非低风险发布 | 回滚步骤是否可执行、责任人明确、RTO 有估计 | Pause→补演练或降级 GO-WITH-RISKS |
+| **Privacy/Security** | 数据、权限、日志、第三方集成 | secrets、PII、权限、敏感日志、合规公告 | Block→高风险未处理不得发布 |
+| **Monitoring** | 所有发布 | 指标、阈值、看板、告警负责人齐全 | Pause→补监控后再 GO |
+
+## Output Packet
+
+- **artifact_path**: inline 发布计划或 `docs/launch/[feature-name].md`
+- **artifact_type**: `launch_plan`
+- **key_decisions**: [发布策略 + Go/No-Go 结论 + 主要风险 ≤ 3 条]
+- **open_assumptions**: [标注 `[假设]` 或 `[待确认]` 的发布输入]
+- **release_evidence_packet**: [Release artifact / Checks run / Rollback readiness / Monitoring readiness / Open risks / Go-NoGo claim]
+- **next_skill_hint**: `pm-code-implement`（修复阻塞）/ `pm-code-review`（补审查）/ `pm-content-general`（发布沟通材料）
+- **handoff_context**: 下游或人工发布负责人需要知道的签字项、延期项、窗口期、回滚联系人
 
 ## Meta-Review
 
