@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 阶段：Milestone 3.8 final 1.0 release seal
+- 阶段：Milestone 3.8.1 multi-runtime smoke seal
 - 源蓝图：`D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS\rebuildToAIBuilderOS All.md`
 - 当前 npm 包名：`pm-copilot-skills`
 - 产品身份：AI Builder OS
@@ -136,6 +136,7 @@ _archived/pm-copilot-legacy-v1.0/
 12. Milestone 3.5 的 Release Candidate seal 记录在 `docs/release-seal-m3.5.md`，用于说明 1.0 RC 的 git 状态、package surface、install surface、archive surface、release gates、tag/push/package rename 建议和剩余风险。
 13. Milestone 3.7 的 package/repo migration dry-run seal 记录在 `docs/release-seal-m3.7.md`，用于说明 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 dry-run contract。
 14. Milestone 3.8 的 final 1.0 release seal 记录在 `docs/release-seal-m3.8.md`，用于冻结正式 package names、versions、release tag、publish 顺序和 post-release verification。
+15. Milestone 3.8.1 的 multi-runtime smoke seal 记录在 `docs/release-seal-m3.8.1.md`，用于确认 Codex、Claude Code 和 generic-agent/QoderWork 的安装、导出和加载边界。
 15. `docs/release-plan-1.0.md` 是 1.0 命名、迁移、发布顺序和兼容策略的当前计划。
 16. Runtime adapters 是投影说明，不是独立源头。
 

@@ -113,7 +113,8 @@ const required = [
   'docs/release-seal-m3.4.md',
   'docs/release-seal-m3.5.md',
   'docs/release-seal-m3.7.md',
-  'docs/release-seal-m3.8.md'
+  'docs/release-seal-m3.8.md',
+  'docs/release-seal-m3.8.1.md'
 ];
 const missing = required.filter(p => !files.includes(p));
 if (missing.length) {

@@ -10,7 +10,7 @@
 >
 > 默认输出语言：用户可见报告、检查结果、原型文案、交接材料以**中文为主**；代码、字段名、命令、API、包名、行业通用缩写和固定术语可保留英文。
 >
-> 当前阶段：Milestone 3.8 final 1.0 release seal。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.8 冻结 `ai-builder-os@1.0.0` 主包和 `pm-copilot-skills@1.0.0` 兼容包的发布策略、tag 顺序和 post-release verification，不执行 npm publish。
+> 当前阶段：Milestone 3.8.1 multi-runtime smoke seal。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.8 冻结 `ai-builder-os@1.0.0` 主包和 `pm-copilot-skills@1.0.0` 兼容包的发布策略、tag 顺序和 post-release verification，M3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 消费路径；不执行 npm publish。
 >
 > legacy archive：旧 `pm-*` skills、legacy utilities 和原 `skills/references/` 已归档到 [`_archived/pm-copilot-legacy-v1.0/`](_archived/pm-copilot-legacy-v1.0/)，不再默认安装为 active skills。
 >
@@ -68,7 +68,7 @@ AI Builder OS
 | `builder-review` | 评审规格、原型、Agent 输出和证据 | Review Report / Evidence Audit |
 | `builder-decision` | 记录关键取舍 | Decision Record |
 
-Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。
+Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。
 
 ## Benchmark Synthesis（标杆综合）
 
@@ -109,6 +109,32 @@ npx -p pm-copilot-skills ai-builder-os codex
 默认不会覆盖目标目录中已有、且不是由 `pm-copilot-skills` 安装的 skill。确实需要覆盖时显式追加 `--overwrite`。
 
 安装器默认只安装 8 个 `builder-*` active skills，并为每个 builder skill 投影共享 `kernel`、`references`、`templates`、`adapters` 资源。旧 `pm-*`、`download-anything`、`pdf`、`pptx` 和旧 `skills/references` 不再默认安装；若目标目录中存在由本包旧版本安装的 legacy 副本，安装器会根据 `.pm-copilot-skills-source.json` marker 清理它们。
+
+### 安装未发布的当前分支最新版
+
+在 M3.9 正式 npm publish 前，`npx ai-builder-os` 还不能代表最新主包。需要把当前分支安装到其他 runtime 时，从本地 checkout 执行：
+
+```bash
+cd "D:\Max Brain for AI Copilot\30_Projects\personal\pm-copilot-skills"
+
+# Codex 用户级
+node install.js codex --overwrite
+
+# Claude Code 全局
+node install.js global --overwrite
+
+# generic-agent / QoderWork 文件投影
+npm run export:runtime -- --target generic-agent --out "<runtime-readable-dir>" --clean
+```
+
+Claude Code 项目级安装需要在目标项目目录执行：
+
+```bash
+cd "<target-project>"
+node "D:\Max Brain for AI Copilot\30_Projects\personal\pm-copilot-skills\install.js" project --overwrite
+```
+
+QoderWork 当前按 `generic-agent` 消费：读取 `<runtime-readable-dir>/.ai-builder-os/export-manifest.json`，默认入口使用 `skills/builder-router/SKILL.md`，需要 Plan/Goal 决策时使用 `skills/builder-plan-goal/SKILL.md`。
 
 ## AI Builder OS package surface
 
