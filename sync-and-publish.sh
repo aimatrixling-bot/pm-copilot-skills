@@ -62,6 +62,7 @@ npm run validate:builder-os
 npm run validate:package-surface
 npm run validate:runtime-adapters
 npm run validate:trigger-descriptions
+npm run validate:dual-package-dry-run
 npm run validate:doctor-preference-e2e
 npm run test:doctor-preference-e2e
 
@@ -85,6 +86,7 @@ const required = [
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
+  'scripts/validate-dual-package-dry-run.js',
   'scripts/validate-doctor-preference-e2e.js',
   'evals/builder-os-trigger-evals.json',
   'evals/trigger/builder-description.cases.json',
@@ -105,10 +107,14 @@ const required = [
   'adapters/codex/adapter.json',
   'adapters/claude-code/adapter.json',
   'adapters/generic-agent/adapter.json',
+  'docs/release-plan-1.0.md',
   'docs/release-seal-m3.2.md',
   'docs/release-seal-m3.3.md',
   'docs/release-seal-m3.4.md',
-  'docs/release-seal-m3.5.md'
+  'docs/release-seal-m3.5.md',
+  'docs/release-seal-m3.7.md',
+  'docs/release-seal-m3.8.md',
+  'docs/release-seal-m3.8.1.md'
 ];
 const missing = required.filter(p => !files.includes(p));
 if (missing.length) {
