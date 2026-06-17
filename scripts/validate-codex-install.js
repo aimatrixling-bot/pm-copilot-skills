@@ -5,26 +5,47 @@ const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const home = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH;
-const codexHome = process.env.CODEX_HOME || path.join(home, '.codex');
-const targetDir = path.join(codexHome, 'skills');
+const targetDir = path.join(home, '.agents', 'skills');
 const markerName = '.pm-copilot-skills-source.json';
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 
-const expectedEntries = fs.readdirSync(path.join(root, 'skills')).filter((entry) => {
+const sourceEntries = fs.readdirSync(path.join(root, 'skills')).filter((entry) => {
   return fs.statSync(path.join(root, 'skills', entry)).isDirectory();
 });
+const expectedEntries = sourceEntries.filter((entry) => entry.startsWith('builder-'));
 
-const pmSkills = expectedEntries.filter((entry) => entry.startsWith('pm-'));
-const externallyAllowed = new Set(['pdf']);
+const pmSkills = sourceEntries.filter((entry) => entry.startsWith('pm-'));
+const builderSkills = sourceEntries.filter((entry) => entry.startsWith('builder-'));
+const legacyInstalledNames = new Set(['download-anything', 'pdf', 'pptx', 'references']);
 const failures = [];
 const warnings = [];
+const builderSharedResources = [
+  'kernel/README.md',
+  'kernel/gates/design-consistency-gate.zh.md',
+  'references/README.md',
+  'references/skill-design/README.md',
+  'references/skill-design/skill-design-playbook.zh.md',
+  'references/ui-ux/design-principles.zh.md',
+  'references/ui-ux/component-guidelines.zh.md',
+  'references/ui-ux/interaction-patterns.zh.md',
+  'references/ui-ux/visual-style.zh.md',
+  'templates/README.md',
+  'templates/agent-task-packet/template.md',
+  'templates/decision-record/template.md',
+  'templates/prototype-brief/template.md',
+  'templates/review-report/template.md',
+  'templates/skill-hardening-brief/template.md',
+  'templates/design-brief/template.md',
+];
 
 function assert(condition, message) {
   if (!condition) failures.push(message);
 }
 
-assert(fs.existsSync(targetDir), `Codex skills 目录不存在: ${targetDir}`);
-assert(pmSkills.length === 16, `源目录中 PM skills 数量应为 16，实际为 ${pmSkills.length}`);
+assert(fs.existsSync(targetDir), `Codex 用户级 skills 目录不存在: ${targetDir}`);
+assert(pmSkills.length === 0, `源目录 active surface 不应包含 PM skills，实际为 ${pmSkills.length}`);
+assert(builderSkills.length === 8, `源目录中 builder skills 数量应为 8，实际为 ${builderSkills.length}`);
+assert(expectedEntries.length === 8, `Codex active install surface 应为 8 个 builder skills，实际为 ${expectedEntries.length}`);
 
 for (const entry of expectedEntries) {
   const dest = path.join(targetDir, entry);
@@ -47,24 +68,57 @@ for (const entry of expectedEntries) {
     } catch (error) {
       failures.push(`${entry} 的安装标记不是合法 JSON: ${error.message}`);
     }
-  } else if (externallyAllowed.has(entry)) {
-    warnings.push(`${entry} 已存在但没有 pm-copilot-skills 标记，视为保留外部已有 skill`);
   } else {
     failures.push(`${entry} 缺少 ${markerName} 安装标记`);
   }
 }
 
-const installedPmSkills = fs.readdirSync(targetDir).filter((entry) => {
-  return entry.startsWith('pm-') && fs.statSync(path.join(targetDir, entry)).isDirectory();
+const installedBuilderSkills = fs.readdirSync(targetDir).filter((entry) => {
+  return entry.startsWith('builder-') && fs.statSync(path.join(targetDir, entry)).isDirectory();
 });
-assert(installedPmSkills.length >= 16, `Codex 目录中的 PM skills 少于 16，实际为 ${installedPmSkills.length}`);
+assert(installedBuilderSkills.length >= 8, `Codex 用户级目录中的 builder skills 少于 8，实际为 ${installedBuilderSkills.length}`);
 
-const qualityGates = path.join(targetDir, 'references', 'quality-gates-shared.md');
-assert(fs.existsSync(qualityGates), 'Codex references 缺少 quality-gates-shared.md');
-if (fs.existsSync(qualityGates)) {
-  const content = fs.readFileSync(qualityGates, 'utf8');
-  assert(content.includes('默认语言协议'), 'Codex references 未包含中文优先语言协议');
-  assert(content.includes('Evidence Packet'), 'Codex references 未包含 Evidence Packet 协议');
+function isPackageOwned(dest) {
+  const markerFile = path.join(dest, markerName);
+  if (!fs.existsSync(markerFile)) return false;
+  try {
+    const marker = JSON.parse(fs.readFileSync(markerFile, 'utf8'));
+    return marker.package === packageJson.name;
+  } catch {
+    return false;
+  }
+}
+
+const packageOwnedLegacyEntries = fs.readdirSync(targetDir).filter((entry) => {
+  const dest = path.join(targetDir, entry);
+  if (!fs.statSync(dest).isDirectory()) return false;
+  if (!entry.startsWith('pm-') && !legacyInstalledNames.has(entry)) return false;
+  return isPackageOwned(dest);
+});
+assert(
+  packageOwnedLegacyEntries.length === 0,
+  `Codex 用户级目录仍存在本包安装过的 legacy active surface: ${packageOwnedLegacyEntries.join(', ')}`,
+);
+
+for (const skillName of installedBuilderSkills) {
+  const dest = path.join(targetDir, skillName);
+  if (!isPackageOwned(dest)) continue;
+  assert(
+    builderSkills.includes(skillName),
+    `Codex 用户级目录存在非 active builder skill 且由本包安装: ${skillName}`,
+  );
+}
+
+for (const skillName of builderSkills) {
+  const skillDir = path.join(targetDir, skillName);
+  if (!fs.existsSync(skillDir)) continue;
+
+  for (const relativePath of builderSharedResources) {
+    assert(
+      fs.existsSync(path.join(skillDir, relativePath)),
+      `${skillName} 缺少共享资源 ${relativePath}`,
+    );
+  }
 }
 
 if (failures.length > 0) {
@@ -77,7 +131,8 @@ if (failures.length > 0) {
 
 console.log('Codex 安装验证通过。');
 console.log(`目标目录: ${targetDir}`);
-console.log(`已验证 ${expectedEntries.length} 个 package 目录，其中 PM skills ${pmSkills.length} 个。`);
+console.log(`已验证 ${expectedEntries.length} 个 AI Builder OS active builder skills。`);
+console.log('提示: legacy pm-copilot skills、pdf、pptx、download-anything 和 skills/references 不再默认安装。');
 for (const warning of warnings) {
   console.log(`提示: ${warning}`);
 }

@@ -1,0 +1,81 @@
+{
+  "suite": "builder-routing",
+  "status": "draft",
+  "cases": [
+    {
+      "id": "idea-to-agent-task-path",
+      "input": "我是非程序员，想做一个个人项目，让 Codex 帮我实现，但我不知道怎么描述任务。",
+      "expected_path": [
+        "builder-router",
+        "builder-frame",
+        "builder-spec",
+        "builder-agent-task"
+      ],
+      "must_include": ["non_goals", "verification", "human_approval_gates"]
+    },
+    {
+      "id": "fuzzy-intent-to-spec-path",
+      "input": "我们要把一个含糊的业务想法整理成能评审的需求。",
+      "expected_path": [
+        "builder-router",
+        "builder-frame",
+        "builder-spec"
+      ],
+      "must_include": ["problem", "spec_readiness", "acceptance_criteria"]
+    },
+    {
+      "id": "large-codex-work-plan-goal-path",
+      "input": "请帮我把一个大仓库改造成可安装的 skill pack，我需要分阶段让 Codex 执行。",
+      "expected_path": [
+        "builder-router",
+        "builder-plan-goal",
+        "builder-agent-task"
+      ],
+      "must_include": ["milestones", "copy_ready_goal_prompt", "stop_conditions"]
+    },
+    {
+      "id": "builder-plan-goal-to-prototype-handoff-path",
+      "input": "我想做一个企业 AI Agent 应用原型，但目标还比较大，先帮我决定怎么让 Codex 开始。",
+      "expected_path": [
+        "builder-router",
+        "builder-plan-goal",
+        "builder-frame",
+        "builder-prototype",
+        "builder-agent-task"
+      ],
+      "must_include": ["Plan -> Goal", "builder-frame", "builder-prototype", "Milestone 1"]
+    },
+    {
+      "id": "builder-plan-goal-to-review-handoff-path",
+      "input": "Codex 已经做完第一个 milestone，我要判断结果能不能继续下一个 Goal。",
+      "expected_path": [
+        "builder-router",
+        "builder-plan-goal",
+        "builder-review"
+      ],
+      "must_include": ["verification", "evidence", "next Goal"]
+    },
+    {
+      "id": "ui-spec-to-design-brief-path",
+      "input": "把这个工作台需求整理成可交给原型和 Codex 实现的规格，同时保持组件、状态、响应式一致。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-prototype",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": ["Design Brief", "Design Consistency Gate", "ui_states", "responsive_requirements"]
+    },
+    {
+      "id": "review-to-decision-record-path",
+      "input": "评审发现这个里程碑证据不足，但我们决定先接受 mock 数据进入下一步，请把这个取舍和反转条件记录下来。",
+      "expected_path": [
+        "builder-router",
+        "builder-review",
+        "builder-decision"
+      ],
+      "must_include": ["evidence_audit", "tradeoffs", "reversal_conditions", "follow_up"]
+    }
+  ]
+}

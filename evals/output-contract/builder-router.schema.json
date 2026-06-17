@@ -1,0 +1,31 @@
+{
+  "name": "builder-router-output-contract",
+  "required": [
+    "route_type",
+    "recommended_mode",
+    "recommended_skill",
+    "reasoning_summary",
+    "missing_context",
+    "risk_flags",
+    "next_prompt",
+    "handoff_packet"
+  ],
+  "route_type_values": [
+    "answer",
+    "prompt",
+    "plan",
+    "goal",
+    "plan_to_goal",
+    "skill_route",
+    "ask_first"
+  ],
+  "handoff_targets": [
+    "builder-plan-goal",
+    "builder-frame",
+    "builder-spec",
+    "builder-prototype",
+    "builder-agent-task",
+    "builder-review",
+    "builder-decision"
+  ]
+}

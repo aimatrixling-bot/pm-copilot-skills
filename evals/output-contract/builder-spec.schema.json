@@ -1,0 +1,34 @@
+{
+  "name": "builder-spec-output-contract",
+  "required": [
+    "spec_type",
+    "objective",
+    "users",
+    "scope",
+    "non_goals",
+    "requirements",
+    "flows",
+    "states",
+    "edge_cases",
+    "acceptance_criteria",
+    "rejection_criteria",
+    "verification_plan",
+    "assumptions",
+    "open_questions",
+    "risks",
+    "next_skill_hint"
+  ],
+  "optional": [
+    "design_brief",
+    "ui_states",
+    "interaction_requirements",
+    "responsive_requirements",
+    "accessibility_notes"
+  ],
+  "spec_type_values": [
+    "mini_spec",
+    "prd",
+    "engineering_request",
+    "agent_readable_spec"
+  ]
+}

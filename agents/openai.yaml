@@ -1,0 +1,42 @@
+name: ai-builder-os
+display_name: AI Builder OS
+version: 0.7.0
+package_name: pm-copilot-skills
+package_surface: pure-builder-core
+runtime_export:
+  script: scripts/export-ai-builder-os.js
+  validator: scripts/validate-runtime-adapters.js
+language_policy: chinese-first
+description: >
+  AI Builder OS helps product managers, enterprise digital practitioners,
+  AI product builders, non-programmers, and independent creators turn fuzzy
+  ideas, business problems, product requirements, or personal projects into
+  agent-executable, verifiable, reusable build workflows.
+active_skills:
+  - builder-router
+  - builder-plan-goal
+  - builder-frame
+  - builder-spec
+  - builder-prototype
+  - builder-agent-task
+  - builder-review
+  - builder-decision
+runtime_adapters:
+  - codex
+  - claude-code
+  - generic-agent
+release_gates:
+  - npm run validate:builder-os
+  - npm run validate:package-surface
+  - npm run validate:codex-install
+  - npm run validate:runtime-adapters
+  - npm run validate:trigger-descriptions
+  - npm run validate:doctor-preference-e2e
+  - npm run test:doctor-preference-e2e
+  - npm pack --dry-run --json
+compatibility:
+  npm_package_name: pm-copilot-skills
+  command_aliases:
+    - pm-copilot-skills
+    - ai-builder-os
+  legacy_archive: _archived/pm-copilot-legacy-v1.0/

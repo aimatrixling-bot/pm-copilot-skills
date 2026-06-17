@@ -1,0 +1,11 @@
+{
+  "name": "claude-code",
+  "display_name": "Claude Code",
+  "export_layout": "flat-skill-root",
+  "default_target": "~/.claude/skills",
+  "invocation_prefix": "/",
+  "skill_directory": "<target>/<skill-name>",
+  "embedded_shared_resources": true,
+  "metadata_directory": ".ai-builder-os",
+  "expected_active_skill_count": 8
+}

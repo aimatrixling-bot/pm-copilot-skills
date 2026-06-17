@@ -1,0 +1,47 @@
+{
+  "name": "builder-plan-goal-output-contract",
+  "required": [
+    "mode_recommendation",
+    "reasoning_summary",
+    "missing_context",
+    "risk_level",
+    "recommended_workflow",
+    "copy_ready_plan_prompt",
+    "copy_ready_goal_prompt",
+    "milestones",
+    "stop_conditions",
+    "handoff_packet"
+  ],
+  "mode_values": [
+    "Prompt",
+    "Plan",
+    "Goal",
+    "Plan -> Goal",
+    "Ask First"
+  ],
+  "final_response_sections": [
+    "模式建议",
+    "判断理由",
+    "当前风险",
+    "推荐工作流",
+    "可直接复制的提示词",
+    "拆分后的里程碑",
+    "下一步建议"
+  ],
+  "required_reference_files": [
+    "decision-rules.zh.md",
+    "plan-template.zh.md",
+    "goal-template.zh.md",
+    "anti-patterns.zh.md",
+    "examples.zh.md",
+    "output-format.zh.md"
+  ],
+  "handoff_targets": [
+    "builder-frame",
+    "builder-spec",
+    "builder-prototype",
+    "builder-agent-task",
+    "builder-review",
+    "builder-decision"
+  ]
+}

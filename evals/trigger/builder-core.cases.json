@@ -1,0 +1,150 @@
+{
+  "suite": "builder-core-trigger",
+  "status": "draft",
+  "cases": [
+    {
+      "id": "trigger-plan-large-task",
+      "name": "Large ambiguous builder task should route to plan",
+      "input": "我想做一个新品上市流程智能体应用，先帮我看看怎么开始。",
+      "context": "No existing spec or prototype.",
+      "expected_skill": "builder-router",
+      "expected_mode": "plan",
+      "expected_outputs": ["mode recommendation", "missing context", "next prompt"],
+      "must_include": ["Plan", "Feature Frame", "Agent Task Packet"],
+      "must_not_include": ["direct implementation"],
+      "quality_rubric": "route before execution"
+    },
+    {
+      "id": "trigger-prototype",
+      "name": "Prototype request should route to builder-prototype",
+      "input": "基于这个 PRD 做一个可交互原型，并检查按钮和空状态。",
+      "context": "PRD exists.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "skill",
+      "expected_outputs": ["prototype artifact", "Evidence Packet"],
+      "must_include": ["Fake UI Gate"],
+      "must_not_include": ["PRD-only output"],
+      "quality_rubric": "visual request routes to prototype"
+    },
+    {
+      "id": "trigger-plan-goal-mode-selection",
+      "name": "Agentic execution request should route to builder-plan-goal",
+      "input": "这件事比较大，我应该给 Codex 写 /plan 还是 /goal？请给我可复制的提示词。",
+      "context": "The user wants execution-mode guidance before agent work.",
+      "expected_skill": "builder-plan-goal",
+      "expected_mode": "mode_selection",
+      "expected_outputs": ["mode_recommendation", "copy_ready_plan_prompt", "copy_ready_goal_prompt"],
+      "must_include": ["Prompt", "Plan", "Goal", "stop_conditions"],
+      "must_not_include": ["direct code edit"],
+      "quality_rubric": "select mode before execution"
+    },
+    {
+      "id": "trigger-plan-goal-simple-prompt",
+      "name": "Small clear task should stay ordinary Prompt",
+      "input": "把登录页标题从 Submit 改成 Save，这需要 /goal 吗？",
+      "context": "Single small copy change.",
+      "expected_skill": "builder-plan-goal",
+      "expected_mode": "prompt",
+      "expected_outputs": ["mode_recommendation", "reasoning_summary", "copy_ready_prompt"],
+      "must_include": ["普通 Prompt", "不需要 Plan/Goal"],
+      "must_not_include": ["Plan -> Goal"],
+      "quality_rubric": "avoid over-triggering goal"
+    },
+    {
+      "id": "trigger-plan-goal-production-risk",
+      "name": "Production database migration should ask first",
+      "input": "帮我写个目标，让 Agent 自动迁移生产数据库 schema 并上线。",
+      "context": "High-risk production data operation with missing approval.",
+      "expected_skill": "builder-plan-goal",
+      "expected_mode": "ask_first",
+      "expected_outputs": ["missing_context", "risk_level", "stop_conditions"],
+      "must_include": ["先提问", "人工批准", "回滚"],
+      "must_not_include": ["direct goal execution"],
+      "quality_rubric": "block unsafe goal conversion"
+    },
+    {
+      "id": "trigger-plan-goal-ai-builder-handoff",
+      "name": "AI Builder OS prototype request should include handoff",
+      "input": "我想做一个新品上市流程的企业 AI Agent 应用原型，帮我让 Codex 开始做。",
+      "context": "Product concept is broad and should become plan-to-goal with builder handoff.",
+      "expected_skill": "builder-plan-goal",
+      "expected_mode": "plan_to_goal",
+      "expected_outputs": ["milestones", "copy_ready_plan_prompt", "handoff_packet"],
+      "must_include": ["builder-frame", "builder-prototype", "builder-agent-task"],
+      "must_not_include": ["one-shot full platform goal"],
+      "quality_rubric": "connect plan-goal decision to Builder OS workflow"
+    },
+    {
+      "id": "trigger-feature-frame",
+      "name": "Fuzzy product intent should route to builder-frame",
+      "input": "我想做一个面向产品经理的 AI 工作台，但还没想清楚核心场景。",
+      "context": "No accepted spec exists.",
+      "expected_skill": "builder-frame",
+      "expected_mode": "feature_frame",
+      "expected_outputs": ["problem", "user", "scenario", "success_criteria", "next_skill_hint"],
+      "must_include": ["non_goals", "assumptions", "spec_readiness"],
+      "must_not_include": ["screen-by-screen UI spec"],
+      "quality_rubric": "frame before spec or prototype"
+    },
+    {
+      "id": "trigger-builder-spec",
+      "name": "Accepted frame should route to builder-spec",
+      "input": "基于这份 Feature Frame 写一份可以交给工程和 agent 执行的 Mini Spec，包含验收标准和验证计划。",
+      "context": "Feature Frame exists and is accepted.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "spec",
+      "expected_outputs": ["scope", "requirements", "acceptance_criteria", "verification_plan"],
+      "must_include": ["non_goals", "rejection_criteria", "risks"],
+      "must_not_include": ["implementation-only task list"],
+      "quality_rubric": "spec is buildable and verifiable"
+    },
+    {
+      "id": "trigger-design-brief-from-spec",
+      "name": "UI-facing spec should include Design Brief",
+      "input": "这份需求要做成工作台页面，请在 spec 里明确页面状态、组件约束、响应式和可访问性要求。",
+      "context": "Feature Frame is accepted and the output affects product UI.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "spec",
+      "expected_outputs": ["design_brief", "ui_states", "interaction_requirements", "responsive_requirements"],
+      "must_include": ["Design Brief", "Design Consistency Gate", "empty", "error"],
+      "must_not_include": ["visual-only preference"],
+      "quality_rubric": "UI-facing spec emits design contract"
+    },
+    {
+      "id": "trigger-design-consistency-review",
+      "name": "Prototype review should apply Design Consistency Gate",
+      "input": "请评审这个原型是否和 Design Brief 一致，特别是空态、错误态、移动端和 demo 数据标注。",
+      "context": "Prototype and Design Brief exist.",
+      "expected_skill": "builder-review",
+      "expected_mode": "review",
+      "expected_outputs": ["design_consistency_audit", "evidence_audit", "required_fixes"],
+      "must_include": ["Design Consistency Gate", "component", "responsive", "mock"],
+      "must_not_include": ["approve without evidence"],
+      "quality_rubric": "review checks design consistency before approval"
+    },
+    {
+      "id": "trigger-agent-task-from-spec",
+      "name": "Accepted spec should become an Agent Task Packet",
+      "input": "我已经有 Mini Spec 和 Design Brief 了，请整理成可以直接交给 Codex 执行的任务包，要包含验收标准、验证命令、禁止动作和停止条件。",
+      "context": "Spec and Design Brief exist; user wants another agentic runtime to execute.",
+      "expected_skill": "builder-agent-task",
+      "expected_mode": "agent_task_packet",
+      "expected_outputs": ["target_runtime", "recommended_mode", "acceptance_criteria", "verification", "human_approval_gates"],
+      "must_include": ["non_goals", "forbidden_actions", "blocked_stop_condition", "Design Brief"],
+      "must_not_include": ["direct local implementation"],
+      "quality_rubric": "agent task packet is executable and bounded"
+    },
+    {
+      "id": "trigger-decision-record-from-tradeoff",
+      "name": "Tradeoff should route to builder-decision",
+      "input": "我们要在先做高保真原型还是先做工程任务包之间做决定，请记录选择、被拒绝方案、风险和反转条件。",
+      "context": "The user asks to preserve a product/workflow decision.",
+      "expected_skill": "builder-decision",
+      "expected_mode": "decision_record",
+      "expected_outputs": ["options_considered", "decision", "rationale", "reversal_conditions"],
+      "must_include": ["tradeoffs", "assumptions", "evidence", "follow_up"],
+      "must_not_include": ["prototype implementation"],
+      "quality_rubric": "decision preserves rejected options and reversal conditions"
+    }
+  ]
+}

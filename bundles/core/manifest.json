@@ -1,0 +1,29 @@
+{
+  "name": "ai-builder-os-core",
+  "displayName": "AI Builder OS Core",
+  "description": "Core skills and kernel protocols for turning ideas, requirements, and project context into executable, verifiable AI Builder workflows.",
+  "version": "0.1.0-draft",
+  "status": "draft",
+  "skills": [
+    "builder-router",
+    "builder-plan-goal",
+    "builder-frame",
+    "builder-spec",
+    "builder-prototype",
+    "builder-agent-task",
+    "builder-review",
+    "builder-decision"
+  ],
+  "references": [
+    "kernel/",
+    "harness/",
+    "memory/",
+    "references/",
+    "templates/"
+  ],
+  "target_runtimes": [
+    "codex",
+    "claude-code",
+    "generic-agent"
+  ]
+}

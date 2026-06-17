@@ -1,0 +1,159 @@
+{
+  "suite": "builder-trigger-description",
+  "status": "m3.4",
+  "purpose": "Validate that builder skill frontmatter descriptions carry enough trigger and non-trigger boundary information before Codex loads SKILL.md bodies.",
+  "cases": [
+    {
+      "id": "desc-router-ambiguous-next-step",
+      "input": "我有个产品构建想法，但不知道下一步应该 frame、spec、prototype 还是让 Codex 做。",
+      "expected_skill": "builder-router",
+      "must_include_in_expected_description": ["路由", "不知道下一步", "handoff"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-router-not-direct-artifact",
+      "input": "基于已接受的 Feature Frame 写 Mini Spec 和验收标准。",
+      "expected_skill": "builder-spec",
+      "must_include_in_expected_description": ["Mini Spec", "验收标准", "交付契约"],
+      "confusing_skills": [
+        {
+          "skill": "builder-router",
+          "boundary_terms": ["不要用于已明确要求产出", "对应 builder skill"]
+        }
+      ]
+    },
+    {
+      "id": "desc-plan-goal-copy-ready-goal",
+      "input": "这件事应该写 /plan 还是 /goal？请给我可复制提示词和停止条件。",
+      "expected_skill": "builder-plan-goal",
+      "must_include_in_expected_description": ["Prompt", "Plan", "Goal", "/plan", "/goal", "stop conditions"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-plan-goal-not-agent-task",
+      "input": "我已经有 spec 和验收标准了，请转成可交给 Codex 执行的任务包。",
+      "expected_skill": "builder-agent-task",
+      "must_include_in_expected_description": ["Agent Task Packet", "目标 runtime", "验收标准", "验证命令"],
+      "confusing_skills": [
+        {
+          "skill": "builder-plan-goal",
+          "boundary_terms": ["不要用于直接创建", "Agent Task Packet"]
+        }
+      ]
+    },
+    {
+      "id": "desc-frame-fuzzy-intent",
+      "input": "我想做一个 AI 工作台，但用户是谁、核心场景和成功标准都还没想清楚。",
+      "expected_skill": "builder-frame",
+      "must_include_in_expected_description": ["模糊想法", "Feature Frame", "spec readiness"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-frame-not-after-accepted-frame",
+      "input": "这份 Feature Frame 已确认，请继续写 spec。",
+      "expected_skill": "builder-spec",
+      "must_include_in_expected_description": ["已接受的 Feature Frame", "可构建规格", "验收标准"],
+      "confusing_skills": [
+        {
+          "skill": "builder-frame",
+          "boundary_terms": ["不要用于已有已接受 Feature Frame", "写 spec"]
+        }
+      ]
+    },
+    {
+      "id": "desc-spec-buildable-contract",
+      "input": "基于会议记录写一份可交给 prototype 和 agent-task 消费的规格，要有 Design Brief。",
+      "expected_skill": "builder-spec",
+      "must_include_in_expected_description": ["Design Brief", "prototype", "agent-task"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-spec-not-fuzzy-idea",
+      "input": "我只有一个很粗的业务问题，还没有用户、场景和目标。",
+      "expected_skill": "builder-frame",
+      "must_include_in_expected_description": ["问题", "用户", "场景", "成功标准"],
+      "confusing_skills": [
+        {
+          "skill": "builder-spec",
+          "boundary_terms": ["不要用于还很模糊的想法", "builder-frame"]
+        }
+      ]
+    },
+    {
+      "id": "desc-prototype-visual-artifact",
+      "input": "基于 PRD 做一个 wireframe 和可交互 prototype，包含空态、错误态和响应式检查。",
+      "expected_skill": "builder-prototype",
+      "must_include_in_expected_description": ["prototype", "wireframe", "交互状态", "原型证据"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-prototype-not-design-review",
+      "input": "请评审这个原型是否符合 Design Brief 和 Design Consistency Gate。",
+      "expected_skill": "builder-review",
+      "must_include_in_expected_description": ["design consistency audit", "Evidence Packet", "quality gate"],
+      "confusing_skills": [
+        {
+          "skill": "builder-prototype",
+          "boundary_terms": ["不要用于", "评审既有原型", "builder-review"]
+        }
+      ]
+    },
+    {
+      "id": "desc-agent-task-executable-packet",
+      "input": "把已接受的 spec 转成给 Codex 执行的任务包，包含禁止动作、验证命令和停止条件。",
+      "expected_skill": "builder-agent-task",
+      "must_include_in_expected_description": ["Agent Task Packet", "forbidden actions", "stop condition", "human approval gate"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-agent-task-not-mode-choice",
+      "input": "我还不知道这件事应该给 Codex 写普通 prompt、/plan 还是 /goal。",
+      "expected_skill": "builder-plan-goal",
+      "must_include_in_expected_description": ["普通 Prompt", "Plan", "Goal", "先提问"],
+      "confusing_skills": [
+        {
+          "skill": "builder-agent-task",
+          "boundary_terms": ["不要用于判断 Prompt/Plan/Goal", "builder-plan-goal"]
+        }
+      ]
+    },
+    {
+      "id": "desc-review-evidence-gate",
+      "input": "请 review 这个 release seal 和 Evidence Packet，判断是否 PASS 或 REQUEST_CHANGES。",
+      "expected_skill": "builder-review",
+      "must_include_in_expected_description": ["review", "Evidence Packet", "release seal", "REQUEST_CHANGES"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-review-not-decision-record",
+      "input": "评审后我们决定接受 mock 数据进入下一步，请记录理由、风险和反转条件。",
+      "expected_skill": "builder-decision",
+      "must_include_in_expected_description": ["Decision Record", "反转条件", "被拒绝选项"],
+      "confusing_skills": [
+        {
+          "skill": "builder-review",
+          "boundary_terms": ["不要用于记录已做出的长期取舍", "builder-decision"]
+        }
+      ]
+    },
+    {
+      "id": "desc-decision-tradeoff",
+      "input": "我们要在先做高保真原型还是先做工程任务包之间做决定，并记录被拒绝方案。",
+      "expected_skill": "builder-decision",
+      "must_include_in_expected_description": ["决策", "比较方案", "被拒绝选项", "反转条件"],
+      "confusing_skills": []
+    },
+    {
+      "id": "desc-decision-not-open-review",
+      "input": "请先 audit 这个 prototype 的证据是否可信，还没有最终决策。",
+      "expected_skill": "builder-review",
+      "must_include_in_expected_description": ["audit", "evidence check", "readiness assessment"],
+      "confusing_skills": [
+        {
+          "skill": "builder-decision",
+          "boundary_terms": ["不要用于开放式 review", "audit"]
+        }
+      ]
+    }
+  ]
+}
