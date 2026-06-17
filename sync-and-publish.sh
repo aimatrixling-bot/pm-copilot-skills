@@ -107,7 +107,8 @@ const required = [
   'adapters/generic-agent/adapter.json',
   'docs/release-seal-m3.2.md',
   'docs/release-seal-m3.3.md',
-  'docs/release-seal-m3.4.md'
+  'docs/release-seal-m3.4.md',
+  'docs/release-seal-m3.5.md'
 ];
 const missing = required.filter(p => !files.includes(p));
 if (missing.length) {

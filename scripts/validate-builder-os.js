@@ -16,6 +16,7 @@ const requiredFiles = [
   'docs/release-seal-m3.2.md',
   'docs/release-seal-m3.3.md',
   'docs/release-seal-m3.4.md',
+  'docs/release-seal-m3.5.md',
   'kernel/README.md',
   'kernel/packets/intent-packet.schema.md',
   'kernel/packets/output-packet.schema.md',
@@ -584,6 +585,24 @@ const releaseSealExpectations = {
     'confusing skills',
     'M3.5',
   ],
+  'docs/release-seal-m3.5.md': [
+    'Milestone 3.5',
+    'Release Candidate',
+    'AI Builder OS 1.0 RC',
+    'git status --short',
+    'npm pack --dry-run --json',
+    'validate:builder-os',
+    'validate:codex-install',
+    'active surface',
+    'install surface',
+    'archive surface',
+    'RC 判断',
+    'tag',
+    'push',
+    'package rename',
+    'repo split',
+    'M3.6',
+  ],
 };
 
 const outputContractExpectations = {
@@ -1005,6 +1024,7 @@ const legacyBuilderBlueprint = read('_archived/pm-copilot-legacy-v1.0/skills/ref
 assert(readme.includes('默认输出语言'), 'README 必须在入口位置声明默认输出语言', failures);
 assert(readme.includes('中文优先输出'), 'README 必须说明中文优先输出原则', failures);
 assert(readme.includes('AI Builder OS'), 'README 必须表达 AI Builder OS 产品定位', failures);
+assert(readme.includes('Milestone 3.5'), 'README 必须声明当前阶段是 Milestone 3.5 RC seal', failures);
 assert(readme.includes('八层') || readme.includes('Builder Kernel'), 'README 必须表达 AI Builder OS 架构骨架', failures);
 assert(readme.includes('npx pm-copilot-skills codex'), 'README 必须说明 Codex 安装方式', failures);
 assert(readme.includes('npm run validate:codex-install'), 'README 必须说明 Codex 安装验证方式', failures);

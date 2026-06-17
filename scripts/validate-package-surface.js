@@ -69,6 +69,7 @@ for (const forbiddenFileEntry of ['_archived/', 'research/']) {
 assert(skillPack.name === 'ai-builder-os', 'skill-pack name 必须是 ai-builder-os');
 assert(skillPack.display_name === 'AI Builder OS', 'skill-pack display_name 必须是 AI Builder OS');
 assert(skillPack.version === packageJson.version, 'skill-pack version 必须与 package.json version 一致');
+assert(skillPack.status === 'm3.5-release-candidate-seal', 'skill-pack status 必须声明 m3.5-release-candidate-seal');
 assert(skillPack.package.npm_name === packageJson.name, 'skill-pack package.npm_name 必须与 package.json name 一致');
 assert(sameSet(skillPack.package.bins, Object.keys(packageJson.bin).sort()), 'skill-pack package.bins 必须与 package.json bin 一致');
 assert(skillPack.active_surface.type === 'pure-builder-core', 'skill-pack active_surface.type 必须是 pure-builder-core');
@@ -106,6 +107,7 @@ assert(openaiYaml.includes('npm run validate:trigger-descriptions'), 'agents/ope
 assert(readme.includes('AI Builder OS package surface'), 'README 必须说明 AI Builder OS package surface');
 assert(readme.includes('Runtime adapter/export'), 'README 必须说明 runtime adapter/export');
 assert(readme.includes('Trigger description'), 'README 必须说明 Trigger description gate');
+assert(readme.includes('Milestone 3.5'), 'README 必须说明当前 RC seal 阶段');
 assert(readme.includes('ai-builder-os'), 'README 必须说明 ai-builder-os 命令别名或产品 id');
 assert(readme.includes('兼容 npm package id'), 'README 必须说明 pm-copilot-skills 是兼容 npm package id');
 assert(installScript.includes('ai-builder-os'), 'install.js 必须暴露 ai-builder-os 用法或命令别名说明');
@@ -116,6 +118,7 @@ assert(syncScript.includes('scripts/export-ai-builder-os.js'), 'sync-and-publish
 assert(syncScript.includes('validate:runtime-adapters'), 'sync-and-publish.sh 必须运行 validate:runtime-adapters');
 assert(syncScript.includes('scripts/validate-trigger-descriptions.js'), 'sync-and-publish.sh pack gate 必须检查 trigger description validator');
 assert(syncScript.includes('validate:trigger-descriptions'), 'sync-and-publish.sh 必须运行 validate:trigger-descriptions');
+assert(syncScript.includes('docs/release-seal-m3.5.md'), 'sync-and-publish.sh pack gate 必须检查 M3.5 release seal');
 assert(syncScript.includes('forbiddenPrefixes'), 'sync-and-publish.sh pack gate 必须检查 forbidden package prefixes');
 
 if (failures.length > 0) {

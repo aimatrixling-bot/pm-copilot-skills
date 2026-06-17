@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 阶段：Milestone 3.2 pure AI Builder OS package surface
+- 阶段：Milestone 3.5 AI Builder OS 1.0 Release Candidate seal
 - 源蓝图：`D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS\rebuildToAIBuilderOS All.md`
 - 当前 npm 包名：`pm-copilot-skills`
 - 产品身份：AI Builder OS
@@ -115,7 +115,7 @@ _archived/pm-copilot-legacy-v1.0/
 - 不把归档内容默认安装为 active skill；
 - 不实现 workspace app；
 - 不引入 MCP 或部署集成；
-- 不做 trigger description optimization。
+- Milestone 3.1 本身不做 trigger description optimization；该工作已在 Milestone 3.4 完成。
 
 ## 真相源边界
 
@@ -132,7 +132,8 @@ _archived/pm-copilot-legacy-v1.0/
 9. Milestone 3.2 的 package surface seal 记录在 `docs/release-seal-m3.2.md`，用于说明 manifest、package metadata、command alias、pack gate 和 M3.3 输入。
 10. Milestone 3.3 的 runtime adapter/export seal 记录在 `docs/release-seal-m3.3.md`，用于说明 export tooling、adapter manifests、projection contract 和 M3.4 输入。
 11. Milestone 3.4 的 trigger description seal 记录在 `docs/release-seal-m3.4.md`，用于说明 frontmatter description、confusing skills 和 M3.5 输入。
-12. Runtime adapters 是投影说明，不是独立源头。
+12. Milestone 3.5 的 Release Candidate seal 记录在 `docs/release-seal-m3.5.md`，用于说明 1.0 RC 的 git 状态、package surface、install surface、archive surface、release gates、tag/push/package rename 建议和剩余风险。
+13. Runtime adapters 是投影说明，不是独立源头。
 
 ## 验证策略
 
