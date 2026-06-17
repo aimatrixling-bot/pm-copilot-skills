@@ -17,6 +17,9 @@ const requiredFiles = [
   'docs/release-seal-m3.3.md',
   'docs/release-seal-m3.4.md',
   'docs/release-seal-m3.5.md',
+  'docs/release-seal-m3.7.md',
+  'docs/release-seal-m3.8.md',
+  'docs/release-plan-1.0.md',
   'kernel/README.md',
   'kernel/packets/intent-packet.schema.md',
   'kernel/packets/output-packet.schema.md',
@@ -42,6 +45,7 @@ const requiredFiles = [
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
+  'scripts/validate-dual-package-dry-run.js',
   'skills/skill-template.md',
   '_archived/pm-copilot-legacy-v1.0/README.md',
   '_archived/pm-copilot-legacy-v1.0/skills/references/quality-gates-shared.md',
@@ -603,6 +607,32 @@ const releaseSealExpectations = {
     'repo split',
     'M3.6',
   ],
+  'docs/release-seal-m3.7.md': [
+    'Milestone 3.7',
+    'package / repo migration dry-run',
+    'ai-builder-os',
+    'pm-copilot-skills',
+    'validate:dual-package-dry-run',
+    'npm pack --dry-run --json',
+    'codex-project',
+    'forbidden prefixes',
+    '不执行 `npm publish`',
+    '不修改真实 `package.json` 的 `name`',
+  ],
+  'docs/release-seal-m3.8.md': [
+    'Milestone 3.8',
+    'final 1.0 release seal',
+    'PASS_FOR_RELEASE_PREP',
+    'ai-builder-os@1.0.0',
+    'pm-copilot-skills@1.0.0',
+    'ai-builder-os-v1.0.0',
+    'Publish order',
+    'Post-release Verification',
+    'Compatibility Policy',
+    'fix-forward',
+    '不是正式双包发布器',
+    'M3.9',
+  ],
 };
 
 const outputContractExpectations = {
@@ -1024,7 +1054,8 @@ const legacyBuilderBlueprint = read('_archived/pm-copilot-legacy-v1.0/skills/ref
 assert(readme.includes('默认输出语言'), 'README 必须在入口位置声明默认输出语言', failures);
 assert(readme.includes('中文优先输出'), 'README 必须说明中文优先输出原则', failures);
 assert(readme.includes('AI Builder OS'), 'README 必须表达 AI Builder OS 产品定位', failures);
-assert(readme.includes('Milestone 3.5'), 'README 必须声明当前阶段是 Milestone 3.5 RC seal', failures);
+assert(readme.includes('Milestone 3.8'), 'README 必须声明当前阶段是 Milestone 3.8 final 1.0 release seal', failures);
+assert(readme.includes('validate:dual-package-dry-run'), 'README 必须说明 dual package dry-run gate', failures);
 assert(readme.includes('八层') || readme.includes('Builder Kernel'), 'README 必须表达 AI Builder OS 架构骨架', failures);
 assert(readme.includes('npx pm-copilot-skills codex'), 'README 必须说明 Codex 安装方式', failures);
 assert(readme.includes('npm run validate:codex-install'), 'README 必须说明 Codex 安装验证方式', failures);
@@ -1127,6 +1158,7 @@ execFileSync(process.execPath, [path.join(root, 'scripts/validate-skill-design-p
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-package-surface.js')], { stdio: 'inherit' });
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-runtime-adapters.js')], { stdio: 'inherit' });
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-trigger-descriptions.js')], { stdio: 'inherit' });
+execFileSync(process.execPath, [path.join(root, 'scripts/validate-dual-package-dry-run.js')], { stdio: 'inherit' });
 
 console.log('Builder OS 验证通过。');
 console.log(`已检查 ${builderSkills.length} 个 active builder skill、${legacyArchivedSkills.length} 个 legacy PM skill 归档和 ${requiredFiles.length} 个必需文件。`);

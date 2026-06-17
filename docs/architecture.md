@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 阶段：Milestone 3.5 AI Builder OS 1.0 Release Candidate seal
+- 阶段：Milestone 3.8 final 1.0 release seal
 - 源蓝图：`D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS\rebuildToAIBuilderOS All.md`
 - 当前 npm 包名：`pm-copilot-skills`
 - 产品身份：AI Builder OS
@@ -62,6 +62,7 @@ M3.2 后，AI Builder OS 的对外 package surface 由以下文件共同定义�
 | `scripts/export-ai-builder-os.js` | Runtime projection 工具，导出 Codex、Claude Code、generic-agent 目标目录 |
 | `adapters/*/adapter.json` | Runtime adapter manifest，声明 export layout、默认目标和 invocation prefix |
 | `scripts/validate-trigger-descriptions.js` | Trigger description gate，验证 skill frontmatter 触发描述和 confusing skill 边界 |
+| `scripts/validate-dual-package-dry-run.js` | 双包 dry-run gate，验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性 |
 
 ## Runtime Adapter / Export
 
@@ -133,7 +134,10 @@ _archived/pm-copilot-legacy-v1.0/
 10. Milestone 3.3 的 runtime adapter/export seal 记录在 `docs/release-seal-m3.3.md`，用于说明 export tooling、adapter manifests、projection contract 和 M3.4 输入。
 11. Milestone 3.4 的 trigger description seal 记录在 `docs/release-seal-m3.4.md`，用于说明 frontmatter description、confusing skills 和 M3.5 输入。
 12. Milestone 3.5 的 Release Candidate seal 记录在 `docs/release-seal-m3.5.md`，用于说明 1.0 RC 的 git 状态、package surface、install surface、archive surface、release gates、tag/push/package rename 建议和剩余风险。
-13. Runtime adapters 是投影说明，不是独立源头。
+13. Milestone 3.7 的 package/repo migration dry-run seal 记录在 `docs/release-seal-m3.7.md`，用于说明 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 dry-run contract。
+14. Milestone 3.8 的 final 1.0 release seal 记录在 `docs/release-seal-m3.8.md`，用于冻结正式 package names、versions、release tag、publish 顺序和 post-release verification。
+15. `docs/release-plan-1.0.md` 是 1.0 命名、迁移、发布顺序和兼容策略的当前计划。
+16. Runtime adapters 是投影说明，不是独立源头。
 
 ## 验证策略
 
@@ -144,6 +148,7 @@ npm run validate:builder-os
 npm run validate:package-surface
 npm run validate:runtime-adapters
 npm run validate:trigger-descriptions
+npm run validate:dual-package-dry-run
 npm run validate:codex-install
 npm run validate:doctor-preference-e2e
 npm run test:doctor-preference-e2e
