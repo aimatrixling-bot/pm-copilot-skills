@@ -1,0 +1,27 @@
+{
+  "name": "feature-frame-output-contract",
+  "required": [
+    "artifact_type",
+    "problem",
+    "user",
+    "scenario",
+    "current_pain",
+    "desired_outcome",
+    "core_capability",
+    "magic_moment",
+    "non_goals",
+    "success_criteria",
+    "constraints",
+    "facts",
+    "assumptions",
+    "open_questions",
+    "spec_readiness",
+    "next_skill_hint"
+  ],
+  "artifact_type": "feature_frame",
+  "readiness_values": [
+    "ready",
+    "needs_clarification",
+    "not_ready"
+  ]
+}

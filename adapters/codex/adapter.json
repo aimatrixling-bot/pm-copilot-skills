@@ -1,0 +1,11 @@
+{
+  "name": "codex",
+  "display_name": "Codex",
+  "export_layout": "flat-skill-root",
+  "default_target": "~/.agents/skills",
+  "invocation_prefix": "$",
+  "skill_directory": "<target>/<skill-name>",
+  "embedded_shared_resources": true,
+  "metadata_directory": ".ai-builder-os",
+  "expected_active_skill_count": 8
+}

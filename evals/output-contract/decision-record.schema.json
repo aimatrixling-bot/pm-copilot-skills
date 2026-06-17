@@ -1,0 +1,26 @@
+{
+  "name": "decision-record-output-contract",
+  "required": [
+    "decision_mode",
+    "decision_title",
+    "context",
+    "options_considered",
+    "decision",
+    "rationale",
+    "tradeoffs",
+    "risks",
+    "assumptions",
+    "evidence",
+    "reversal_conditions",
+    "owners",
+    "follow_up",
+    "memory_target",
+    "date"
+  ],
+  "decision_mode_values": [
+    "record_decision",
+    "compare_options",
+    "accept_tradeoff",
+    "defer_decision"
+  ]
+}

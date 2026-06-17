@@ -1,6 +1,6 @@
 {
   "skill_name": "builder-os",
-  "purpose": "Trigger and quality seed cases for the Builder OS additions across PM Copilot Skills.",
+  "purpose": "Trigger and quality seed cases for the AI Builder OS pure builder core surface.",
   "evals": [
     {
       "id": 1,
@@ -19,7 +19,7 @@
       "should_trigger": true,
       "query": "基于这个 PRD 做一个高保真可交互原型，尤其要检查所有按钮、空状态、错误状态和 toast 是否真的可用，不要只是看起来像能点。",
       "expected_checks": [
-        "uses pm-prototype",
+        "uses builder-prototype",
         "applies Fake UI sensor",
         "requires interaction smoke evidence"
       ]
@@ -30,9 +30,9 @@
       "should_trigger": true,
       "query": "请把这个 PRD 转成工程架构方案，输出目录结构、API 契约、数据模型，也要告诉实现者需要跑哪些 typecheck、test、build 和人工 smoke 步骤。",
       "expected_checks": [
-        "uses pm-code-architect",
-        "includes Verification Strategy",
-        "maps P0 requirements to checks"
+        "uses builder-spec",
+        "includes verification_plan",
+        "hands off to builder-agent-task when execution is needed"
       ]
     },
     {
@@ -41,8 +41,8 @@
       "should_trigger": true,
       "query": "按刚才的 architecture.md 实现这个功能。完成后不要只说 done，请列出改了哪些文件、跑了哪些命令、哪些没跑以及为什么、有没有人工验证和剩余风险。",
       "expected_checks": [
-        "uses pm-code-implement",
-        "requires Evidence Packet",
+        "uses builder-agent-task",
+        "requires Evidence Packet instructions",
         "uses PASS/PARTIAL/BLOCKED completion claim"
       ]
     },
@@ -52,7 +52,7 @@
       "should_trigger": true,
       "query": "请 review 这次代码改动。除了安全、逻辑、性能，也帮我判断实现报告里的测试证据是否可信，有没有 fake test 或 fake UI。",
       "expected_checks": [
-        "uses pm-code-review",
+        "uses builder-review",
         "reviews Evidence Packet",
         "checks fake test and fake UI"
       ]
@@ -63,7 +63,7 @@
       "should_trigger": true,
       "query": "我们准备上线这个 Tauri app 版本。请做 Go/No-Go 发布检查，确认安装包/commit、测试、代码审查、隐私安全、回滚、监控和沟通计划是否齐全。",
       "expected_checks": [
-        "uses pm-launch",
+        "uses builder-review",
         "requires Release Evidence Packet",
         "blocks GO without release artifact"
       ]
@@ -72,7 +72,7 @@
       "id": 7,
       "name": "skill-change-eval-notes",
       "should_trigger": true,
-      "query": "我要给 pm-copilot-skills 新增一个 Agent 编排类 skill，但担心和现有 pm-agent-patterns、pm-code-architect 重叠。请先做准入判断并给出正反触发样例。",
+      "query": "我要给 AI Builder OS 新增一个 Agent 编排类 builder skill，但担心和现有 builder-agent-task、builder-router 重叠。请先做准入判断并给出正反触发样例。",
       "expected_checks": [
         "applies anti-bloat admission",
         "requires should-trigger and should-not-trigger examples",
@@ -102,7 +102,7 @@
     },
     {
       "id": 9,
-      "name": "simple-pm-opinion",
+      "name": "simple-product-opinion",
       "should_trigger": false,
       "query": "你觉得 B2B SaaS 首页应该强调 ROI 还是易用性？先聊聊观点，不需要写 PRD 或做原型。",
       "expected_checks": [

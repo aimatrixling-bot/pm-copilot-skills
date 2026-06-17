@@ -1,0 +1,28 @@
+{
+  "name": "agent-task-packet-contract",
+  "required": [
+    "task_name",
+    "background",
+    "desired_outcome",
+    "scope",
+    "non_goals",
+    "context_sources",
+    "target_runtime",
+    "recommended_mode",
+    "runtime_constraints",
+    "acceptance_criteria",
+    "verification",
+    "human_approval_gates",
+    "risks",
+    "blocked_stop_condition",
+    "handoff_packet"
+  ],
+  "optional": [
+    "plan_prompt",
+    "goal_prompt",
+    "design_brief",
+    "design_constraints",
+    "ui_states",
+    "design_consistency_gate"
+  ]
+}

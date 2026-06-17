@@ -1,0 +1,11 @@
+{
+  "name": "generic-agent",
+  "display_name": "Generic Agent",
+  "export_layout": "package-root",
+  "default_target": "./dist/ai-builder-os/generic-agent",
+  "invocation_prefix": "",
+  "skill_directory": "<target>/skills/<skill-name>",
+  "embedded_shared_resources": false,
+  "metadata_directory": ".ai-builder-os",
+  "expected_active_skill_count": 8
+}

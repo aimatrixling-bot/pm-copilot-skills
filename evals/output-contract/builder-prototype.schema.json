@@ -1,0 +1,35 @@
+{
+  "name": "builder-prototype-output-contract",
+  "required": [
+    "prototype_mode",
+    "prototype_type",
+    "artifact_path",
+    "mapping_path",
+    "design_brief_path",
+    "core_flows",
+    "states_covered",
+    "component_usage",
+    "interaction_requirements",
+    "responsive_requirements",
+    "design_decisions",
+    "demo_data_notes",
+    "evidence_packet",
+    "verification",
+    "next_skill_hint"
+  ],
+  "prototype_mode_values": [
+    "wireframe",
+    "high_fidelity_prototype",
+    "prototype_brief",
+    "not_ready_for_prototype"
+  ],
+  "required_states": [
+    "default",
+    "loading",
+    "empty",
+    "error",
+    "success",
+    "disabled",
+    "permission"
+  ]
+}

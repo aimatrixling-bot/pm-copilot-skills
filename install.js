@@ -1,14 +1,17 @@
 #!/usr/bin/env node
 
 /**
- * PM Copilot Skills Installer
+ * AI Builder OS Installer
  *
- * Copies PM Copilot skills to a local agent runtime.
- * Usage: npx pm-copilot-skills [target] [--overwrite]
+ * Copies AI Builder OS active builder skills to a local agent runtime.
+ * Usage:
+ *   npx pm-copilot-skills [target] [--overwrite]
+ *   npx -p pm-copilot-skills ai-builder-os [target] [--overwrite]
  *   target: "global" | "claude" (default) -> ~/.claude/skills/
  *          "project" | "claude-project"  -> ./.claude/skills/
- *          "codex" | "codex-global"      -> ~/.codex/skills/
+ *          "codex" | "codex-user"        -> ~/.agents/skills/
  *          "codex-project"               -> ./.codex/skills/
+ *          "codex-home"                  -> ~/.codex/skills/ (legacy/system-adjacent)
  */
 
 const fs = require("fs");
@@ -28,13 +31,15 @@ function normalizeMode(value) {
     case "claude-project":
       return "claude-project";
     case "codex":
-    case "codex-global":
-      return "codex-global";
+    case "codex-user":
+      return "codex-user";
     case "codex-project":
       return "codex-project";
+    case "codex-home":
+      return "codex-home";
     default:
       console.error(`未知 target: ${value}`);
-      console.error("可用 target: global, project, codex, codex-project");
+      console.error("可用 target: global, project, codex, codex-project, codex-home");
       process.exit(1);
   }
 }
@@ -52,7 +57,9 @@ const home =
 let targetDir;
 if (mode === "claude-project") {
   targetDir = path.resolve(process.cwd(), ".claude", "skills");
-} else if (mode === "codex-global") {
+} else if (mode === "codex-user") {
+  targetDir = path.join(home, ".agents", "skills");
+} else if (mode === "codex-home") {
   const codexHome = process.env.CODEX_HOME || path.join(home, ".codex");
   targetDir = path.join(codexHome, "skills");
 } else if (mode === "codex-project") {
@@ -63,8 +70,12 @@ if (mode === "claude-project") {
 
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
 const markerName = ".pm-copilot-skills-source.json";
+const builderSharedResourceNames = ["adapters", "kernel", "references", "templates"];
+const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
 
-console.log(`\n  PM Copilot Skills Installer v${pkg.version}`);
+console.log(`\n  AI Builder OS Installer v${pkg.version}`);
+console.log(`  兼容 npm package id: ${pkg.name}`);
+console.log("  命令别名: pm-copilot-skills, ai-builder-os");
 console.log(`  模式: ${mode}`);
 console.log(`  目标目录: ${targetDir}`);
 console.log(`  覆盖外部已有 skill: ${overwrite ? "是" : "否"}\n`);
@@ -112,10 +123,43 @@ function isPackageOwned(dest) {
   }
 }
 
-// Install each skill
+function isLegacyInstalledEntry(entryName) {
+  return entryName.startsWith("pm-") || legacyUtilityNames.has(entryName);
+}
+
+function cleanupPackageOwnedLegacyEntries() {
+  let removed = 0;
+  const removedNames = [];
+
+  for (const entry of fs.readdirSync(targetDir)) {
+    const dest = path.join(targetDir, entry);
+    if (!fs.statSync(dest).isDirectory()) continue;
+    if (!isLegacyInstalledEntry(entry)) continue;
+    if (!isPackageOwned(dest)) continue;
+
+    fs.rmSync(dest, { recursive: true, force: true });
+    removed++;
+    removedNames.push(entry);
+  }
+
+  return { removed, removedNames };
+}
+
+function copyBuilderSharedResources(dest) {
+  for (const resourceName of builderSharedResourceNames) {
+    const src = path.join(__dirname, resourceName);
+    if (fs.existsSync(src)) {
+      copyRecursive(src, path.join(dest, resourceName));
+    }
+  }
+}
+
+const legacyCleanup = cleanupPackageOwnedLegacyEntries();
+
+// Install active AI Builder OS skills only.
 const entries = fs.readdirSync(pkgDir).filter((e) => {
   return fs.statSync(path.join(pkgDir, e)).isDirectory();
-});
+}).filter((e) => e.startsWith("builder-"));
 
 let installed = 0;
 let updated = 0;
@@ -134,10 +178,12 @@ for (const entry of entries) {
     }
     fs.rmSync(dest, { recursive: true, force: true });
     copyRecursive(src, dest);
+    if (entry.startsWith("builder-")) copyBuilderSharedResources(dest);
     writeMarker(dest, entry);
     updated++;
   } else {
     copyRecursive(src, dest);
+    if (entry.startsWith("builder-")) copyBuilderSharedResources(dest);
     writeMarker(dest, entry);
     installed++;
   }
@@ -146,6 +192,14 @@ for (const entry of entries) {
 console.log(
   `  ✓ ${entries.length} 个目录已处理（${installed} 个新增，${updated} 个更新，${skipped} 个跳过）\n`
 );
+
+if (legacyCleanup.removed > 0) {
+  console.log("  已移除本包旧版本安装过的 legacy active surface:");
+  for (const name of legacyCleanup.removedNames.sort()) {
+    console.log(`    - ${name}`);
+  }
+  console.log("");
+}
 
 if (skippedNames.length > 0) {
   console.log("  已跳过外部已有 skill（使用 --overwrite 可显式覆盖）:");
@@ -157,9 +211,8 @@ if (skippedNames.length > 0) {
 
 // List installed skills
 const skillNames = entries
-  .filter((e) => e.startsWith("pm-"))
   .sort();
-console.log("  PM skills:");
+console.log("  AI Builder OS active skills:");
 for (const name of skillNames) {
   // Try to read display name from SKILL.md
   const skillFile = path.join(pkgDir, name, "SKILL.md");
@@ -169,13 +222,14 @@ for (const name of skillNames) {
     const match = content.match(/^displayName:\s*(.+)$/m);
     if (match) displayName = match[1];
   }
-  console.log(`    /${name.padEnd(22)} ${displayName}`);
+  const invocationPrefix = mode.startsWith("codex") ? "$" : "/";
+  console.log(`    ${invocationPrefix}${name.padEnd(22)} ${displayName}`);
 }
 
-console.log(`\n  共享 references: ${entries.includes("references") ? "✓" : "✗"}`);
+console.log("\n  Legacy pm-copilot skills 已归档，不再默认安装为 active skills。");
 
 if (mode.startsWith("codex")) {
-  console.log("\n  已安装到 Codex。请重启 Codex 或开启新线程以加载新 skills，例如：/pm-prd\n");
+  console.log("\n  已安装到 Codex。请重启 Codex 或开启新线程以加载新 skills，例如：$builder-router 或 $builder-spec\n");
 } else {
-  console.log("\n  已安装到 Claude Code。可使用任一 skill，例如：/pm-prd\n");
+  console.log("\n  已安装到 Claude Code。可使用任一 skill，例如：/builder-router 或 /builder-spec\n");
 }

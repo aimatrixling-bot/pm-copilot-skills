@@ -1,0 +1,39 @@
+{
+  "name": "design-brief-output-contract",
+  "required": [
+    "artifact_type",
+    "title",
+    "source_context",
+    "users",
+    "task_context",
+    "information_architecture",
+    "flows",
+    "components",
+    "interaction_requirements",
+    "states",
+    "responsive_requirements",
+    "accessibility_notes",
+    "visual_style",
+    "data_notes",
+    "acceptance_criteria",
+    "verification",
+    "open_questions",
+    "handoff_targets"
+  ],
+  "artifact_type": "design_brief",
+  "required_states": [
+    "default",
+    "loading",
+    "empty",
+    "error",
+    "success",
+    "disabled",
+    "permission"
+  ],
+  "consumers": [
+    "builder-spec",
+    "builder-prototype",
+    "builder-agent-task",
+    "builder-review"
+  ]
+}

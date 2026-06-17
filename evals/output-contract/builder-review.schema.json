@@ -1,0 +1,30 @@
+{
+  "name": "builder-review-output-contract",
+  "required": [
+    "review_mode",
+    "review_target",
+    "contract_checked",
+    "findings",
+    "evidence_audit",
+    "design_consistency_audit",
+    "risk_assessment",
+    "decision",
+    "required_fixes",
+    "unverified_areas",
+    "next_step"
+  ],
+  "review_mode_values": [
+    "contract_review",
+    "evidence_review",
+    "design_review",
+    "release_readiness",
+    "not_reviewable"
+  ],
+  "decision_values": [
+    "PASS",
+    "PARTIAL",
+    "BLOCKED",
+    "APPROVE",
+    "REQUEST_CHANGES"
+  ]
+}

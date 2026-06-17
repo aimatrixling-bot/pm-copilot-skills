@@ -1,0 +1,29 @@
+{
+  "name": "skill-hardening-brief-output-contract",
+  "required": [
+    "artifact_type",
+    "skill_name",
+    "current_role",
+    "target_role",
+    "primary_artifact",
+    "target_users",
+    "source_baseline",
+    "trigger_conditions",
+    "non_trigger_conditions",
+    "mode_decision",
+    "resource_map",
+    "output_contract",
+    "quality_gates",
+    "handoff_targets",
+    "anti_patterns",
+    "examples",
+    "validator_eval_plan",
+    "installation_resources",
+    "done_when",
+    "verification",
+    "open_questions"
+  ],
+  "artifact_type": "skill_hardening_brief",
+  "reference_playbook": "references/skill-design/skill-design-playbook.zh.md",
+  "template": "templates/skill-hardening-brief/template.md"
+}

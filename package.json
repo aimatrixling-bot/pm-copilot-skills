@@ -1,31 +1,49 @@
 {
   "name": "pm-copilot-skills",
   "version": "0.7.0",
-  "description": "面向产品经理、AI 产品经理和全栈产品构建者的 AI Product Builder OS skills",
+  "description": "AI Builder OS skills and protocols for executable, verifiable agentic building workflows",
   "license": "Apache-2.0",
   "scripts": {
+    "export:runtime": "node scripts/export-ai-builder-os.js",
     "validate:builder-os": "node scripts/validate-builder-os.js",
+    "validate:package-surface": "node scripts/validate-package-surface.js",
+    "validate:runtime-adapters": "node scripts/validate-runtime-adapters.js",
+    "validate:trigger-descriptions": "node scripts/validate-trigger-descriptions.js",
     "validate:codex-install": "node scripts/validate-codex-install.js",
     "validate:doctor-preference-e2e": "node scripts/validate-doctor-preference-e2e.js",
     "test:doctor-preference-e2e": "node --test evals/doctor-preference-e2e/reference-implementation/*.test.js"
   },
   "bin": {
-    "pm-copilot-skills": "install.js"
+    "pm-copilot-skills": "install.js",
+    "ai-builder-os": "install.js"
   },
   "files": [
+    "skill-pack.json",
+    "agents/",
+    "kernel/",
+    "harness/",
+    "memory/",
     "skills/",
+    "bundles/",
+    "references/",
+    "templates/",
+    "adapters/",
+    "examples/",
+    "docs/",
     "scripts/",
     "evals/",
     "install.js",
     "README.md"
   ],
   "keywords": [
+    "ai-builder-os",
+    "agentic-workflows",
+    "builder-skills",
+    "codex",
     "claude-code",
-    "pm",
     "product-management",
     "prd",
-    "skills",
-    "ai"
+    "skills"
   ],
   "repository": {
     "type": "git",
