@@ -10,6 +10,7 @@
     "validate:runtime-adapters": "node scripts/validate-runtime-adapters.js",
     "validate:trigger-descriptions": "node scripts/validate-trigger-descriptions.js",
     "validate:dual-package-dry-run": "node scripts/validate-dual-package-dry-run.js",
+    "prepare:dual-package-publish": "node scripts/prepare-dual-package-publish.js",
     "validate:codex-install": "node scripts/validate-codex-install.js",
     "validate:doctor-preference-e2e": "node scripts/validate-doctor-preference-e2e.js",
     "test:doctor-preference-e2e": "node --test evals/doctor-preference-e2e/reference-implementation/*.test.js"

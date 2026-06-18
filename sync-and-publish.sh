@@ -87,6 +87,7 @@ const required = [
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-dual-package-dry-run.js',
+  'scripts/prepare-dual-package-publish.js',
   'scripts/validate-doctor-preference-e2e.js',
   'evals/builder-os-trigger-evals.json',
   'evals/trigger/builder-description.cases.json',
@@ -114,7 +115,9 @@ const required = [
   'docs/release-seal-m3.5.md',
   'docs/release-seal-m3.7.md',
   'docs/release-seal-m3.8.md',
-  'docs/release-seal-m3.8.1.md'
+  'docs/release-seal-m3.8.1.md',
+  'docs/release-runbook-m3.9.md',
+  'docs/release-seal-m3.9.md'
 ];
 const missing = required.filter(p => !files.includes(p));
 if (missing.length) {

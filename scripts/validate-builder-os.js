@@ -20,6 +20,8 @@ const requiredFiles = [
   'docs/release-seal-m3.7.md',
   'docs/release-seal-m3.8.md',
   'docs/release-seal-m3.8.1.md',
+  'docs/release-runbook-m3.9.md',
+  'docs/release-seal-m3.9.md',
   'docs/release-plan-1.0.md',
   'kernel/README.md',
   'kernel/packets/intent-packet.schema.md',
@@ -47,6 +49,7 @@ const requiredFiles = [
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-dual-package-dry-run.js',
+  'scripts/prepare-dual-package-publish.js',
   'skills/skill-template.md',
   '_archived/pm-copilot-legacy-v1.0/README.md',
   '_archived/pm-copilot-legacy-v1.0/skills/references/quality-gates-shared.md',
@@ -647,6 +650,25 @@ const releaseSealExpectations = {
     'export-manifest.json',
     'M3.9 Recommendation',
   ],
+  'docs/release-runbook-m3.9.md': [
+    'AI Builder OS M3.9 Publish Runbook',
+    'ai-builder-os-v1.0.0',
+    'ai-builder-os@1.0.0',
+    'pm-copilot-skills@1.0.0',
+    'prepare:dual-package-publish',
+    'npm publish',
+    'Post-release Verification',
+    'sync-and-publish.sh',
+  ],
+  'docs/release-seal-m3.9.md': [
+    'Milestone 3.9',
+    'publish prep, dry-run only',
+    'PASS_FOR_PUBLISH_APPROVAL_PENDING',
+    'scripts/prepare-dual-package-publish.js',
+    '拒绝 `--publish`',
+    'Required Human Approval',
+    'docs/release-runbook-m3.9.md',
+  ],
 };
 
 const outputContractExpectations = {
@@ -1068,10 +1090,11 @@ const legacyBuilderBlueprint = read('_archived/pm-copilot-legacy-v1.0/skills/ref
 assert(readme.includes('默认输出语言'), 'README 必须在入口位置声明默认输出语言', failures);
 assert(readme.includes('中文优先输出'), 'README 必须说明中文优先输出原则', failures);
 assert(readme.includes('AI Builder OS'), 'README 必须表达 AI Builder OS 产品定位', failures);
-assert(readme.includes('Milestone 3.8.1'), 'README 必须声明当前阶段是 Milestone 3.8.1 multi-runtime smoke seal', failures);
+assert(readme.includes('Milestone 3.9'), 'README 必须声明当前阶段是 Milestone 3.9 publish prep', failures);
 assert(readme.includes('安装未发布的当前分支最新版'), 'README 必须说明未发布前如何安装当前分支最新版', failures);
 assert(readme.includes('QoderWork 当前按 `generic-agent` 消费'), 'README 必须说明 QoderWork generic-agent 消费方式', failures);
 assert(readme.includes('validate:dual-package-dry-run'), 'README 必须说明 dual package dry-run gate', failures);
+assert(readme.includes('prepare:dual-package-publish'), 'README 必须说明 dual package publish prep gate', failures);
 assert(readme.includes('八层') || readme.includes('Builder Kernel'), 'README 必须表达 AI Builder OS 架构骨架', failures);
 assert(readme.includes('npx pm-copilot-skills codex'), 'README 必须说明 Codex 安装方式', failures);
 assert(readme.includes('npm run validate:codex-install'), 'README 必须说明 Codex 安装验证方式', failures);

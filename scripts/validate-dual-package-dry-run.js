@@ -25,6 +25,7 @@ const requiredPackFiles = [
   'package.json',
   'skill-pack.json',
   'agents/openai.yaml',
+  'scripts/prepare-dual-package-publish.js',
   'scripts/validate-builder-os.js',
   'scripts/validate-package-surface.js',
   'scripts/validate-dual-package-dry-run.js',
@@ -37,6 +38,8 @@ const requiredPackFiles = [
   'docs/release-seal-m3.7.md',
   'docs/release-seal-m3.8.md',
   'docs/release-seal-m3.8.1.md',
+  'docs/release-runbook-m3.9.md',
+  'docs/release-seal-m3.9.md',
   ...builderSkills.map((skillName) => `skills/${skillName}/SKILL.md`),
 ];
 

@@ -59,6 +59,7 @@ assert(packageJson.scripts['validate:package-surface'] === 'node scripts/validat
 assert(packageJson.scripts['validate:runtime-adapters'] === 'node scripts/validate-runtime-adapters.js', 'package scripts 必须包含 validate:runtime-adapters');
 assert(packageJson.scripts['validate:trigger-descriptions'] === 'node scripts/validate-trigger-descriptions.js', 'package scripts 必须包含 validate:trigger-descriptions');
 assert(packageJson.scripts['validate:dual-package-dry-run'] === 'node scripts/validate-dual-package-dry-run.js', 'package scripts 必须包含 validate:dual-package-dry-run');
+assert(packageJson.scripts['prepare:dual-package-publish'] === 'node scripts/prepare-dual-package-publish.js', 'package scripts 必须包含 prepare:dual-package-publish');
 
 for (const requiredFileEntry of ['skill-pack.json', 'agents/', 'skills/', 'kernel/', 'references/', 'templates/', 'adapters/', 'docs/']) {
   assert(packageJson.files.includes(requiredFileEntry), `package files 必须包含 ${requiredFileEntry}`);
@@ -70,7 +71,7 @@ for (const forbiddenFileEntry of ['_archived/', 'research/']) {
 assert(skillPack.name === 'ai-builder-os', 'skill-pack name 必须是 ai-builder-os');
 assert(skillPack.display_name === 'AI Builder OS', 'skill-pack display_name 必须是 AI Builder OS');
 assert(skillPack.version === packageJson.version, 'skill-pack version 必须与 package.json version 一致');
-assert(skillPack.status === 'm3.8.1-multi-runtime-smoke-seal', 'skill-pack status 必须声明 m3.8.1-multi-runtime-smoke-seal');
+assert(skillPack.status === 'm3.9-publish-prep-dry-run', 'skill-pack status 必须声明 m3.9-publish-prep-dry-run');
 assert(skillPack.package.npm_name === packageJson.name, 'skill-pack package.npm_name 必须与 package.json name 一致');
 assert(sameSet(skillPack.package.bins, Object.keys(packageJson.bin).sort()), 'skill-pack package.bins 必须与 package.json bin 一致');
 assert(skillPack.active_surface.type === 'pure-builder-core', 'skill-pack active_surface.type 必须是 pure-builder-core');
@@ -90,6 +91,7 @@ if (Array.isArray(skillPack.export.targets)) {
 }
 assert(skillPack.release_gates.includes('npm run validate:trigger-descriptions'), 'skill-pack release_gates 必须包含 validate:trigger-descriptions');
 assert(skillPack.release_gates.includes('npm run validate:dual-package-dry-run'), 'skill-pack release_gates 必须包含 validate:dual-package-dry-run');
+assert(skillPack.release_gates.includes('npm run prepare:dual-package-publish'), 'skill-pack release_gates 必须包含 prepare:dual-package-publish');
 
 for (const excluded of ['_archived/', 'research/', 'skills/pm-*', 'skills/pdf', 'skills/pptx', 'skills/download-anything', 'skills/references']) {
   assert(skillPack.active_surface.excluded_from_package_surface.includes(excluded), `skill-pack 必须声明排除 ${excluded}`);
@@ -106,14 +108,17 @@ assert(openaiYaml.includes('script: scripts/export-ai-builder-os.js'), 'agents/o
 assert(openaiYaml.includes('validator: scripts/validate-runtime-adapters.js'), 'agents/openai.yaml 必须声明 runtime adapter validator');
 assert(openaiYaml.includes('npm run validate:trigger-descriptions'), 'agents/openai.yaml 必须声明 trigger description gate');
 assert(openaiYaml.includes('npm run validate:dual-package-dry-run'), 'agents/openai.yaml 必须声明 dual package dry-run gate');
+assert(openaiYaml.includes('npm run prepare:dual-package-publish'), 'agents/openai.yaml 必须声明 dual package publish prep gate');
 
 assert(readme.includes('AI Builder OS package surface'), 'README 必须说明 AI Builder OS package surface');
 assert(readme.includes('Runtime adapter/export'), 'README 必须说明 runtime adapter/export');
 assert(readme.includes('Trigger description'), 'README 必须说明 Trigger description gate');
-assert(readme.includes('Milestone 3.8.1'), 'README 必须说明当前 multi-runtime smoke seal 阶段');
+assert(readme.includes('Milestone 3.9'), 'README 必须说明当前 publish prep 阶段');
 assert(readme.includes('安装未发布的当前分支最新版'), 'README 必须说明未发布前如何安装当前分支最新版');
 assert(readme.includes('QoderWork 当前按 `generic-agent` 消费'), 'README 必须说明 QoderWork generic-agent 消费方式');
 assert(readme.includes('Dual package dry-run'), 'README 必须说明 dual package dry-run');
+assert(readme.includes('M3.9 publish prep'), 'README 必须说明 M3.9 publish prep');
+assert(readme.includes('prepare:dual-package-publish'), 'README 必须说明 prepare:dual-package-publish');
 assert(readme.includes('ai-builder-os'), 'README 必须说明 ai-builder-os 命令别名或产品 id');
 assert(readme.includes('兼容 npm package id'), 'README 必须说明 pm-copilot-skills 是兼容 npm package id');
 assert(installScript.includes('ai-builder-os'), 'install.js 必须暴露 ai-builder-os 用法或命令别名说明');
@@ -126,10 +131,13 @@ assert(syncScript.includes('scripts/validate-trigger-descriptions.js'), 'sync-an
 assert(syncScript.includes('validate:trigger-descriptions'), 'sync-and-publish.sh 必须运行 validate:trigger-descriptions');
 assert(syncScript.includes('scripts/validate-dual-package-dry-run.js'), 'sync-and-publish.sh pack gate 必须检查 dual package dry-run validator');
 assert(syncScript.includes('validate:dual-package-dry-run'), 'sync-and-publish.sh 必须运行 validate:dual-package-dry-run');
+assert(syncScript.includes('scripts/prepare-dual-package-publish.js'), 'sync-and-publish.sh pack gate 必须检查 dual package publish prep script');
 assert(syncScript.includes('docs/release-seal-m3.5.md'), 'sync-and-publish.sh pack gate 必须检查 M3.5 release seal');
 assert(syncScript.includes('docs/release-seal-m3.7.md'), 'sync-and-publish.sh pack gate 必须检查 M3.7 release seal');
 assert(syncScript.includes('docs/release-seal-m3.8.md'), 'sync-and-publish.sh pack gate 必须检查 M3.8 release seal');
 assert(syncScript.includes('docs/release-seal-m3.8.1.md'), 'sync-and-publish.sh pack gate 必须检查 M3.8.1 release seal');
+assert(syncScript.includes('docs/release-runbook-m3.9.md'), 'sync-and-publish.sh pack gate 必须检查 M3.9 release runbook');
+assert(syncScript.includes('docs/release-seal-m3.9.md'), 'sync-and-publish.sh pack gate 必须检查 M3.9 release seal');
 assert(syncScript.includes('docs/release-plan-1.0.md'), 'sync-and-publish.sh pack gate 必须检查 1.0 release plan');
 assert(syncScript.includes('forbiddenPrefixes'), 'sync-and-publish.sh pack gate 必须检查 forbidden package prefixes');
 
