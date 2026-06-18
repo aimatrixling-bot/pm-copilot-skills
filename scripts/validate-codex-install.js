@@ -8,6 +8,7 @@ const home = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH
 const targetDir = path.join(home, '.agents', 'skills');
 const markerName = '.pm-copilot-skills-source.json';
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const allowedMarkerPackages = new Set(['ai-builder-os', 'pm-copilot-skills', packageJson.name]);
 
 const sourceEntries = fs.readdirSync(path.join(root, 'skills')).filter((entry) => {
   return fs.statSync(path.join(root, 'skills', entry)).isDirectory();
@@ -42,6 +43,14 @@ function assert(condition, message) {
   if (!condition) failures.push(message);
 }
 
+function markerPackageIsAllowed(packageName) {
+  return allowedMarkerPackages.has(packageName);
+}
+
+function allowedMarkerPackageLabel() {
+  return Array.from(allowedMarkerPackages).sort().join(' / ');
+}
+
 assert(fs.existsSync(targetDir), `Codex 用户级 skills 目录不存在: ${targetDir}`);
 assert(pmSkills.length === 0, `源目录 active surface 不应包含 PM skills，实际为 ${pmSkills.length}`);
 assert(builderSkills.length === 8, `源目录中 builder skills 数量应为 8，实际为 ${builderSkills.length}`);
@@ -63,7 +72,10 @@ for (const entry of expectedEntries) {
   if (fs.existsSync(markerFile)) {
     try {
       const marker = JSON.parse(fs.readFileSync(markerFile, 'utf8'));
-      assert(marker.package === packageJson.name, `${entry} 的安装标记 package 不匹配`);
+      assert(
+        markerPackageIsAllowed(marker.package),
+        `${entry} 的安装标记 package 不匹配: ${marker.package || '<missing>'}；允许 ${allowedMarkerPackageLabel()}`,
+      );
       assert(marker.skill === entry, `${entry} 的安装标记 skill 不匹配`);
     } catch (error) {
       failures.push(`${entry} 的安装标记不是合法 JSON: ${error.message}`);
@@ -83,7 +95,7 @@ function isPackageOwned(dest) {
   if (!fs.existsSync(markerFile)) return false;
   try {
     const marker = JSON.parse(fs.readFileSync(markerFile, 'utf8'));
-    return marker.package === packageJson.name;
+    return markerPackageIsAllowed(marker.package);
   } catch {
     return false;
   }
@@ -132,6 +144,7 @@ if (failures.length > 0) {
 console.log('Codex 安装验证通过。');
 console.log(`目标目录: ${targetDir}`);
 console.log(`已验证 ${expectedEntries.length} 个 AI Builder OS active builder skills。`);
+console.log(`允许的安装标记 package: ${allowedMarkerPackageLabel()}。`);
 console.log('提示: legacy pm-copilot skills、pdf、pptx、download-anything 和 skills/references 不再默认安装。');
 for (const warning of warnings) {
   console.log(`提示: ${warning}`);
