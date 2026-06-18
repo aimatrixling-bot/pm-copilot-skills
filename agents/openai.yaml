@@ -32,6 +32,7 @@ release_gates:
   - npm run validate:runtime-adapters
   - npm run validate:trigger-descriptions
   - npm run validate:dual-package-dry-run
+  - npm run prepare:dual-package-publish
   - npm run validate:doctor-preference-e2e
   - npm run test:doctor-preference-e2e
   - npm pack --dry-run --json

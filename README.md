@@ -10,7 +10,7 @@
 >
 > 默认输出语言：用户可见报告、检查结果、原型文案、交接材料以**中文为主**；代码、字段名、命令、API、包名、行业通用缩写和固定术语可保留英文。
 >
-> 当前阶段：Milestone 3.8.1 multi-runtime smoke seal。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.8 冻结 `ai-builder-os@1.0.0` 主包和 `pm-copilot-skills@1.0.0` 兼容包的发布策略、tag 顺序和 post-release verification，M3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 消费路径；不执行 npm publish。
+> 当前阶段：Milestone 3.9 publish prep dry-run。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.9 新增专用双包发布准备脚本和 runbook，用于生成 `ai-builder-os@1.0.0` 主包与 `pm-copilot-skills@1.0.0` 兼容包的 release projection、tarball 和 manifest；不执行 npm publish，不创建 final tag。
 >
 > legacy archive：旧 `pm-*` skills、legacy utilities 和原 `skills/references/` 已归档到 [`_archived/pm-copilot-legacy-v1.0/`](_archived/pm-copilot-legacy-v1.0/)，不再默认安装为 active skills。
 >
@@ -68,7 +68,7 @@ AI Builder OS
 | `builder-review` | 评审规格、原型、Agent 输出和证据 | Review Report / Evidence Audit |
 | `builder-decision` | 记录关键取舍 | Decision Record |
 
-Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。
+Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。Milestone 3.9 新增发布 runbook 和 dry-run-only 双包发布准备脚本；真实发布仍需用户再次明确批准。
 
 ## Benchmark Synthesis（标杆综合）
 
@@ -168,6 +168,16 @@ npm run validate:dual-package-dry-run
 两个 projection 都必须通过 `npm pack --dry-run --json`，并在临时项目中运行 `node install.js codex-project --overwrite`，确认只安装 8 个 active builder skills。
 
 M3.8 之后，`sync-and-publish.sh` 仍只能视为 canonical source 的 release gate helper 和历史单包发布脚本；它不是 `ai-builder-os` / `pm-copilot-skills` 正式双包发布器。M3.9 发布时必须按 `docs/release-seal-m3.8.md` 的 publish order 执行，或先补专用双包发布脚本并 dry-run。
+
+## M3.9 publish prep
+
+正式发布前使用专用 dry-run-only 工具生成双包 projection 和 tarball：
+
+```bash
+npm run prepare:dual-package-publish -- --out ".release/ai-builder-os-v1.0.0" --clean --check-registry --npm-publish-dry-run
+```
+
+该脚本拒绝 `--publish`，不会执行真实 `npm publish`。真实发布必须按 [`docs/release-runbook-m3.9.md`](./docs/release-runbook-m3.9.md) 手工执行，并在执行 tag、npm publish 或 GitHub Release 前再次获得用户明确批准。
 
 ## Runtime adapter/export
 

@@ -3,7 +3,7 @@
   "name": "ai-builder-os",
   "display_name": "AI Builder OS",
   "version": "0.7.0",
-  "status": "m3.8.1-multi-runtime-smoke-seal",
+  "status": "m3.9-publish-prep-dry-run",
   "description": "AI-native builder operating system for turning fuzzy ideas, business problems, product requirements, and personal projects into agent-executable, verifiable, reusable build workflows.",
   "language_policy": "chinese-first",
   "package": {
@@ -92,6 +92,7 @@
     "npm run validate:runtime-adapters",
     "npm run validate:trigger-descriptions",
     "npm run validate:dual-package-dry-run",
+    "npm run prepare:dual-package-publish",
     "npm run validate:codex-install",
     "npm run validate:doctor-preference-e2e",
     "npm run test:doctor-preference-e2e",

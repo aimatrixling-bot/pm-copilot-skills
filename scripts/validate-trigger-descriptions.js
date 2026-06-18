@@ -40,7 +40,7 @@ function read(relativePath) {
 function extractFrontmatterDescription(skillName) {
   const relativePath = path.join('skills', skillName, 'SKILL.md');
   const content = read(relativePath);
-  const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+  const frontmatterMatch = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   assert(Boolean(frontmatterMatch), `${relativePath} 缺少 YAML frontmatter`);
   if (!frontmatterMatch) return '';
 
