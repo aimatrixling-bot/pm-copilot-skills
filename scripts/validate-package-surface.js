@@ -129,6 +129,7 @@ assert(readme.includes('QoderWork 当前按 `generic-agent` 消费'), 'README �
 assert(readme.includes('Dual package dry-run'), 'README 必须说明 dual package dry-run');
 assert(readme.includes('M3.9 publish prep'), 'README 必须说明 M3.9 publish prep');
 assert(readme.includes('prepare:dual-package-publish'), 'README 必须说明 prepare:dual-package-publish');
+assert(readme.includes('references/source-blueprints/'), 'README 必须说明 source blueprints 参考资料位置');
 assert(readme.includes('ai-builder-os'), 'README 必须说明 ai-builder-os 命令别名或产品 id');
 assert(readme.includes('兼容 npm package id'), 'README 必须说明 pm-copilot-skills 是兼容 npm package id');
 assert(installScript.includes('ai-builder-os'), 'install.js 必须暴露 ai-builder-os 用法或命令别名说明');

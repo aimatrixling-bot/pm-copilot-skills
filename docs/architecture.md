@@ -3,7 +3,7 @@
 ## 当前状态
 
 - 阶段：AI Builder OS 1.0 系列；Milestone 5 Project Onboarding 已接入，后续 patch release 使用显式版本/tag 的 dry-run 发布准备流程
-- 源蓝图：`D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS\rebuildToAIBuilderOS All.md`
+- 源蓝图归档：`references/source-blueprints/`
 - 当前 npm 包名：`pm-copilot-skills`
 - 产品身份：AI Builder OS
 
@@ -157,6 +157,7 @@ _archived/pm-copilot-legacy-v1.0/
 18. Runtime adapters 是投影说明，不是独立源头。
 19. Project Onboarding Protocol 用于首次进入或恢复项目时生成 project profile 和 artifact index 初始化建议；它只输出 proposal，不自动写入、扫描、迁移、删除或重命名用户项目资产。
 20. `docs/release-note-milestone-5-project-onboarding.md` 是 Milestone 5 Project Onboarding 的用户价值和交付摘要，不替代架构说明或发布 runbook。
+21. `references/source-blueprints/` 保存早期 AI Builder OS 源蓝图和历史设计输入；它们用于追溯和审计，不覆盖当前协议、schema、loop、skill 或 eval。
 
 ## 验证策略
 

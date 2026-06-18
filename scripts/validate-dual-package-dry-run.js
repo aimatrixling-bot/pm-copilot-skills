@@ -50,6 +50,11 @@ const requiredPackFiles = [
   'docs/release-note-milestone-5-project-onboarding.md',
   'docs/release-runbook-m3.9.md',
   'docs/release-seal-m3.9.md',
+  'references/source-blueprints/README.md',
+  'references/source-blueprints/loopEnhance.md',
+  'references/source-blueprints/rebuildToAIBuilderOS 1.md',
+  'references/source-blueprints/rebuildToAIBuilderOS 2.md',
+  'references/source-blueprints/rebuildToAIBuilderOS All.md',
   ...builderSkills.map((skillName) => `skills/${skillName}/SKILL.md`),
 ];
 

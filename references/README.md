@@ -13,3 +13,5 @@ Milestone 2.2 将 UI/UX shared contract 放在 `references/ui-ux/`，供 spec、
 Milestone 2.4 将 Skill Design Playbook 放在 `references/skill-design/`，供后续打磨 `builder-*` skills 时复用 Plan Goal Coach 的触发边界、模式判断、模板分层、反模式、示例、输出契约和 validator/eval 设计方法。
 
 Milestone 3.1 新增 `references/legacy-pm-methods/` 作为旧 PM 方法资产索引。legacy 内容只作为迁移来源，不作为 active skill surface。
+
+Milestone 6A 新增 `references/source-blueprints/`，用于保存 AI Builder OS 早期源蓝图和历史设计输入。它们用于追溯和审计，不是当前 runtime 协议的权威源。

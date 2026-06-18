@@ -47,6 +47,11 @@ const requiredPackFiles = [
   'docs/release-plan-1.0.md',
   'docs/release-seal-m3.8.md',
   'docs/release-seal-m3.8.1.md',
+  'references/source-blueprints/README.md',
+  'references/source-blueprints/loopEnhance.md',
+  'references/source-blueprints/rebuildToAIBuilderOS 1.md',
+  'references/source-blueprints/rebuildToAIBuilderOS 2.md',
+  'references/source-blueprints/rebuildToAIBuilderOS All.md',
   ...builderSkills.map((skillName) => `skills/${skillName}/SKILL.md`),
 ];
 

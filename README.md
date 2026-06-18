@@ -14,7 +14,7 @@
 >
 > legacy archive：旧 `pm-*` skills、legacy utilities 和原 `skills/references/` 已归档到 [`_archived/pm-copilot-legacy-v1.0/`](_archived/pm-copilot-legacy-v1.0/)，不再默认安装为 active skills。
 >
-> v0.7.0 方向：综合 Meta_Kim、毒舌产品经理 5.0、andrej-karpathy-skills、VibeCodingPromptTemplate、Superpowers、Everything Claude Code，以及 OpenAI / Anthropic skill/plugin 最佳实践，形成克制、可靠、可扩展的 Builder OS。旧蓝图保留在 [`blueprint.md`](./_archived/pm-copilot-legacy-v1.0/skills/references/builder-os/blueprint.md)，active references 位于 [`references/`](./references/)。
+> v0.7.0 方向：综合 Meta_Kim、毒舌产品经理 5.0、andrej-karpathy-skills、VibeCodingPromptTemplate、Superpowers、Everything Claude Code，以及 OpenAI / Anthropic skill/plugin 最佳实践，形成克制、可靠、可扩展的 Builder OS。旧 PM 蓝图保留在 [`blueprint.md`](./_archived/pm-copilot-legacy-v1.0/skills/references/builder-os/blueprint.md)，AI Builder OS 早期源蓝图保留在 [`references/source-blueprints/`](./references/source-blueprints/)。
 >
 > v0.6.0 已把 Meta_Kim 方法论层（Intent Packet / Capability Index / Gates / Meta-Review / Output Packet / Evolution Writeback）集成到全部 16 个 skills。统一结构见 [Skill 结构](#skill-结构)。
 >
@@ -350,6 +350,7 @@ Personal: pm-job-search
 - **Quality Gates**：Iron Law、输出质量标准、Builder OS 证据协议和中文优先语言协议。
 - **Design KB**：UI patterns 和 component references。
 - **Builder OS Blueprint（历史版）**：多来源综合、反膨胀规则和 runtime adapter 边界，位于 `_archived/pm-copilot-legacy-v1.0/skills/references/builder-os/`。
+- **Source Blueprints（历史源蓝图）**：AI Builder OS 早期重建总纲和 Loop Engineering 输入，位于 `references/source-blueprints/`；它们是设计来源，不是当前 runtime 协议权威源。
 
 ## Skill 结构
 
@@ -407,6 +408,7 @@ pm-copilot-skills/
 |   +-- ...
 +-- bundles/                   # Scenario bundles; includes core
 +-- references/                # Runtime-neutral 的 Builder OS references 新位置
+|   +-- source-blueprints/     # 历史源蓝图和设计输入
 +-- templates/                 # Reusable asset templates
 +-- adapters/                  # Codex / Claude Code / generic-agent projection notes
 +-- docs/                      # 架构和 roadmap 文档
