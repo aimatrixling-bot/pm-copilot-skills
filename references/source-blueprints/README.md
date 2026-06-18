@@ -18,8 +18,9 @@
 
 ## 来源
 
-这些文件迁入自本地资料目录：
+这些文件迁入自原本地资料目录。Milestone 6B 后，原资料目录已改名为归档目录，当前 `AI Builder OS` 路径为主仓库路径。
 
 ```text
-D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS
+原资料目录：D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS
+归档目录：D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS.source-blueprints-archived
 ```
