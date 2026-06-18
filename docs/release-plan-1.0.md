@@ -19,7 +19,7 @@ AI Builder OS 1.0 推荐采用双包过渡策略：
 - 当前 RC tag：`ai-builder-os-v1.0.0-rc.1`
 - `ai-builder-os` npm 名称在 M3.6 检查时返回 404，看起来未被占用；发布前必须重新确认。
 
-Post-1.0 更新说明：`ai-builder-os@1.0.0`、`ai-builder-os@1.0.1`、`pm-copilot-skills@1.0.0` 和 `pm-copilot-skills@1.0.1` 已发布。后续 patch release 不再检查“包名是否未占用”，而是检查目标版本和目标 tag 是否尚不存在。
+Post-1.0 更新说明：后续 patch release 不再检查“包名是否未占用”，而是检查目标版本和目标 tag 是否尚不存在。发布前必须以 npm registry 和远端 git tag 的实时状态为准。
 
 ## Package Strategy
 

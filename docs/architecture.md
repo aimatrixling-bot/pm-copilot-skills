@@ -2,12 +2,12 @@
 
 ## 当前状态
 
-- 阶段：Milestone 5 Project Onboarding + post-1.0 patch publish prep dry-run
+- 阶段：AI Builder OS 1.0 系列；Milestone 5 Project Onboarding 已接入，后续 patch release 使用显式版本/tag 的 dry-run 发布准备流程
 - 源蓝图：`D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS\rebuildToAIBuilderOS All.md`
 - 当前 npm 包名：`pm-copilot-skills`
 - 产品身份：AI Builder OS
 
-这个仓库正在从 PM skill 包演进为 AI Builder OS。当前阶段不重命名 npm 包，目的是保留既有安装方式、验证命令和下游消费链路；但 active skill surface 和 package surface 已收敛为 AI Builder OS。
+这个仓库已经从 PM skill 包收敛为 AI Builder OS。源 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id，目的是保留既有安装方式、验证命令和下游消费链路；active skill surface 和 package surface 已收敛为 AI Builder OS。
 
 ## 产品定义
 
@@ -135,7 +135,7 @@ _archived/pm-copilot-legacy-v1.0/
 
 ## 真相源边界
 
-当前阶段：
+当前真相源边界：
 
 1. 本仓库仍是 AI Builder OS canonical source；`pm-copilot-skills` 是兼容 npm package id。
 2. AI Builder OS 是产品身份、目标架构和 package surface 主叙事。

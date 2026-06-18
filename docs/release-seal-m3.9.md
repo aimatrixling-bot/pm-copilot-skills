@@ -8,7 +8,7 @@
 - Final tag: `ai-builder-os-v1.0.0`
 - Primary package: `ai-builder-os@1.0.0`
 - Compatibility package: `pm-copilot-skills@1.0.0`
-- Current patch candidate: `ai-builder-os-v1.0.2` / `ai-builder-os@1.0.2` / `pm-copilot-skills@1.0.2`
+- Patch release support: use explicit `--version` and `--tag` for each post-1.0 release candidate
 
 ## Scope
 
@@ -78,7 +78,7 @@ npm run prepare:dual-package-publish -- --out ".release/ai-builder-os-v1.0.0" --
 
 ## Command Evidence
 
-当前 M3.9 publish prep dry-run 结果：
+最近一次记录的 M3.9 publish prep dry-run 结果示例：
 
 | Command / Check | Result |
 | --- | --- |

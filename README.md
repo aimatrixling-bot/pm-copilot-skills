@@ -10,7 +10,7 @@
 >
 > 默认输出语言：用户可见报告、检查结果、原型文案、交接材料以**中文为主**；代码、字段名、命令、API、包名、行业通用缩写和固定术语可保留英文。
 >
-> 当前阶段：Milestone 5 Project Onboarding + post-1.0 patch publish prep。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.9 新增的双包发布准备脚本仍用于生成 `ai-builder-os` 主包与 `pm-copilot-skills` 兼容包的 release projection、tarball 和 manifest；脚本只做 dry-run，不执行 npm publish，不创建 final tag。真实发布仍需用户再次明确批准。
+> 1.0 系列发布机制：真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；双包发布准备脚本用于生成 `ai-builder-os` 主包与 `pm-copilot-skills` 兼容包的 release projection、tarball 和 manifest。准备脚本只做 dry-run，不执行 npm publish，不创建 final tag；真实发布必须基于干净的 release commit 和明确的版本/tag。
 >
 > legacy archive：旧 `pm-*` skills、legacy utilities 和原 `skills/references/` 已归档到 [`_archived/pm-copilot-legacy-v1.0/`](_archived/pm-copilot-legacy-v1.0/)，不再默认安装为 active skills。
 >
