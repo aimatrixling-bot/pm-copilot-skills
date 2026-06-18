@@ -167,7 +167,7 @@ npm run validate:dual-package-dry-run
 
 两个 projection 都必须通过 `npm pack --dry-run --json`，并在临时项目中运行 `node install.js codex-project --overwrite`，确认只安装 8 个 active builder skills。
 
-M3.8 之后，`sync-and-publish.sh` 仍只能视为 canonical source 的 release gate helper 和历史单包发布脚本；它不是 `ai-builder-os` / `pm-copilot-skills` 正式双包发布器。M3.9 发布时必须按 `docs/release-seal-m3.8.md` 的 publish order 执行，或先补专用双包发布脚本并 dry-run。
+M3.8 之后，`sync-and-publish.sh` 仍只能视为 canonical source 的 release gate helper 和历史单包发布脚本；它不是 `ai-builder-os` / `pm-copilot-skills` 正式双包发布器。M3.9 发布时必须按 [`docs/release-runbook-m3.9.md`](./docs/release-runbook-m3.9.md) 的顺序执行，并先通过专用双包发布准备脚本的 dry-run。
 
 ## M3.9 publish prep
 

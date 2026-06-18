@@ -138,8 +138,8 @@ _archived/pm-copilot-legacy-v1.0/
 14. Milestone 3.8 的 final 1.0 release seal 记录在 `docs/release-seal-m3.8.md`，用于冻结正式 package names、versions、release tag、publish 顺序和 post-release verification。
 15. Milestone 3.8.1 的 multi-runtime smoke seal 记录在 `docs/release-seal-m3.8.1.md`，用于确认 Codex、Claude Code 和 generic-agent/QoderWork 的安装、导出和加载边界。
 16. Milestone 3.9 的 publish prep seal 和 runbook 记录在 `docs/release-seal-m3.9.md` 与 `docs/release-runbook-m3.9.md`，用于生成 dry-run-only 双包发布投影，不执行真实 publish 或 final tag。
-15. `docs/release-plan-1.0.md` 是 1.0 命名、迁移、发布顺序和兼容策略的当前计划。
-16. Runtime adapters 是投影说明，不是独立源头。
+17. `docs/release-plan-1.0.md` 是 1.0 命名、迁移、发布顺序和兼容策略的当前计划。
+18. Runtime adapters 是投影说明，不是独立源头。
 
 ## 验证策略
 
