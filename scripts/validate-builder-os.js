@@ -96,11 +96,6 @@ const requiredFiles = [
   'references/ui-ux/component-guidelines.zh.md',
   'references/ui-ux/interaction-patterns.zh.md',
   'references/ui-ux/visual-style.zh.md',
-  'references/source-blueprints/README.md',
-  'references/source-blueprints/loopEnhance.md',
-  'references/source-blueprints/rebuildToAIBuilderOS 1.md',
-  'references/source-blueprints/rebuildToAIBuilderOS 2.md',
-  'references/source-blueprints/rebuildToAIBuilderOS All.md',
   'templates/skill-hardening-brief/template.md',
   'templates/agent-task-packet/template.md',
   'templates/decision-record/template.md',
@@ -1153,11 +1148,13 @@ if (Array.isArray(planGoalContract.handoff_targets)) {
 
 const syncScript = read('sync-and-publish.sh');
 const installScript = read('install.js');
+const gitignore = read('.gitignore');
 assert(syncScript.includes('canonical source'), 'sync-and-publish.sh 必须声明 canonical source 发布边界', failures);
 assert(!syncScript.includes('sync: v$NEW_VERSION'), 'sync-and-publish.sh 不得使用旧的 agent sync commit message', failures);
 assert(!/^AGENT_SKILLS_DIR=/m.test(syncScript), 'sync-and-publish.sh 不得把 agent 目录定义为上游源', failures);
 assert(installScript.includes('codex-user'), 'install.js 必须支持 Codex 用户级安装模式', failures);
 assert(installScript.includes('--overwrite'), 'install.js 必须提供显式覆盖外部 skill 的开关', failures);
+assert(gitignore.includes('references/source-blueprints/'), '.gitignore 必须排除本地 source blueprints 研究资料', failures);
 
 const readme = read('README.md');
 const legacyQualityGates = read('_archived/pm-copilot-legacy-v1.0/skills/references/quality-gates-shared.md');

@@ -7,6 +7,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const markerName = '.ai-builder-os-export-target';
 const metadataDirName = '.ai-builder-os';
+const excludedLocalResourcePrefixes = ['references/source-blueprints'];
 
 function usage() {
   console.log(`Usage:
@@ -58,6 +59,11 @@ function readJson(relativePath) {
 }
 
 function copyRecursive(src, dest) {
+  const relativeSource = path.relative(root, src).split(path.sep).join('/');
+  if (excludedLocalResourcePrefixes.some((prefix) => relativeSource === prefix || relativeSource.startsWith(`${prefix}/`))) {
+    return;
+  }
+
   const stat = fs.statSync(src);
   if (stat.isDirectory()) {
     fs.mkdirSync(dest, { recursive: true });

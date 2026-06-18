@@ -63,10 +63,26 @@ assert(packageJson.scripts['validate:onboarding-evals'] === 'node scripts/valida
 assert(packageJson.scripts['validate:dual-package-dry-run'] === 'node scripts/validate-dual-package-dry-run.js', 'package scripts 必须包含 validate:dual-package-dry-run');
 assert(packageJson.scripts['prepare:dual-package-publish'] === 'node scripts/prepare-dual-package-publish.js', 'package scripts 必须包含 prepare:dual-package-publish');
 
-for (const requiredFileEntry of ['skill-pack.json', 'agents/', 'skills/', 'kernel/', 'harness/', 'memory/', 'loops/', 'references/', 'templates/', 'adapters/', 'evals/', 'docs/']) {
+for (const requiredFileEntry of [
+  'skill-pack.json',
+  'agents/',
+  'skills/',
+  'kernel/',
+  'harness/',
+  'memory/',
+  'loops/',
+  'references/README.md',
+  'references/legacy-pm-methods/',
+  'references/skill-design/',
+  'references/ui-ux/',
+  'templates/',
+  'adapters/',
+  'evals/',
+  'docs/',
+]) {
   assert(packageJson.files.includes(requiredFileEntry), `package files 必须包含 ${requiredFileEntry}`);
 }
-for (const forbiddenFileEntry of ['_archived/', 'research/']) {
+for (const forbiddenFileEntry of ['_archived/', 'research/', 'references/', 'references/source-blueprints/']) {
   assert(!packageJson.files.includes(forbiddenFileEntry), `package files 不应包含 ${forbiddenFileEntry}`);
 }
 
@@ -101,7 +117,7 @@ assert(skillPack.release_gates.includes('npm run validate:onboarding-evals'), 's
 assert(skillPack.release_gates.includes('npm run validate:dual-package-dry-run'), 'skill-pack release_gates 必须包含 validate:dual-package-dry-run');
 assert(skillPack.release_gates.includes('npm run prepare:dual-package-publish'), 'skill-pack release_gates 必须包含 prepare:dual-package-publish');
 
-for (const excluded of ['_archived/', 'research/', 'skills/pm-*', 'skills/pdf', 'skills/pptx', 'skills/download-anything', 'skills/references']) {
+for (const excluded of ['_archived/', 'research/', 'skills/pm-*', 'skills/pdf', 'skills/pptx', 'skills/download-anything', 'skills/references', 'references/source-blueprints/']) {
   assert(skillPack.active_surface.excluded_from_package_surface.includes(excluded), `skill-pack 必须声明排除 ${excluded}`);
 }
 
@@ -129,7 +145,7 @@ assert(readme.includes('QoderWork 当前按 `generic-agent` 消费'), 'README �
 assert(readme.includes('Dual package dry-run'), 'README 必须说明 dual package dry-run');
 assert(readme.includes('M3.9 publish prep'), 'README 必须说明 M3.9 publish prep');
 assert(readme.includes('prepare:dual-package-publish'), 'README 必须说明 prepare:dual-package-publish');
-assert(readme.includes('references/source-blueprints/'), 'README 必须说明 source blueprints 参考资料位置');
+assert(readme.includes('references/source-blueprints/') && readme.includes('不进入 git 或 package surface'), 'README 必须说明 source blueprints 是本地 ignored 研究资料');
 assert(readme.includes('ai-builder-os'), 'README 必须说明 ai-builder-os 命令别名或产品 id');
 assert(readme.includes('兼容 npm package id'), 'README 必须说明 pm-copilot-skills 是兼容 npm package id');
 assert(installScript.includes('ai-builder-os'), 'install.js 必须暴露 ai-builder-os 用法或命令别名说明');

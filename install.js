@@ -72,6 +72,7 @@ const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "ut
 const markerName = ".pm-copilot-skills-source.json";
 const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "references", "templates"];
 const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
+const excludedLocalResourcePrefixes = ["references/source-blueprints"];
 
 console.log(`\n  AI Builder OS Installer v${pkg.version}`);
 console.log(`  兼容 npm package id: ${pkg.name}`);
@@ -85,6 +86,11 @@ fs.mkdirSync(targetDir, { recursive: true });
 
 // Copy function
 function copyRecursive(src, dest) {
+  const relativeSource = path.relative(__dirname, src).split(path.sep).join("/");
+  if (excludedLocalResourcePrefixes.some((prefix) => relativeSource === prefix || relativeSource.startsWith(`${prefix}/`))) {
+    return;
+  }
+
   const stat = fs.statSync(src);
   if (stat.isDirectory()) {
     fs.mkdirSync(dest, { recursive: true });

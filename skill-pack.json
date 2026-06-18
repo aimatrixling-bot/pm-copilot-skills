@@ -42,7 +42,8 @@
       "skills/pdf",
       "skills/pptx",
       "skills/download-anything",
-      "skills/references"
+      "skills/references",
+      "references/source-blueprints/"
     ]
   },
   "architecture_layers": [

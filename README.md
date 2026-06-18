@@ -14,7 +14,7 @@
 >
 > legacy archive：旧 `pm-*` skills、legacy utilities 和原 `skills/references/` 已归档到 [`_archived/pm-copilot-legacy-v1.0/`](_archived/pm-copilot-legacy-v1.0/)，不再默认安装为 active skills。
 >
-> v0.7.0 方向：综合 Meta_Kim、毒舌产品经理 5.0、andrej-karpathy-skills、VibeCodingPromptTemplate、Superpowers、Everything Claude Code，以及 OpenAI / Anthropic skill/plugin 最佳实践，形成克制、可靠、可扩展的 Builder OS。旧 PM 蓝图保留在 [`blueprint.md`](./_archived/pm-copilot-legacy-v1.0/skills/references/builder-os/blueprint.md)，AI Builder OS 早期源蓝图保留在 [`references/source-blueprints/`](./references/source-blueprints/)。
+> v0.7.0 方向：形成克制、可靠、可扩展的 Builder OS。旧 PM 蓝图保留在 [`blueprint.md`](./_archived/pm-copilot-legacy-v1.0/skills/references/builder-os/blueprint.md)；AI Builder OS 早期研究源蓝图可保留在本地 ignored `references/source-blueprints/`，不进入 git 或 package surface。
 >
 > v0.6.0 已把 Meta_Kim 方法论层（Intent Packet / Capability Index / Gates / Meta-Review / Output Packet / Evolution Writeback）集成到全部 16 个 skills。统一结构见 [Skill 结构](#skill-结构)。
 >
@@ -70,20 +70,6 @@ AI Builder OS
 | `builder-decision` | 记录关键取舍 | Decision Record |
 
 Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。Milestone 3.9 新增发布 runbook 和 dry-run-only 双包发布准备脚本；真实发布仍需用户再次明确批准。Milestone 4/5 新增 Artifact Governance 与 Project Onboarding 的轻量横切协议、回归样例和专用 validator，仍保持 8 个 active builder skills。
-
-## Benchmark Synthesis（标杆综合）
-
-AI Builder OS 不复制任何单一标杆项目，而是把其中最强的思想归一化为一套紧凑的操作系统：
-
-| 来源 | 在 AI Builder OS 中的角色 | 吸收 | 不吸收 |
-| --- | --- | --- | --- |
-| Meta_Kim | 治理主干 | 意图澄清、能力路由、review/meta-review、验证、经验回写、canonical-to-runtime projection | 完整九角色治理复杂度 |
-| 毒舌产品经理 5.0 | 轻量 Harness 参考 | Guides、Sensors、Steering Loop、标准驱动执行、目标驱动执行、hook/gate 思维 | 让单一 harness 支配整个系统 |
-| andrej-karpathy-skills | 行为纪律 | 不隐藏假设、显式取舍、最小变更、成功标准、验证循环 | 把同一套全局规则在每个 skill 中重复堆叠 |
-| VibeCodingPromptTemplate | 模板资产库 | PRD、MVP、研究、设计、架构、自文档化功能、营销模板作为 reference 或 optional pack | 把每个模板都升级为 core skill |
-| Superpowers | 工程交付文化 | design-before-code、approval gates、TDD/review 纪律、subagent 执行模式、skill 变更 eval 证据 | 全量搬运工程 workflow |
-| Everything Claude Code | Plugin 系统地图 | agents/skills/commands/hooks/MCP/rules/memory/context architecture | 大规模 agent/skill/command 膨胀 |
-| OpenAI / Anthropic docs | 平台边界 | progressive disclosure、skill-first iteration、稳定分发后 plugin packaging、trigger-focused descriptions | 工作流未稳定前过早 plugin 化 |
 
 ## 快速安装
 
@@ -153,7 +139,7 @@ M3.2 后，对外 package surface 由这些文件共同定义：
 - `scripts/validate-onboarding-evals.js` 与 `evals/onboarding/project-onboarding.cases.json`：验证 Project Onboarding 的 greenfield、brownfield、resume、unknown 路由样例。
 - `scripts/validate-dual-package-dry-run.js`：在临时目录验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包都能 pack dry-run 和安装 dry-run。
 
-`_archived/` 和 `research/` 不进入 npm package surface；它们只保留在仓库中供审阅、回滚和后续迁移。
+`_archived/`、`research/` 和本地 ignored `references/source-blueprints/` 不进入 npm package surface；它们只作为审阅、回滚、研究或后续迁移材料。
 
 ## Dual package dry-run
 
@@ -350,7 +336,7 @@ Personal: pm-job-search
 - **Quality Gates**：Iron Law、输出质量标准、Builder OS 证据协议和中文优先语言协议。
 - **Design KB**：UI patterns 和 component references。
 - **Builder OS Blueprint（历史版）**：多来源综合、反膨胀规则和 runtime adapter 边界，位于 `_archived/pm-copilot-legacy-v1.0/skills/references/builder-os/`。
-- **Source Blueprints（历史源蓝图）**：AI Builder OS 早期重建总纲和 Loop Engineering 输入，位于 `references/source-blueprints/`；它们是设计来源，不是当前 runtime 协议权威源。
+- **Local Research Blueprints（本地研究源蓝图）**：AI Builder OS 早期重建总纲、Loop Engineering 输入和 benchmark synthesis 可保留在本地 ignored `references/source-blueprints/`；它们不进入 git、npm package 或 runtime export。
 
 ## Skill 结构
 
@@ -408,7 +394,6 @@ pm-copilot-skills/
 |   +-- ...
 +-- bundles/                   # Scenario bundles; includes core
 +-- references/                # Runtime-neutral 的 Builder OS references 新位置
-|   +-- source-blueprints/     # 历史源蓝图和设计输入
 +-- templates/                 # Reusable asset templates
 +-- adapters/                  # Codex / Claude Code / generic-agent projection notes
 +-- docs/                      # 架构和 roadmap 文档
@@ -423,6 +408,7 @@ pm-copilot-skills/
 |   +-- pm-copilot-legacy-v1.0/
 |   +-- skills-removed-v0.5.0/
 +-- research/                  # 本地升级分析，不随 npm package 发布
++-- references/source-blueprints/ # 本地研究归档，git ignored，不随 npm package 发布
 +-- install.js                 # npm installer script
 +-- sync-and-publish.sh        # 从本 canonical source 发布；不反向同步 agent
 +-- package.json

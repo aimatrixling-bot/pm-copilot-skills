@@ -50,11 +50,15 @@ const requiredPackFiles = [
   'docs/release-note-milestone-5-project-onboarding.md',
   'docs/release-runbook-m3.9.md',
   'docs/release-seal-m3.9.md',
-  'references/source-blueprints/README.md',
-  'references/source-blueprints/loopEnhance.md',
-  'references/source-blueprints/rebuildToAIBuilderOS 1.md',
-  'references/source-blueprints/rebuildToAIBuilderOS 2.md',
-  'references/source-blueprints/rebuildToAIBuilderOS All.md',
+  'references/README.md',
+  'references/legacy-pm-methods/README.md',
+  'references/skill-design/README.md',
+  'references/skill-design/skill-design-playbook.zh.md',
+  'references/ui-ux/README.md',
+  'references/ui-ux/design-principles.zh.md',
+  'references/ui-ux/component-guidelines.zh.md',
+  'references/ui-ux/interaction-patterns.zh.md',
+  'references/ui-ux/visual-style.zh.md',
   ...builderSkills.map((skillName) => `skills/${skillName}/SKILL.md`),
 ];
 
@@ -66,6 +70,7 @@ const forbiddenPrefixes = [
   'skills/pptx',
   'skills/download-anything',
   'skills/references',
+  'references/source-blueprints/',
 ];
 
 const packageTargets = [

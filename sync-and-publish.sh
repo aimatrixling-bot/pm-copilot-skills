@@ -143,7 +143,8 @@ const forbiddenPrefixes = [
   'skills/pdf',
   'skills/pptx',
   'skills/download-anything',
-  'skills/references'
+  'skills/references',
+  'references/source-blueprints/'
 ];
 const forbidden = files.filter(p => forbiddenPrefixes.some(prefix => p.startsWith(prefix)));
 if (forbidden.length) {

@@ -69,6 +69,11 @@ function validateNoLegacy(targetName, targetDir) {
     assert(!fs.existsSync(path.join(targetDir, entry)), `${targetName} export 不应包含 legacy path: ${entry}`);
     assert(!fs.existsSync(path.join(targetDir, 'skills', entry)), `${targetName} export 不应包含 legacy skill: ${entry}`);
   }
+
+  assert(
+    !fs.existsSync(path.join(targetDir, 'references', 'source-blueprints')),
+    `${targetName} export 不应包含本地研究归档 references/source-blueprints`,
+  );
 }
 
 function validateFlatTarget(targetName, targetDir) {

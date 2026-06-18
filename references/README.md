@@ -14,4 +14,4 @@ Milestone 2.4 将 Skill Design Playbook 放在 `references/skill-design/`，供�
 
 Milestone 3.1 新增 `references/legacy-pm-methods/` 作为旧 PM 方法资产索引。legacy 内容只作为迁移来源，不作为 active skill surface。
 
-Milestone 6A 新增 `references/source-blueprints/`，用于保存 AI Builder OS 早期源蓝图和历史设计输入。它们用于追溯和审计，不是当前 runtime 协议的权威源。
+`references/source-blueprints/` 只允许作为本地研究归档使用，已被 git ignore。它可保存 AI Builder OS 早期源蓝图、历史设计输入和 benchmark synthesis，但不属于 active shared references、npm package surface 或 runtime export。
