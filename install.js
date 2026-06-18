@@ -70,7 +70,7 @@ if (mode === "claude-project") {
 
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
 const markerName = ".pm-copilot-skills-source.json";
-const builderSharedResourceNames = ["adapters", "kernel", "references", "templates"];
+const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "references", "templates"];
 const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
 
 console.log(`\n  AI Builder OS Installer v${pkg.version}`);

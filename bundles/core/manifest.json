@@ -18,6 +18,7 @@
     "kernel/",
     "harness/",
     "memory/",
+    "loops/",
     "references/",
     "templates/"
   ],

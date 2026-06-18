@@ -58,10 +58,12 @@ assert(packageJson.scripts['export:runtime'] === 'node scripts/export-ai-builder
 assert(packageJson.scripts['validate:package-surface'] === 'node scripts/validate-package-surface.js', 'package scripts 必须包含 validate:package-surface');
 assert(packageJson.scripts['validate:runtime-adapters'] === 'node scripts/validate-runtime-adapters.js', 'package scripts 必须包含 validate:runtime-adapters');
 assert(packageJson.scripts['validate:trigger-descriptions'] === 'node scripts/validate-trigger-descriptions.js', 'package scripts 必须包含 validate:trigger-descriptions');
+assert(packageJson.scripts['validate:artifact-evals'] === 'node scripts/validate-artifact-evals.js', 'package scripts 必须包含 validate:artifact-evals');
+assert(packageJson.scripts['validate:onboarding-evals'] === 'node scripts/validate-onboarding-evals.js', 'package scripts 必须包含 validate:onboarding-evals');
 assert(packageJson.scripts['validate:dual-package-dry-run'] === 'node scripts/validate-dual-package-dry-run.js', 'package scripts 必须包含 validate:dual-package-dry-run');
 assert(packageJson.scripts['prepare:dual-package-publish'] === 'node scripts/prepare-dual-package-publish.js', 'package scripts 必须包含 prepare:dual-package-publish');
 
-for (const requiredFileEntry of ['skill-pack.json', 'agents/', 'skills/', 'kernel/', 'references/', 'templates/', 'adapters/', 'docs/']) {
+for (const requiredFileEntry of ['skill-pack.json', 'agents/', 'skills/', 'kernel/', 'harness/', 'memory/', 'loops/', 'references/', 'templates/', 'adapters/', 'evals/', 'docs/']) {
   assert(packageJson.files.includes(requiredFileEntry), `package files 必须包含 ${requiredFileEntry}`);
 }
 for (const forbiddenFileEntry of ['_archived/', 'research/']) {
@@ -77,6 +79,10 @@ assert(sameSet(skillPack.package.bins, Object.keys(packageJson.bin).sort()), 'sk
 assert(skillPack.active_surface.type === 'pure-builder-core', 'skill-pack active_surface.type 必须是 pure-builder-core');
 assert(sameSet(skillPack.active_surface.skills, builderSkills), 'skill-pack active_surface.skills 必须等于 8 个 builder skills');
 assert(sameSet(coreManifest.skills, builderSkills), 'core bundle manifest skills 必须等于 8 个 builder skills');
+for (const sharedResource of ['kernel/', 'harness/', 'memory/', 'loops/', 'references/', 'templates/', 'adapters/']) {
+  assert(skillPack.active_surface.shared_resources.includes(sharedResource), `skill-pack shared_resources 必须包含 ${sharedResource}`);
+}
+assert(coreManifest.references.includes('loops/'), 'core bundle manifest references 必须包含 loops/');
 
 assert(skillPack.export.script === 'scripts/export-ai-builder-os.js', 'skill-pack export.script 必须指向 export-ai-builder-os.js');
 assert(skillPack.export.validator === 'scripts/validate-runtime-adapters.js', 'skill-pack export.validator 必须指向 validate-runtime-adapters.js');
@@ -90,6 +96,8 @@ if (Array.isArray(skillPack.export.targets)) {
   }
 }
 assert(skillPack.release_gates.includes('npm run validate:trigger-descriptions'), 'skill-pack release_gates 必须包含 validate:trigger-descriptions');
+assert(skillPack.release_gates.includes('npm run validate:artifact-evals'), 'skill-pack release_gates 必须包含 validate:artifact-evals');
+assert(skillPack.release_gates.includes('npm run validate:onboarding-evals'), 'skill-pack release_gates 必须包含 validate:onboarding-evals');
 assert(skillPack.release_gates.includes('npm run validate:dual-package-dry-run'), 'skill-pack release_gates 必须包含 validate:dual-package-dry-run');
 assert(skillPack.release_gates.includes('npm run prepare:dual-package-publish'), 'skill-pack release_gates 必须包含 prepare:dual-package-publish');
 
@@ -107,6 +115,8 @@ assert(openaiYaml.includes('package_surface: pure-builder-core'), 'agents/openai
 assert(openaiYaml.includes('script: scripts/export-ai-builder-os.js'), 'agents/openai.yaml 必须声明 runtime export script');
 assert(openaiYaml.includes('validator: scripts/validate-runtime-adapters.js'), 'agents/openai.yaml 必须声明 runtime adapter validator');
 assert(openaiYaml.includes('npm run validate:trigger-descriptions'), 'agents/openai.yaml 必须声明 trigger description gate');
+assert(openaiYaml.includes('npm run validate:artifact-evals'), 'agents/openai.yaml 必须声明 artifact eval gate');
+assert(openaiYaml.includes('npm run validate:onboarding-evals'), 'agents/openai.yaml 必须声明 onboarding eval gate');
 assert(openaiYaml.includes('npm run validate:dual-package-dry-run'), 'agents/openai.yaml 必须声明 dual package dry-run gate');
 assert(openaiYaml.includes('npm run prepare:dual-package-publish'), 'agents/openai.yaml 必须声明 dual package publish prep gate');
 
@@ -129,6 +139,8 @@ assert(syncScript.includes('scripts/export-ai-builder-os.js'), 'sync-and-publish
 assert(syncScript.includes('validate:runtime-adapters'), 'sync-and-publish.sh 必须运行 validate:runtime-adapters');
 assert(syncScript.includes('scripts/validate-trigger-descriptions.js'), 'sync-and-publish.sh pack gate 必须检查 trigger description validator');
 assert(syncScript.includes('validate:trigger-descriptions'), 'sync-and-publish.sh 必须运行 validate:trigger-descriptions');
+assert(syncScript.includes('scripts/validate-onboarding-evals.js'), 'sync-and-publish.sh pack gate 必须检查 onboarding eval validator');
+assert(syncScript.includes('validate:onboarding-evals'), 'sync-and-publish.sh 必须运行 validate:onboarding-evals');
 assert(syncScript.includes('scripts/validate-dual-package-dry-run.js'), 'sync-and-publish.sh pack gate 必须检查 dual package dry-run validator');
 assert(syncScript.includes('validate:dual-package-dry-run'), 'sync-and-publish.sh 必须运行 validate:dual-package-dry-run');
 assert(syncScript.includes('scripts/prepare-dual-package-publish.js'), 'sync-and-publish.sh pack gate 必须检查 dual package publish prep script');

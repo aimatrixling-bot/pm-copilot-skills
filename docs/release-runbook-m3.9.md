@@ -14,6 +14,12 @@ M3.9 的目标是发布 AI Builder OS 1.0，并完成发布后验证。
 - Canonical source repo: `aimatrixling-bot/pm-copilot-skills`
 - Current source package id before projection: `pm-copilot-skills@0.7.0`
 
+Post-1.0 patch release 时不要复用已发布的 `1.0.0` 目标。必须显式传入新的版本和 tag，例如 Milestone 5 当前候选：
+
+- Final tag: `ai-builder-os-v1.0.2`
+- Primary package: `ai-builder-os@1.0.2`
+- Compatibility package: `pm-copilot-skills@1.0.2`
+
 ## Non-goals
 
 - 不新增 builder skill。
@@ -32,15 +38,18 @@ npm whoami
 npm view ai-builder-os version
 npm view pm-copilot-skills versions --json
 git ls-remote --tags origin ai-builder-os-v1.0.0
+git ls-remote --tags origin ai-builder-os-v1.0.2
 ```
 
-期望：
+初始 `1.0.0` 发布时的期望：
 
 - 工作树干净。
 - `npm whoami` 是允许发布的账号。
 - `npm view ai-builder-os version` 返回 E404，或发布人确认已经拥有该包且 `1.0.0` 未发布。
 - `pm-copilot-skills` 尚无 `1.0.0`。
 - `ai-builder-os-v1.0.0` tag 尚不存在。
+
+Post-1.0 patch release 时，`1.0.0` / `1.0.1` 已发布是正常状态；只要求当前目标版本和目标 tag 均尚不存在。
 
 ## Required Gates
 
@@ -49,6 +58,8 @@ npm run validate:builder-os
 npm run validate:package-surface
 npm run validate:runtime-adapters
 npm run validate:trigger-descriptions
+npm run validate:artifact-evals
+npm run validate:onboarding-evals
 npm run validate:dual-package-dry-run
 node install.js codex --overwrite
 npm run validate:codex-install
@@ -64,6 +75,12 @@ git diff --check
 
 ```bash
 npm run prepare:dual-package-publish -- --out ".release/ai-builder-os-v1.0.0" --clean --check-registry --npm-publish-dry-run
+```
+
+Patch release 示例：
+
+```bash
+npm run prepare:dual-package-publish -- --version 1.0.2 --tag ai-builder-os-v1.0.2 --out ".release/ai-builder-os-v1.0.2" --clean --check-registry --npm-publish-dry-run
 ```
 
 产物：

@@ -2,7 +2,7 @@
 
 ## 当前状态
 
-- 阶段：Milestone 3.9 publish prep dry-run
+- 阶段：Milestone 5 Project Onboarding + post-1.0 patch publish prep dry-run
 - 源蓝图：`D:\Max Brain for AI Copilot\30_Projects\personal\AI Builder OS\rebuildToAIBuilderOS All.md`
 - 当前 npm 包名：`pm-copilot-skills`
 - 产品身份：AI Builder OS
@@ -21,18 +21,30 @@ AI Builder OS 是一套 AI 原生构建操作系统，服务于产品经理、�
 想法 -> 判断路径 -> 规格 -> 原型 -> Agent Task Packet -> 执行 -> 证据 -> 发布/评审 -> 演进
 ```
 
-## 八层架构
+首次进入项目时，AI Builder OS 先通过 Project Onboarding Protocol 判断项目模式：
+
+```text
+greenfield | brownfield | resume | unknown
+  -> project profile proposal
+  -> artifact index initialization proposal
+  -> builder-router / builder-frame / builder-review / builder-agent-task
+```
+
+Project Onboarding 是 Memory / Harness / Artifact Governance 的横切协议，不是新的 core skill。它不在安装时自动写入用户项目，不自动创建 `.ai-builder/`，不自动扫描全盘，也不自动迁移、删除或重命名已有资产。
+
+## 九层架构
 
 ```text
 AI Builder OS
 ├── 1. Builder Kernel          # 路由、协议、门禁、证据和交接规则
-├── 2. Execution Harness       # 执行指南、传感器、门禁、运行报告
-├── 3. Memory & Evolution      # 用户/项目/产物/决策/skill 演进记忆
-├── 4. Core Skills             # builder-router、builder-plan-goal 等核心能力
-├── 5. Scenario Bundles        # 按场景组合的可安装能力包
-├── 6. References & Templates  # 方法、清单、模板和示例
-├── 7. Eval System             # 触发、路由、契约、质量、证据和回归评测
-└── 8. Runtime Adapters        # 面向不同 agent runtime 的投影说明
+├── 2. Loop Recipes            # 可重复、可验证、可停止的工作循环
+├── 3. Execution Harness       # 执行指南、传感器、门禁、运行报告
+├── 4. Memory & Evolution      # 用户/项目/产物/决策/skill 演进记忆
+├── 5. Core Skills             # builder-router、builder-plan-goal 等核心能力
+├── 6. Scenario Bundles        # 按场景组合的可安装能力包
+├── 7. References & Templates  # 方法、清单、模板和示例
+├── 8. Eval System             # 触发、路由、契约、质量、证据、artifact、onboarding 和回归评测
+└── 9. Runtime Adapters        # 面向不同 agent runtime 的投影说明
 ```
 
 ## 分层职责
@@ -40,12 +52,13 @@ AI Builder OS
 | 层 | 职责 | 当前产物 |
 | --- | --- | --- |
 | Builder Kernel | 路由、Plan/Goal 判断、packet、门禁、证据协议、交接规则 | `kernel/` |
-| Execution Harness | 执行指南、传感器、门禁、steering loop、工具策略、运行报告 | `harness/` |
-| Memory & Evolution | 用户记忆、项目记忆、产物索引、决策记忆、skill 演进 | `memory/` |
+| Loop Recipes | 描述可重复、可验证、可停止的周期工作流，不替代 skill | `loops/` |
+| Execution Harness | 执行指南、传感器、门禁、steering loop、工具策略、project onboarding、运行报告 | `harness/` |
+| Memory & Evolution | 用户记忆、项目记忆、project profile、产物索引、决策记忆、skill 演进 | `memory/` |
 | Core Skills | 面向构建工作的核心 workflow，带明确输出契约 | `skills/builder-*` |
 | Scenario Bundles | 按使用场景组织的可安装 skill 组合 | `bundles/core/` |
 | References & Templates | 方法论、检查清单、产物模板、示例 | `references/`, `templates/` |
-| Eval System | 触发、路由、契约、质量、证据、e2e、回归和个性化评测 | `evals/` |
+| Eval System | 触发、路由、契约、质量、证据、artifact、onboarding、e2e、回归和个性化评测 | `evals/` |
 | Runtime Adapters | 面向不同 runtime 的投影说明，不复制方法论 | `adapters/` |
 
 ## Package Surface
@@ -58,10 +71,12 @@ M3.2 后，AI Builder OS 的对外 package surface 由以下文件共同定义�
 | `skill-pack.json` | 机器可读的 AI Builder OS manifest，声明 active surface、bundle、adapter、release gate 和 legacy 排除边界 |
 | `agents/openai.yaml` | 面向 OpenAI/Codex 生态的 package-level metadata |
 | `bundles/core/manifest.json` | AI Builder OS core bundle 定义 |
-| `install.js` | Runtime 安装入口，默认只安装 8 个 `builder-*` active skills |
+| `install.js` | Runtime 安装入口，默认只安装 8 个 `builder-*` active skills，并投影共享 `kernel/harness/memory/loops/references/templates/adapters` |
 | `scripts/export-ai-builder-os.js` | Runtime projection 工具，导出 Codex、Claude Code、generic-agent 目标目录 |
 | `adapters/*/adapter.json` | Runtime adapter manifest，声明 export layout、默认目标和 invocation prefix |
 | `scripts/validate-trigger-descriptions.js` | Trigger description gate，验证 skill frontmatter 触发描述和 confusing skill 边界 |
+| `scripts/validate-artifact-evals.js` | Artifact eval gate，验证 `evals/artifact/*.cases.json` 的结构、fail-closed 约束和 proposal-only 关键词 |
+| `scripts/validate-onboarding-evals.js` | Project onboarding eval gate，验证 `evals/onboarding/project-onboarding.cases.json` 的首次进入项目路由样例 |
 | `scripts/validate-dual-package-dry-run.js` | 双包 dry-run gate，验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性 |
 
 ## Runtime Adapter / Export
@@ -137,9 +152,11 @@ _archived/pm-copilot-legacy-v1.0/
 13. Milestone 3.7 的 package/repo migration dry-run seal 记录在 `docs/release-seal-m3.7.md`，用于说明 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 dry-run contract。
 14. Milestone 3.8 的 final 1.0 release seal 记录在 `docs/release-seal-m3.8.md`，用于冻结正式 package names、versions、release tag、publish 顺序和 post-release verification。
 15. Milestone 3.8.1 的 multi-runtime smoke seal 记录在 `docs/release-seal-m3.8.1.md`，用于确认 Codex、Claude Code 和 generic-agent/QoderWork 的安装、导出和加载边界。
-16. Milestone 3.9 的 publish prep seal 和 runbook 记录在 `docs/release-seal-m3.9.md` 与 `docs/release-runbook-m3.9.md`，用于生成 dry-run-only 双包发布投影，不执行真实 publish 或 final tag。
+16. Milestone 3.9 的 publish prep seal 和 runbook 记录在 `docs/release-seal-m3.9.md` 与 `docs/release-runbook-m3.9.md`，用于生成 dry-run-only 双包发布投影，不执行真实 publish 或 final tag；post-1.0 patch release 必须显式传入未发布版本和 tag。
 17. `docs/release-plan-1.0.md` 是 1.0 命名、迁移、发布顺序和兼容策略的当前计划。
 18. Runtime adapters 是投影说明，不是独立源头。
+19. Project Onboarding Protocol 用于首次进入或恢复项目时生成 project profile 和 artifact index 初始化建议；它只输出 proposal，不自动写入、扫描、迁移、删除或重命名用户项目资产。
+20. `docs/release-note-milestone-5-project-onboarding.md` 是 Milestone 5 Project Onboarding 的用户价值和交付摘要，不替代架构说明或发布 runbook。
 
 ## 验证策略
 
@@ -150,6 +167,8 @@ npm run validate:builder-os
 npm run validate:package-surface
 npm run validate:runtime-adapters
 npm run validate:trigger-descriptions
+npm run validate:artifact-evals
+npm run validate:onboarding-evals
 npm run validate:dual-package-dry-run
 npm run validate:codex-install
 npm run validate:doctor-preference-e2e

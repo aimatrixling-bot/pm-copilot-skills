@@ -4,6 +4,9 @@
     "route_type",
     "recommended_mode",
     "recommended_skill",
+    "project_mode",
+    "project_profile_proposal",
+    "recommended_next_skill",
     "reasoning_summary",
     "missing_context",
     "risk_flags",
@@ -18,6 +21,17 @@
     "plan_to_goal",
     "skill_route",
     "ask_first"
+  ],
+  "project_mode_values": [
+    "greenfield",
+    "brownfield",
+    "resume",
+    "unknown",
+    "not_applicable"
+  ],
+  "required_reference_files": [
+    "harness/project-onboarding-policy.zh.md",
+    "memory/schemas/project-profile.schema.md"
   ],
   "handoff_targets": [
     "builder-plan-goal",

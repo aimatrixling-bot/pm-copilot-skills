@@ -20,6 +20,7 @@ const requiredFiles = [
   'docs/release-seal-m3.7.md',
   'docs/release-seal-m3.8.md',
   'docs/release-seal-m3.8.1.md',
+  'docs/release-note-milestone-5-project-onboarding.md',
   'docs/release-runbook-m3.9.md',
   'docs/release-seal-m3.9.md',
   'docs/release-plan-1.0.md',
@@ -32,8 +33,19 @@ const requiredFiles = [
   'kernel/gates/builder-quality-gates.zh.md',
   'kernel/protocols/evidence-policy.zh.md',
   'harness/README.md',
+  'harness/artifact-write-policy.zh.md',
+  'harness/project-onboarding-policy.zh.md',
+  'harness/project-greenfield-bootstrap-policy.zh.md',
+  'harness/project-brownfield-intake-policy.zh.md',
   'harness/run-report.schema.md',
   'memory/README.md',
+  'memory/schemas/artifact-index.schema.md',
+  'memory/schemas/project-profile.schema.md',
+  'memory/policies/artifact-lifecycle-policy.zh.md',
+  'memory/policies/artifact-cleanup-policy.zh.md',
+  'memory/policies/artifact-consistency-policy.zh.md',
+  'loops/README.md',
+  'loops/recipes/artifact-hygiene.loop.md',
   'bundles/core/manifest.json',
   'bundles/core/skills.list',
   'adapters/codex/README.md',
@@ -48,6 +60,8 @@ const requiredFiles = [
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
+  'scripts/validate-artifact-evals.js',
+  'scripts/validate-onboarding-evals.js',
   'scripts/validate-dual-package-dry-run.js',
   'scripts/prepare-dual-package-publish.js',
   'skills/skill-template.md',
@@ -60,6 +74,10 @@ const requiredFiles = [
   'evals/trigger/builder-description.cases.json',
   'evals/trigger/builder-core.cases.json',
   'evals/routing/builder-routing.cases.json',
+  'evals/onboarding/project-onboarding.cases.json',
+  'evals/artifact/artifact-index-sync.cases.json',
+  'evals/artifact/artifact-cleanup-proposal.cases.json',
+  'evals/artifact/artifact-consistency-audit.cases.json',
   'evals/output-contract/agent-task-packet.schema.json',
   'evals/output-contract/builder-router.schema.json',
   'evals/output-contract/builder-plan-goal.schema.json',
@@ -191,8 +209,19 @@ const builderCoreExpectations = {
     'skill_route',
     'ask_first',
     'handoff_packet',
+    'project_mode',
+    'project_profile_proposal',
+    'recommended_next_skill',
+    'greenfield',
+    'brownfield',
+    'resume',
+    'unknown',
+    'not_applicable',
+    'harness/project-onboarding-policy.zh.md',
+    'memory/schemas/project-profile.schema.md',
     'kernel/routing/skill-selection-rules.zh.md',
     'evals/output-contract/builder-router.schema.json',
+    'evals/onboarding/project-onboarding.cases.json',
     'references/skill-design/skill-design-playbook.zh.md',
   ],
   'skills/builder-plan-goal/SKILL.md': [
@@ -296,6 +325,9 @@ const builderCoreExpectations = {
     '## 模式判断',
     'templates/agent-task-packet/template.md',
     'kernel/packets/agent-task-packet.schema.md',
+    'kernel/packets/output-packet.schema.md',
+    'harness/artifact-write-policy.zh.md',
+    'memory/schemas/artifact-index.schema.md',
     'kernel/routing/plan-goal-routing.zh.md',
     'prompt',
     'plan',
@@ -306,6 +338,7 @@ const builderCoreExpectations = {
     'forbidden_actions',
     'human_approval_gates',
     'blocked_stop_condition',
+    'artifact_index_update_proposal',
     'handoff_packet',
     'evals/output-contract/agent-task-packet.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
@@ -318,6 +351,9 @@ const builderCoreExpectations = {
     'kernel/gates/fake-ui-gate.zh.md',
     'kernel/gates/fake-test-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
+    'loops/recipes/artifact-hygiene.loop.md',
+    'memory/policies/artifact-consistency-policy.zh.md',
+    'memory/policies/artifact-cleanup-policy.zh.md',
     'contract_review',
     'evidence_review',
     'design_review',
@@ -326,6 +362,8 @@ const builderCoreExpectations = {
     'review_mode',
     'evidence_audit',
     'design_consistency_audit',
+    'artifact_hygiene_audit',
+    'artifact_index_update_proposal',
     'unverified_areas',
     'evals/output-contract/builder-review.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
@@ -676,6 +714,9 @@ const outputContractExpectations = {
     'route_type',
     'recommended_mode',
     'recommended_skill',
+    'project_mode',
+    'project_profile_proposal',
+    'recommended_next_skill',
     'reasoning_summary',
     'missing_context',
     'risk_flags',
@@ -759,6 +800,7 @@ const outputContractExpectations = {
     'runtime_constraints',
     'acceptance_criteria',
     'verification',
+    'artifact_index_update_proposal',
     'human_approval_gates',
     'risks',
     'blocked_stop_condition',
@@ -771,6 +813,8 @@ const outputContractExpectations = {
     'findings',
     'evidence_audit',
     'design_consistency_audit',
+    'artifact_hygiene_audit',
+    'artifact_index_update_proposal',
     'risk_assessment',
     'decision',
     'required_fixes',
@@ -1005,6 +1049,18 @@ if (Array.isArray(builderRouterContract.route_type_values)) {
     assert(builderRouterContract.route_type_values.includes(value), `builder-router route_type_values 缺少 ${value}`, failures);
   }
 }
+assert(Array.isArray(builderRouterContract.project_mode_values), 'builder-router schema 必须包含 project_mode_values 数组', failures);
+if (Array.isArray(builderRouterContract.project_mode_values)) {
+  for (const value of ['greenfield', 'brownfield', 'resume', 'unknown', 'not_applicable']) {
+    assert(builderRouterContract.project_mode_values.includes(value), `builder-router project_mode_values 缺少 ${value}`, failures);
+  }
+}
+assert(Array.isArray(builderRouterContract.required_reference_files), 'builder-router schema 必须包含 required_reference_files 数组', failures);
+if (Array.isArray(builderRouterContract.required_reference_files)) {
+  for (const fileName of ['harness/project-onboarding-policy.zh.md', 'memory/schemas/project-profile.schema.md']) {
+    assert(builderRouterContract.required_reference_files.includes(fileName), `builder-router required_reference_files 缺少 ${fileName}`, failures);
+  }
+}
 assert(Array.isArray(builderRouterContract.handoff_targets), 'builder-router schema 必须包含 handoff_targets 数组', failures);
 if (Array.isArray(builderRouterContract.handoff_targets)) {
   for (const target of ['builder-plan-goal', 'builder-frame', 'builder-spec', 'builder-prototype', 'builder-agent-task', 'builder-review', 'builder-decision']) {
@@ -1037,6 +1093,20 @@ assert(Array.isArray(builderReviewContract.decision_values), 'builder-review sch
 if (Array.isArray(builderReviewContract.decision_values)) {
   for (const value of ['PASS', 'PARTIAL', 'BLOCKED', 'APPROVE', 'REQUEST_CHANGES']) {
     assert(builderReviewContract.decision_values.includes(value), `builder-review decision_values 缺少 ${value}`, failures);
+  }
+}
+assert(Array.isArray(builderReviewContract.optional), 'builder-review schema 必须包含 optional 数组', failures);
+if (Array.isArray(builderReviewContract.optional)) {
+  assert(builderReviewContract.optional.includes('cleanup_proposal'), 'builder-review optional 缺少 cleanup_proposal', failures);
+}
+assert(Array.isArray(builderReviewContract.required_reference_files), 'builder-review schema 必须包含 required_reference_files 数组', failures);
+if (Array.isArray(builderReviewContract.required_reference_files)) {
+  for (const fileName of [
+    'loops/recipes/artifact-hygiene.loop.md',
+    'memory/policies/artifact-consistency-policy.zh.md',
+    'memory/policies/artifact-cleanup-policy.zh.md',
+  ]) {
+    assert(builderReviewContract.required_reference_files.includes(fileName), `builder-review required_reference_files 缺少 ${fileName}`, failures);
   }
 }
 
@@ -1197,6 +1267,8 @@ execFileSync(process.execPath, [path.join(root, 'scripts/validate-skill-design-p
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-package-surface.js')], { stdio: 'inherit' });
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-runtime-adapters.js')], { stdio: 'inherit' });
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-trigger-descriptions.js')], { stdio: 'inherit' });
+execFileSync(process.execPath, [path.join(root, 'scripts/validate-artifact-evals.js')], { stdio: 'inherit' });
+execFileSync(process.execPath, [path.join(root, 'scripts/validate-onboarding-evals.js')], { stdio: 'inherit' });
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-dual-package-dry-run.js')], { stdio: 'inherit' });
 
 console.log('Builder OS 验证通过。');

@@ -8,6 +8,7 @@
 - Final tag: `ai-builder-os-v1.0.0`
 - Primary package: `ai-builder-os@1.0.0`
 - Compatibility package: `pm-copilot-skills@1.0.0`
+- Current patch candidate: `ai-builder-os-v1.0.2` / `ai-builder-os@1.0.2` / `pm-copilot-skills@1.0.2`
 
 ## Scope
 
@@ -41,6 +42,7 @@ npm run prepare:dual-package-publish -- --out ".release/ai-builder-os-v1.0.0" --
 
 - 脚本没有真实 publish 路径。
 - 脚本拒绝 `--publish`，传入后会直接失败。
+- 脚本支持显式 `--version` 和 `--tag`，用于 post-1.0 patch release 的 dry-run-only 发布准备。
 - 只生成 projection、tarball 和 `release-manifest.json`。
 - 真实发布必须从 manifest 中的 publish command 手工执行，并且需要用户明确批准。
 
@@ -80,17 +82,22 @@ npm run prepare:dual-package-publish -- --out ".release/ai-builder-os-v1.0.0" --
 
 | Command / Check | Result |
 | --- | --- |
-| `npm run prepare:dual-package-publish -- --check-registry --npm-publish-dry-run` | PASS；生成 `ai-builder-os@1.0.0` 与 `pm-copilot-skills@1.0.0` 两个 projection，并执行 `npm publish --dry-run` |
-| `npm run validate:builder-os` | PASS；8 个 active builder skill、16 个 legacy PM skill 归档和 92 个必需文件 |
+| `npm run prepare:dual-package-publish -- --version 1.0.2 --tag ai-builder-os-v1.0.2 --out ".release/ai-builder-os-v1.0.2" --clean --check-registry --npm-publish-dry-run` | PASS；生成 `ai-builder-os@1.0.2` 与 `pm-copilot-skills@1.0.2` 两个 projection，并执行 `npm publish --dry-run` |
+| `npm run validate:builder-os` | PASS；8 个 active builder skill、16 个 legacy PM skill 归档、110 个必需文件，包含 artifact/onboarding eval gates |
+| `npm run validate:artifact-evals` | PASS；3 个 artifact eval 文件和 12 个 cases |
+| `npm run validate:onboarding-evals` | PASS；5 个 onboarding cases，覆盖 5 个 project modes |
 | `npm run validate:trigger-descriptions` | PASS；兼容 Windows CRLF / LF frontmatter |
-| Primary package dry-run | PASS；`ai-builder-os@1.0.0`，155 files |
-| Compatibility package dry-run | PASS；`pm-copilot-skills@1.0.0`，155 files |
-| Registry preflight | PASS；`ai-builder-os` 当前无已发布可读版本，`pm-copilot-skills@1.0.0` 未发布 |
-| Safety check | PASS；未执行真实 `npm publish`，临时输出已清理 |
+| Primary package dry-run | PASS；`ai-builder-os@1.0.2`，179 files |
+| Compatibility package dry-run | PASS；`pm-copilot-skills@1.0.2`，179 files |
+| Registry preflight | PASS；`ai-builder-os` latest 为 `1.0.1`，`pm-copilot-skills` latest 为 `1.0.1`，目标版本 `1.0.2` 均未发布 |
+| Tag preflight | PASS；远端 `ai-builder-os-v1.0.2` tag 不存在 |
+| Safety check | PASS；未执行真实 `npm publish`，release 输出保留在 `.release/ai-builder-os-v1.0.2/` 作为发布前证据；manifest 记录 `sourceWorktreeStatus` |
 
 ## Remaining Risks
 
 - `ai-builder-os` 在 preflight 时返回 E404 不等于发布时一定可用；发布窗口内仍可能被占用。
+- Post-1.0 patch release 必须显式选择未发布版本；不能复用已发布的 `1.0.0` 或 `1.0.1`。
+- 当前 dry-run 可在未提交工作树上生成证据，但真实 tag / npm publish 必须来自干净的 final release commit。
 - `npm publish --dry-run` 不能完全替代真实 registry publish。
 - 发布 tarball 源于 projection，必须保留 `release-manifest.json` 作为证据。
 - npm publish 不可真正回滚；发布后以 fix-forward 为主。

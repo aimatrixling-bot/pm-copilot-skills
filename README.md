@@ -10,7 +10,7 @@
 >
 > 默认输出语言：用户可见报告、检查结果、原型文案、交接材料以**中文为主**；代码、字段名、命令、API、包名、行业通用缩写和固定术语可保留英文。
 >
-> 当前阶段：Milestone 3.9 publish prep dry-run。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.9 新增专用双包发布准备脚本和 runbook，用于生成 `ai-builder-os@1.0.0` 主包与 `pm-copilot-skills@1.0.0` 兼容包的 release projection、tarball 和 manifest；不执行 npm publish，不创建 final tag。
+> 当前阶段：Milestone 5 Project Onboarding + post-1.0 patch publish prep。真实 `package.json` 仍保留 `pm-copilot-skills` 兼容 npm package id；M3.9 新增的双包发布准备脚本仍用于生成 `ai-builder-os` 主包与 `pm-copilot-skills` 兼容包的 release projection、tarball 和 manifest；脚本只做 dry-run，不执行 npm publish，不创建 final tag。真实发布仍需用户再次明确批准。
 >
 > legacy archive：旧 `pm-*` skills、legacy utilities 和原 `skills/references/` 已归档到 [`_archived/pm-copilot-legacy-v1.0/`](_archived/pm-copilot-legacy-v1.0/)，不再默认安装为 active skills。
 >
@@ -42,12 +42,13 @@ Milestone 3.1 已将 active surface 收敛为 8 个 `builder-*` core skills。�
 ```text
 AI Builder OS
 ├── Builder Kernel          # routing, packets, gates, protocols
+├── Loop Recipes            # 可重复、可验证、可停止的工作循环
 ├── Execution Harness       # guides, sensors, gates, steering loop, tool policy
 ├── Memory & Evolution      # user/project/artifact/decision/skill evolution memory
 ├── Core Skills             # builder-router、builder-plan-goal、builder-frame 等
 ├── Scenario Bundles        # bundles/core
 ├── References & Templates  # 共享方法和产物模板
-├── Eval System             # trigger, routing, contract, quality, evidence, e2e
+├── Eval System             # trigger, routing, contract, quality, evidence, artifact, e2e
 └── Runtime Adapters        # Codex, Claude Code, generic agent
 ```
 
@@ -68,7 +69,7 @@ AI Builder OS
 | `builder-review` | 评审规格、原型、Agent 输出和证据 | Review Report / Evidence Audit |
 | `builder-decision` | 记录关键取舍 | Decision Record |
 
-Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。Milestone 3.9 新增发布 runbook 和 dry-run-only 双包发布准备脚本；真实发布仍需用户再次明确批准。
+Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。Milestone 3.9 新增发布 runbook 和 dry-run-only 双包发布准备脚本；真实发布仍需用户再次明确批准。Milestone 4/5 新增 Artifact Governance 与 Project Onboarding 的轻量横切协议、回归样例和专用 validator，仍保持 8 个 active builder skills。
 
 ## Benchmark Synthesis（标杆综合）
 
@@ -144,10 +145,12 @@ M3.2 后，对外 package surface 由这些文件共同定义：
 - `skill-pack.json`：机器可读的 AI Builder OS manifest，声明 active skills、共享资源、runtime adapters、release gates 和 legacy 排除边界。
 - `agents/openai.yaml`：面向 OpenAI/Codex 生态的轻量 metadata，声明 pure builder core surface。
 - `bundles/core/manifest.json`：AI Builder OS core bundle。
-- `install.js`：把 8 个 active builder skills 投影到 Claude Code / Codex / generic skill 目录。
+- `install.js`：把 8 个 active builder skills 和共享 `kernel/harness/memory/loops/references/templates/adapters` 投影到 Claude Code / Codex / generic skill 目录。
 - `scripts/export-ai-builder-os.js`：把 active builder core 导出到 Codex、Claude Code 或 generic-agent 目标目录。
 - `adapters/*/adapter.json`：声明 runtime target 的 export layout、默认目标和 invocation prefix。
 - `scripts/validate-trigger-descriptions.js` 与 `evals/trigger/builder-description.cases.json`：验证 8 个 builder skills 的 frontmatter trigger description。
+- `scripts/validate-artifact-evals.js` 与 `evals/artifact/*.cases.json`：验证 Artifact Governance 回归样例的结构、fail-closed 约束和 proposal-only 关键词。
+- `scripts/validate-onboarding-evals.js` 与 `evals/onboarding/project-onboarding.cases.json`：验证 Project Onboarding 的 greenfield、brownfield、resume、unknown 路由样例。
 - `scripts/validate-dual-package-dry-run.js`：在临时目录验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包都能 pack dry-run 和安装 dry-run。
 
 `_archived/` 和 `research/` 不进入 npm package surface；它们只保留在仓库中供审阅、回滚和后续迁移。
@@ -175,6 +178,12 @@ M3.8 之后，`sync-and-publish.sh` 仍只能视为 canonical source 的 release
 
 ```bash
 npm run prepare:dual-package-publish -- --out ".release/ai-builder-os-v1.0.0" --clean --check-registry --npm-publish-dry-run
+```
+
+post-1.0 patch release 必须显式传入未发布版本和 tag，例如：
+
+```bash
+npm run prepare:dual-package-publish -- --version 1.0.2 --tag ai-builder-os-v1.0.2 --out ".release/ai-builder-os-v1.0.2" --clean --check-registry --npm-publish-dry-run
 ```
 
 该脚本拒绝 `--publish`，不会执行真实 `npm publish`。真实发布必须按 [`docs/release-runbook-m3.9.md`](./docs/release-runbook-m3.9.md) 手工执行，并在执行 tag、npm publish 或 GitHub Release 前再次获得用户明确批准。
@@ -222,13 +231,15 @@ npm run validate:builder-os
 npm run validate:package-surface
 npm run validate:runtime-adapters
 npm run validate:trigger-descriptions
+npm run validate:artifact-evals
+npm run validate:onboarding-evals
 npm run validate:dual-package-dry-run
 npm run validate:codex-install
 npm run validate:doctor-preference-e2e
 npm run test:doctor-preference-e2e
 ```
 
-这些检查会验证 canonical source 边界、package surface、runtime adapter/export、Codex 本地安装完整性、Builder OS 核心结构、trigger eval 种子覆盖，以及一个真实医生偏好推荐需求的端到端场景。
+这些检查会验证 canonical source 边界、package surface、runtime adapter/export、Codex 本地安装完整性、Builder OS 核心结构、trigger eval 种子覆盖、Artifact Governance / Project Onboarding 回归样例，以及一个真实医生偏好推荐需求的端到端场景。
 
 ## Legacy PM Pipeline（已归档）
 
@@ -389,6 +400,7 @@ pm-copilot-skills/
 +-- kernel/                    # Builder Kernel: routing / packets / gates / protocols
 +-- harness/                   # Execution Harness
 +-- memory/                    # Memory & Evolution 的 schema 和策略
++-- loops/                     # Loop Recipes: 可停止的周期治理流程
 +-- skills/                    # active surface: 8 个 builder core skills
 |   +-- builder-router/        # AI Builder OS core drafts
 |   +-- builder-agent-task/
@@ -400,6 +412,8 @@ pm-copilot-skills/
 +-- docs/                      # 架构和 roadmap 文档
 +-- scripts/                   # package validation scripts
 +-- evals/                     # trigger/routing/contract/quality/evidence/e2e/regression cases
+|   +-- artifact/              # Artifact Governance 回归样例
+|   +-- onboarding/            # Project Onboarding 回归样例
 |   +-- doctor-preference-e2e/ # 真实 ClarityMedic 需求 E2E 验收案例
 +-- agents/                    # package-level runtime metadata
 +-- skill-pack.json            # AI Builder OS machine-readable package manifest

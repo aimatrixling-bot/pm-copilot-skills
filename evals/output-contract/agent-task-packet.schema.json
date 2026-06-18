@@ -12,6 +12,7 @@
     "runtime_constraints",
     "acceptance_criteria",
     "verification",
+    "artifact_index_update_proposal",
     "human_approval_gates",
     "risks",
     "blocked_stop_condition",

@@ -1,0 +1,35 @@
+{
+  "suite": "artifact-consistency-audit",
+  "status": "draft",
+  "purpose": "验证 Spec、Prototype、Agent Task、代码和 Evidence 能沿 source-of-truth 链互相追溯。",
+  "cases": [
+    {
+      "id": "agent-task-drops-spec-non-goal",
+      "input": "current Spec 明确 non-goal 为不做权限系统，但 Agent Task 要求实现权限。",
+      "expected_result": "FAILED",
+      "must_include": ["non-goals conflict", "source-of-truth", "stop"],
+      "must_not_include": ["continue execution"]
+    },
+    {
+      "id": "prototype-introduces-unmapped-scope",
+      "input": "Prototype Mapping 中新增了 Spec 未覆盖的审批流能力。",
+      "expected_result": "PARTIAL",
+      "must_include": ["unmapped scope", "mapping gap", "human decision"],
+      "must_not_include": ["PASS"]
+    },
+    {
+      "id": "evidence-pass-without-proof",
+      "input": "Evidence Packet 声称 PASS，但没有 commands、screenshots 或 manual checks。",
+      "expected_result": "FAILED",
+      "must_include": ["fake completion risk", "missing evidence", "BLOCKED or FAILED"],
+      "must_not_include": ["PASS"]
+    },
+    {
+      "id": "decision-reversed-spec-stale",
+      "input": "Decision Record 已反转某个方案，但 current Spec 仍引用旧决策。",
+      "expected_result": "FAILED",
+      "must_include": ["stale decision", "spec update required", "human review"],
+      "must_not_include": ["ignore decision log"]
+    }
+  ]
+}

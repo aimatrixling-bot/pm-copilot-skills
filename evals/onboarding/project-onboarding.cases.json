@@ -1,0 +1,113 @@
+{
+  "suite": "project-onboarding",
+  "status": "draft",
+  "purpose": "验证 builder-router 在首次进入或恢复项目时能轻量输出 Project Onboarding 信息，且不自动扫描、写入、迁移或删除。",
+  "cases": [
+    {
+      "id": "greenfield-bootstrap-new-product",
+      "input": "我想从 0 开始做一个客户成功 AI 工具，现在还没有代码和文档，先帮我进入 AI Builder OS。",
+      "expected_project_mode": "greenfield",
+      "expected_route_type": "skill_route",
+      "expected_recommended_next_skill": "builder-frame",
+      "must_include": [
+        "project_mode",
+        "project_profile_proposal",
+        "greenfield",
+        "builder-frame",
+        "proposal_only",
+        "do not create .ai-builder automatically"
+      ],
+      "must_not_include": [
+        "created .ai-builder",
+        "wrote artifact-index.yaml",
+        "auto scan whole repository",
+        "delete automatically"
+      ]
+    },
+    {
+      "id": "brownfield-intake-existing-assets",
+      "input": "这个本地仓库已经有 README、docs、src 和一些旧 PRD，我现在想中途接入 AI Builder OS，先帮我判断该怎么开始。",
+      "expected_project_mode": "brownfield",
+      "expected_route_type": "skill_route",
+      "expected_recommended_next_skill": "builder-review",
+      "must_include": [
+        "project_mode",
+        "project_profile_proposal",
+        "brownfield",
+        "source-of-truth candidates",
+        "asset map",
+        "builder-review",
+        "proposal_only"
+      ],
+      "must_not_include": [
+        "move files automatically",
+        "delete automatically",
+        "rename automatically",
+        "auto scan whole repository",
+        "created .ai-builder"
+      ]
+    },
+    {
+      "id": "resume-existing-ai-builder-runtime",
+      "input": "这个项目里已经有 .ai-builder 和 artifact-index.yaml，我想继续上次的工作。",
+      "expected_project_mode": "resume",
+      "expected_route_type": "skill_route",
+      "expected_recommended_next_skill": "builder-router",
+      "must_include": [
+        "project_mode",
+        "project_profile_proposal",
+        "resume",
+        "read existing project profile",
+        "artifact index",
+        "recommended_next_skill"
+      ],
+      "must_not_include": [
+        "reinitialize .ai-builder",
+        "overwrite artifact-index.yaml",
+        "delete automatically",
+        "migration completed"
+      ]
+    },
+    {
+      "id": "unknown-missing-project-root",
+      "input": "帮我接入 AI Builder OS，但我还没告诉你项目在哪，也没说能看哪些目录。",
+      "expected_project_mode": "unknown",
+      "expected_route_type": "ask_first",
+      "expected_recommended_next_skill": "builder-router",
+      "must_include": [
+        "project_mode",
+        "unknown",
+        "project root",
+        "authorized scope",
+        "ask first",
+        "project_profile_proposal"
+      ],
+      "must_not_include": [
+        "assume brownfield",
+        "assume greenfield",
+        "auto scan whole repository",
+        "created .ai-builder"
+      ]
+    },
+    {
+      "id": "not-applicable-direct-review",
+      "input": "请评审这个已经完成的 Agent Task Packet 是否可以交给 Codex 执行。",
+      "expected_project_mode": "not_applicable",
+      "expected_route_type": "skill_route",
+      "expected_recommended_next_skill": "builder-review",
+      "must_include": [
+        "project_mode",
+        "project_profile_proposal",
+        "not_applicable",
+        "builder-review",
+        "recommended_next_skill"
+      ],
+      "must_not_include": [
+        "greenfield",
+        "brownfield intake",
+        "created .ai-builder",
+        "auto scan whole repository"
+      ]
+    }
+  ]
+}

@@ -62,6 +62,8 @@ npm run validate:builder-os
 npm run validate:package-surface
 npm run validate:runtime-adapters
 npm run validate:trigger-descriptions
+npm run validate:artifact-evals
+npm run validate:onboarding-evals
 npm run validate:dual-package-dry-run
 npm run validate:doctor-preference-e2e
 npm run test:doctor-preference-e2e
@@ -86,11 +88,17 @@ const required = [
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
+  'scripts/validate-artifact-evals.js',
+  'scripts/validate-onboarding-evals.js',
   'scripts/validate-dual-package-dry-run.js',
   'scripts/prepare-dual-package-publish.js',
   'scripts/validate-doctor-preference-e2e.js',
   'evals/builder-os-trigger-evals.json',
   'evals/trigger/builder-description.cases.json',
+  'evals/onboarding/project-onboarding.cases.json',
+  'evals/artifact/artifact-index-sync.cases.json',
+  'evals/artifact/artifact-cleanup-proposal.cases.json',
+  'evals/artifact/artifact-consistency-audit.cases.json',
   'evals/doctor-preference-e2e/README.md',
   'evals/doctor-preference-e2e/reference-implementation/doctorRecommendationEngine.js',
   'skills/skill-template.md',
@@ -105,6 +113,10 @@ const required = [
   'references/README.md',
   'templates/README.md',
   'kernel/README.md',
+  'harness/artifact-write-policy.zh.md',
+  'memory/policies/artifact-lifecycle-policy.zh.md',
+  'loops/README.md',
+  'loops/recipes/artifact-hygiene.loop.md',
   'adapters/codex/adapter.json',
   'adapters/claude-code/adapter.json',
   'adapters/generic-agent/adapter.json',

@@ -16,6 +16,7 @@ plan_prompt:
 goal_prompt:
 acceptance_criteria:
 verification:
+artifact_index_update_proposal: none | proposed_changes
 design_brief:
 design_constraints:
 ui_states:
@@ -35,3 +36,5 @@ handoff_packet:
 - 必须包含 non-goals 和 forbidden actions。
 - 高风险副作用必须设置 human approval gates。
 - UI/prototype 任务必须包含 Design Brief、状态覆盖或明确设计约束。
+- 涉及项目资产写入、替代、归档或清理时，必须要求执行 agent 在 Output Packet 中提交 `artifact_index_update_proposal`。
+- `artifact_index_update_proposal` 只描述建议更新，不授权自动删除、自动迁移或自动提升为 `current`。

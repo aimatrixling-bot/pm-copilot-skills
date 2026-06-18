@@ -18,6 +18,14 @@
 - `builder-review`；
 - `builder-decision`。
 
+首次进入或恢复项目时，它还要判断 Project Onboarding 模式：
+
+- `greenfield`：从 0 开始的新项目；
+- `brownfield`：已有本地项目资产，中途接入 AI Builder OS；
+- `resume`：已有 `.ai-builder/`、project profile 或 artifact index；
+- `unknown`：证据不足，不能安全判断；
+- `not_applicable`：不是首次进入或恢复项目场景。
+
 ## 路由问题
 
 1. 这个任务是否足够小、足够清楚，可以直接回答？
@@ -27,6 +35,16 @@
 5. 用户是否要把任务交给另一个 agentic coding 工具执行？
 6. 用户是否在请求评审、证据检查或就绪度判断？
 7. 是否有必须沉淀的重要决策？
+8. 这是否是 AI Builder OS 首次进入或恢复某个项目？
+9. 如果是，项目是 greenfield、brownfield、resume 还是 unknown？
+
+## Project Onboarding 规则
+
+- `greenfield`：先建立项目锚点和 project profile proposal，通常交给 `builder-frame`。
+- `brownfield`：先生成资产盘点、source-of-truth 候选和 cleanup proposal，通常交给 `builder-review`。
+- `resume`：先读取既有 project profile、artifact index 或 handoff，再继续路由。
+- `unknown`：缺少项目根、授权范围或可观察证据时，先提问，不要假装已完成 intake。
+- Router 不自动创建 `.ai-builder/`，不自动扫描全盘，不自动迁移、删除、重命名或归档文件。
 
 ## 输出契约
 
@@ -34,6 +52,9 @@
 route_type: answer | prompt | plan | goal | plan_to_goal | skill_route | ask_first
 recommended_mode: prompt | plan | goal | plan_to_goal | skill
 recommended_skill:
+project_mode: greenfield | brownfield | resume | unknown | not_applicable
+project_profile_proposal:
+recommended_next_skill:
 reasoning_summary:
 missing_context:
 risk_flags:

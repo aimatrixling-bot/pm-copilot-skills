@@ -17,6 +17,7 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 - 通用质量评审时，读取 `kernel/gates/builder-quality-gates.zh.md` 和 `kernel/packets/evidence-packet.schema.md`。
 - 评审 UI、prototype 或界面实现时，读取 `kernel/gates/design-consistency-gate.zh.md`、`templates/design-brief/template.md` 和 `references/ui-ux/`。
 - 检查 demo、mock 或测试可信度时，读取 `kernel/gates/fake-ui-gate.zh.md` 和 `kernel/gates/fake-test-gate.zh.md`。
+- 评审交付物、项目输出、资产清理或跨资产一致性时，读取 `loops/recipes/artifact-hygiene.loop.md`、`memory/policies/artifact-consistency-policy.zh.md` 和 `memory/policies/artifact-cleanup-policy.zh.md`。
 - 输出 Review Report 时，读取 `templates/review-report/template.md`。
 - 打磨或评审 skill 设计时，读取 `references/skill-design/skill-design-playbook.zh.md`。
 
@@ -42,6 +43,7 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 - Evidence packet，如果有。
 - 风险上下文。
 - 当评审 UI、prototype 或产品界面时，提供 Design Brief 或 UI/UX 约束。
+- 当评审对象会产生、替代、废弃或清理项目资产时，提供 artifact index 或相关资产路径；如果没有，标记为 `not_available`，不要凭空推断。
 
 ## 模式判断
 
@@ -56,8 +58,9 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 1. 识别 review target 和原始契约。
 2. 对照范围和验收标准检查完整性。
 3. 应用相关门禁：Evidence Gate、Fake UI Gate、Design Consistency Gate、Fake Test Gate、Safety Gate。
-4. 按严重程度列出 findings 和 required action。
-5. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
+4. 如果 review target 涉及项目资产、文档膨胀、清理动作、交付物替代或 source-of-truth 变更，按 Artifact Hygiene Loop 做一次轻量审计：检查生命周期状态、index 更新需要、清理风险和一致性风险。
+5. 按严重程度列出 findings 和 required action。
+6. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
 
 ## 输出契约
 
@@ -68,10 +71,13 @@ contract_checked:
 findings:
 evidence_audit:
 design_consistency_audit:
+artifact_hygiene_audit:
+artifact_index_update_proposal:
 risk_assessment:
 decision:
 required_fixes:
 unverified_areas:
+cleanup_proposal:
 next_step:
 ```
 
@@ -84,10 +90,13 @@ next_step:
 - UI/prototype review 必须检查 Design Brief、组件一致性、状态覆盖、交互真实性、响应式和 mock/demo 标注。
 - 不要批准只有视觉上“像真的”、但缺少交互/状态证据的 UI 工作。
 - 如果证据不足，决策必须是 PARTIAL、BLOCKED 或 REQUEST_CHANGES，不能用 APPROVE 掩盖。
+- `artifact_hygiene_audit` 必须明确为 `not_applicable`、`not_available` 或列出审计结论；不要省略。
+- `artifact_index_update_proposal` 只允许提出建议，不得声称已经更新 index，除非 evidence packet 中有可验证证据。
+- 高风险清理只能进入 `cleanup_proposal`，不得在 review 中要求自动删除；涉及 `current`、`accepted`、`source_of_truth`、`decision_record` 或 evidence 的资产必须要求人工确认。
 
 ## 交接
 
-交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、decision 和 next_step。
+交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、artifact_hygiene_audit、artifact_index_update_proposal、cleanup_proposal、decision 和 next_step。
 
 ## 参考
 
@@ -96,6 +105,9 @@ next_step:
 - `kernel/gates/design-consistency-gate.zh.md`
 - `kernel/gates/fake-test-gate.zh.md`
 - `kernel/packets/evidence-packet.schema.md`
+- `loops/recipes/artifact-hygiene.loop.md`
+- `memory/policies/artifact-consistency-policy.zh.md`
+- `memory/policies/artifact-cleanup-policy.zh.md`
 - `templates/review-report/template.md`
 - `templates/design-brief/template.md`
 - `references/ui-ux/`

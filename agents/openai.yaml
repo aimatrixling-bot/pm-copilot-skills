@@ -31,6 +31,8 @@ release_gates:
   - npm run validate:codex-install
   - npm run validate:runtime-adapters
   - npm run validate:trigger-descriptions
+  - npm run validate:artifact-evals
+  - npm run validate:onboarding-evals
   - npm run validate:dual-package-dry-run
   - npm run prepare:dual-package-publish
   - npm run validate:doctor-preference-e2e

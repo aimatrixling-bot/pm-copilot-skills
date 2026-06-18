@@ -14,6 +14,7 @@ plan_prompt:
 goal_prompt:
 acceptance_criteria:
 verification:
+artifact_index_update_proposal: none | proposed_changes
 design_brief:
 design_constraints:
 ui_states:

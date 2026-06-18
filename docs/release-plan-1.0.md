@@ -19,6 +19,8 @@ AI Builder OS 1.0 推荐采用双包过渡策略：
 - 当前 RC tag：`ai-builder-os-v1.0.0-rc.1`
 - `ai-builder-os` npm 名称在 M3.6 检查时返回 404，看起来未被占用；发布前必须重新确认。
 
+Post-1.0 更新说明：`ai-builder-os@1.0.0`、`ai-builder-os@1.0.1`、`pm-copilot-skills@1.0.0` 和 `pm-copilot-skills@1.0.1` 已发布。后续 patch release 不再检查“包名是否未占用”，而是检查目标版本和目标 tag 是否尚不存在。
+
 ## Package Strategy
 
 ### Primary package
@@ -61,6 +63,8 @@ npx -p pm-copilot-skills ai-builder-os codex
 6. 发布 `ai-builder-os@1.0.0`。
 7. 发布 `pm-copilot-skills` 兼容版本，说明主包迁移路径。
 8. 用真实 npx 安装验证 Codex / Claude Code / generic export。
+
+Post-1.0 patch release 使用同一顺序，但必须显式选择新的 patch 版本，例如 `1.0.2`，并通过 `prepare:dual-package-publish -- --version <version> --tag ai-builder-os-v<version>` 生成发布前证据。
 
 ## Compatibility Policy
 

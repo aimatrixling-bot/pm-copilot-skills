@@ -13,6 +13,7 @@ Skill defines what to produce. Harness defines how to avoid drift, fake completi
 | Gates | Enforce decision points before claiming completion |
 | Steering Loop | Adjust when execution deviates from the goal |
 | Tool Policy | Define allowed, cautious, and approval-required actions |
+| Artifact Write Policy | Define how project assets are written, promoted, indexed, and handed off |
 | Run Report | Summarize result, evidence, risk, and handoff |
 
 ## Rule

@@ -30,6 +30,7 @@
       "kernel/",
       "harness/",
       "memory/",
+      "loops/",
       "references/",
       "templates/",
       "adapters/"
@@ -46,6 +47,7 @@
   },
   "architecture_layers": [
     "Builder Kernel",
+    "Loop Recipes",
     "Execution Harness",
     "Memory & Evolution",
     "Core Skills",
@@ -91,6 +93,8 @@
     "npm run validate:package-surface",
     "npm run validate:runtime-adapters",
     "npm run validate:trigger-descriptions",
+    "npm run validate:artifact-evals",
+    "npm run validate:onboarding-evals",
     "npm run validate:dual-package-dry-run",
     "npm run prepare:dual-package-publish",
     "npm run validate:codex-install",

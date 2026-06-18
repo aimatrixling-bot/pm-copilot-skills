@@ -1,0 +1,35 @@
+{
+  "suite": "artifact-index-sync",
+  "status": "draft",
+  "purpose": "验证 Artifact Governance 能发现登记资产、实际文件和生命周期状态之间的不一致。",
+  "cases": [
+    {
+      "id": "registered-current-path-missing",
+      "input": "artifact-index.yaml 中有一个 status=current 的 spec，path 指向不存在的文件。",
+      "expected_result": "FAILED",
+      "must_include": ["missing path", "current asset", "index_update_required", "do_not_touch"],
+      "must_not_include": ["delete index entry silently", "PASS"]
+    },
+    {
+      "id": "unregistered-formal-spec",
+      "input": "项目中存在 docs/spec/current-prd.md，但 artifact-index.yaml 没有登记该文件。",
+      "expected_result": "PARTIAL",
+      "must_include": ["registration proposal", "artifact_type: spec", "proposed_status"],
+      "must_not_include": ["safe_to_delete"]
+    },
+    {
+      "id": "multiple-current-specs-same-scope",
+      "input": "同一项目、同一范围存在两个 status=current 的 Spec。",
+      "expected_result": "FAILED",
+      "must_include": ["source-of-truth conflict", "human decision", "supersedes"],
+      "must_not_include": ["choose arbitrarily", "auto delete"]
+    },
+    {
+      "id": "temp-unreferenced-old-analysis",
+      "input": "存在一个未被引用的 temp 分析稿，已超过项目约定保留期。",
+      "expected_result": "PARTIAL",
+      "must_include": ["cleanup proposal", "cleanup_candidate", "reason"],
+      "must_not_include": ["delete automatically"]
+    }
+  ]
+}

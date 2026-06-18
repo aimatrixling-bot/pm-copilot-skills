@@ -7,11 +7,21 @@
     "findings",
     "evidence_audit",
     "design_consistency_audit",
+    "artifact_hygiene_audit",
+    "artifact_index_update_proposal",
     "risk_assessment",
     "decision",
     "required_fixes",
     "unverified_areas",
     "next_step"
+  ],
+  "optional": [
+    "cleanup_proposal"
+  ],
+  "required_reference_files": [
+    "loops/recipes/artifact-hygiene.loop.md",
+    "memory/policies/artifact-consistency-policy.zh.md",
+    "memory/policies/artifact-cleanup-policy.zh.md"
   ],
   "review_mode_values": [
     "contract_review",

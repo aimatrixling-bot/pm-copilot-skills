@@ -7,8 +7,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
-const releaseVersion = '1.0.0';
-const finalTag = 'ai-builder-os-v1.0.0';
+const defaultReleaseVersion = '1.0.0';
 const builderSkills = [
   'builder-router',
   'builder-plan-goal',
@@ -33,6 +32,16 @@ const requiredPackFiles = [
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
   'scripts/validate-trigger-descriptions.js',
+  'scripts/validate-artifact-evals.js',
+  'scripts/validate-onboarding-evals.js',
+  'harness/artifact-write-policy.zh.md',
+  'loops/README.md',
+  'loops/recipes/artifact-hygiene.loop.md',
+  'evals/artifact/artifact-index-sync.cases.json',
+  'evals/artifact/artifact-cleanup-proposal.cases.json',
+  'evals/artifact/artifact-consistency-audit.cases.json',
+  'evals/onboarding/project-onboarding.cases.json',
+  'docs/release-note-milestone-5-project-onboarding.md',
   'docs/release-runbook-m3.9.md',
   'docs/release-seal-m3.9.md',
   'docs/release-plan-1.0.md',
@@ -51,28 +60,9 @@ const forbiddenPrefixes = [
   'skills/references',
 ];
 
-const targets = [
-  {
-    id: 'primary',
-    packageName: 'ai-builder-os',
-    version: releaseVersion,
-    status: 'm3.9-primary-release-projection',
-    description: 'AI Builder OS primary package for executable, verifiable agentic builder workflows',
-    compatibilityPolicy: 'primary 1.0 package name; keep pm-copilot-skills as compatibility package during migration',
-  },
-  {
-    id: 'compatibility',
-    packageName: 'pm-copilot-skills',
-    version: releaseVersion,
-    status: 'm3.9-compatibility-release-projection',
-    description: 'Compatibility package for AI Builder OS users migrating from pm-copilot-skills',
-    compatibilityPolicy: 'compatibility package; install the pure AI Builder OS builder core and document ai-builder-os as the primary package',
-  },
-];
-
 function usage() {
   console.log(`Usage:
-  node scripts/prepare-dual-package-publish.js [--out <dir>] [--clean] [--check-registry] [--npm-publish-dry-run]
+  node scripts/prepare-dual-package-publish.js [--version <semver>] [--tag <git-tag>] [--out <dir>] [--clean] [--check-registry] [--npm-publish-dry-run]
 
 Safety:
   This script never runs npm publish without --dry-run.
@@ -82,6 +72,8 @@ Safety:
 
 function parseArgs(argv) {
   const args = {
+    version: defaultReleaseVersion,
+    tag: null,
     out: null,
     clean: false,
     checkRegistry: false,
@@ -107,12 +99,46 @@ function parseArgs(argv) {
       index += 1;
       if (!argv[index]) throw new Error('--out requires a directory');
       args.out = argv[index];
+    } else if (arg === '--version') {
+      index += 1;
+      if (!argv[index]) throw new Error('--version requires a semver value');
+      args.version = argv[index];
+    } else if (arg === '--tag') {
+      index += 1;
+      if (!argv[index]) throw new Error('--tag requires a git tag value');
+      args.tag = argv[index];
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
   }
 
+  if (!/^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/.test(args.version)) {
+    throw new Error(`Invalid --version value: ${args.version}`);
+  }
+  if (!args.tag) args.tag = `ai-builder-os-v${args.version}`;
+
   return args;
+}
+
+function createTargets(releaseVersion) {
+  return [
+    {
+      id: 'primary',
+      packageName: 'ai-builder-os',
+      version: releaseVersion,
+      status: 'm3.9-primary-release-projection',
+      description: 'AI Builder OS primary package for executable, verifiable agentic builder workflows',
+      compatibilityPolicy: 'primary 1.0 package name; keep pm-copilot-skills as compatibility package during migration',
+    },
+    {
+      id: 'compatibility',
+      packageName: 'pm-copilot-skills',
+      version: releaseVersion,
+      status: 'm3.9-compatibility-release-projection',
+      description: 'Compatibility package for AI Builder OS users migrating from pm-copilot-skills',
+      compatibilityPolicy: 'compatibility package; install the pure AI Builder OS builder core and document ai-builder-os as the primary package',
+    },
+  ];
 }
 
 function run(command, args, options = {}) {
@@ -254,26 +280,34 @@ function packProjection(targetRoot, target, tarballDir) {
   return { pack, tarballPath };
 }
 
-function registryPreflight() {
-  const npmUser = run('npm', ['whoami']).trim();
-  const primaryView = run('npm', ['view', 'ai-builder-os', 'version'], { allowFailure: true });
-  if (primaryView.status === 0) {
-    throw new Error(`ai-builder-os already has a published version: ${primaryView.stdout.trim()}`);
-  }
-  if (!`${primaryView.stderr}\n${primaryView.stdout}`.includes('E404')) {
-    throw new Error(`Unexpected npm view ai-builder-os result: ${primaryView.stderr || primaryView.stdout}`);
+function readPublishedVersions(packageName) {
+  const view = run('npm', ['view', packageName, 'versions', '--json'], { allowFailure: true });
+  if (view.status !== 0) {
+    if (`${view.stderr}\n${view.stdout}`.includes('E404')) return [];
+    throw new Error(`Unexpected npm view ${packageName} result: ${view.stderr || view.stdout}`);
   }
 
-  const compatVersionsOutput = run('npm', ['view', 'pm-copilot-skills', 'versions', '--json']);
-  const compatVersions = JSON.parse(compatVersionsOutput);
-  if (compatVersions.includes(releaseVersion)) {
-    throw new Error(`pm-copilot-skills@${releaseVersion} is already published`);
+  const parsed = JSON.parse(view.stdout);
+  return Array.isArray(parsed) ? parsed : [parsed];
+}
+
+function registryPreflight(targets) {
+  const npmUser = run('npm', ['whoami']).trim();
+  const packages = {};
+  for (const target of targets) {
+    const versions = readPublishedVersions(target.packageName);
+    if (versions.includes(target.version)) {
+      throw new Error(`${target.packageName}@${target.version} is already published`);
+    }
+    packages[target.packageName] = {
+      latest: versions[versions.length - 1] || null,
+      targetVersionAvailable: true,
+    };
   }
 
   return {
     npmUser,
-    primary: 'E404',
-    compatibilityLatest: compatVersions[compatVersions.length - 1],
+    packages,
   };
 }
 
@@ -286,8 +320,18 @@ function gitHead() {
   return result.status === 0 ? result.stdout.trim() : null;
 }
 
+function gitStatusShort() {
+  const result = run('git', ['status', '--short'], { allowFailure: true });
+  if (result.status !== 0) return null;
+  return result.stdout
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .filter(Boolean);
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  const targets = createTargets(args.version);
   const outputRoot = args.out
     ? path.resolve(root, args.out)
     : fs.mkdtempSync(path.join(os.tmpdir(), 'ai-builder-os-m3-9-release-'));
@@ -303,9 +347,10 @@ function main() {
   ensureDir(projectionRoot);
   ensureDir(tarballDir);
 
-  const registry = args.checkRegistry ? registryPreflight() : null;
+  const registry = args.checkRegistry ? registryPreflight(targets) : null;
   const files = sourcePackFiles();
   const packages = [];
+  const sourceWorktreeStatus = gitStatusShort();
 
   for (const target of targets) {
     const targetRoot = path.join(projectionRoot, target.id);
@@ -332,9 +377,10 @@ function main() {
     schema_version: '0.1.0',
     milestone: 'M3.9',
     mode: 'dry-run-only',
-    finalTag,
+    finalTag: args.tag,
     generatedAt: new Date().toISOString(),
     sourceCommit: gitHead(),
+    sourceWorktreeStatus,
     sourcePackage: readJson(path.join(root, 'package.json')),
     registry,
     packages,
@@ -359,6 +405,9 @@ function main() {
   console.log('M3.9 dual package publish preparation passed.');
   console.log(`Output: ${outputRoot}`);
   console.log(`Manifest: ${manifestPath}`);
+  if (Array.isArray(sourceWorktreeStatus) && sourceWorktreeStatus.length > 0) {
+    console.warn(`WARNING: source worktree has ${sourceWorktreeStatus.length} uncommitted entries. Commit before real publish.`);
+  }
   for (const pkg of packages) {
     console.log(`- ${pkg.id}: ${pkg.name}@${pkg.version}, ${pkg.entryCount} files`);
     console.log(`  tarball: ${pkg.tarballPath}`);

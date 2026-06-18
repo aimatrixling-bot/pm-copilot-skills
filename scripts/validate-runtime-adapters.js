@@ -79,6 +79,9 @@ function validateFlatTarget(targetName, targetDir) {
     const skillDir = path.join(targetDir, skillName);
     assert(fs.existsSync(path.join(skillDir, 'SKILL.md')), `${targetName}/${skillName} 缺少 SKILL.md`);
     assert(fs.existsSync(path.join(skillDir, 'kernel', 'README.md')), `${targetName}/${skillName} 缺少 embedded kernel`);
+    assert(fs.existsSync(path.join(skillDir, 'harness', 'artifact-write-policy.zh.md')), `${targetName}/${skillName} 缺少 embedded artifact write policy`);
+    assert(fs.existsSync(path.join(skillDir, 'memory', 'policies', 'artifact-lifecycle-policy.zh.md')), `${targetName}/${skillName} 缺少 embedded artifact lifecycle policy`);
+    assert(fs.existsSync(path.join(skillDir, 'loops', 'recipes', 'artifact-hygiene.loop.md')), `${targetName}/${skillName} 缺少 embedded artifact hygiene loop`);
     assert(fs.existsSync(path.join(skillDir, 'references', 'README.md')), `${targetName}/${skillName} 缺少 embedded references`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'README.md')), `${targetName}/${skillName} 缺少 embedded templates`);
     assert(fs.existsSync(path.join(skillDir, 'adapters', targetName, 'README.md')), `${targetName}/${skillName} 缺少 target adapter docs`);
@@ -99,6 +102,8 @@ function validateGenericTarget(targetDir) {
     'kernel/README.md',
     'harness/README.md',
     'memory/README.md',
+    'loops/README.md',
+    'loops/recipes/artifact-hygiene.loop.md',
     'references/README.md',
     'templates/README.md',
     'adapters/generic-agent/README.md',
