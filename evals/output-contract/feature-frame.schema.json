@@ -2,6 +2,11 @@
   "name": "feature-frame-output-contract",
   "required": [
     "artifact_type",
+    "frame_mode",
+    "shared_understanding",
+    "decision_tree",
+    "critical_questions",
+    "recommended_defaults",
     "problem",
     "user",
     "scenario",
@@ -15,10 +20,23 @@
     "facts",
     "assumptions",
     "open_questions",
+    "human_decision_points",
+    "stable_terms",
+    "frame_confidence",
+    "blocking_questions",
+    "evidence_needed",
     "spec_readiness",
-    "next_skill_hint"
+    "next_skill_hint",
+    "next_skill_input"
   ],
   "artifact_type": "feature_frame",
+  "frame_mode_values": [
+    "idea_frame",
+    "problem_frame",
+    "opportunity_frame",
+    "grill_frame",
+    "not_ready_for_spec"
+  ],
   "readiness_values": [
     "ready",
     "needs_clarification",

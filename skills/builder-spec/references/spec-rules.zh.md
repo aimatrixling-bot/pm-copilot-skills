@@ -15,6 +15,18 @@
 
 如果这些条件不成立，交给 `builder-frame`，或提出聚焦问题。
 
+## Readiness / Reroute Gate
+
+当输入不满足 spec 就绪检查时，使用 `not_ready_for_spec`，并输出 `readiness_gate` 与 `reroute_recommendation`。
+
+回退规则：
+
+- 缺少用户、场景、核心问题、non-goals 或成功标准时，回退到 `builder-frame`。
+- 缺少关键决策树时，回退到 `builder-frame` 的 `grill_frame`。
+- 只有一两个可快速回答的缺口时，可以列为 `blocking_questions`，但不得假装 spec 已 ready。
+- `not_ready_for_spec` 时，不输出完整 requirements、flows、acceptance criteria；只输出缺口、推荐默认答案和 `next_skill_input`。
+- `reroute_recommendation.next_skill_input` 必须保留已知 facts、assumptions、open questions 和阻塞对象。
+
 ## 需求纪律
 
 - 产品需求说明对用户、业务或系统来说必须成立的事实。

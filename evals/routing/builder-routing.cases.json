@@ -24,6 +24,50 @@
       "must_include": ["problem", "spec_readiness", "acceptance_criteria"]
     },
     {
+      "id": "fuzzy-intent-grill-frame-path",
+      "input": "我想做一个 AI 工作台，但还没想清楚用户是谁、核心场景、non-goals 和成功标准，请先追问我，不要急着写完整方案。",
+      "expected_path": [
+        "builder-router",
+        "builder-frame"
+      ],
+      "expected_mode": "grill_frame",
+      "must_include": ["decision_tree", "recommended_defaults", "blocking_questions", "next_skill_input"]
+    },
+    {
+      "id": "premature-agent-task-reroute-to-frame",
+      "input": "直接帮我生成给 Codex 的 Agent Task Packet，但我只有一个想法：做一个个人 AI 项目管理工具，具体用户、范围和验收还没定。",
+      "expected_path": [
+        "builder-router",
+        "builder-frame",
+        "builder-spec",
+        "builder-agent-task"
+      ],
+      "expected_mode": "grill_frame",
+      "must_include": ["reroute", "spec_readiness", "human_decision_points", "not_ready"]
+    },
+    {
+      "id": "premature-spec-reroute-to-frame",
+      "input": "请直接写 PRD，但我现在只有一句话：想做一个更智能的销售跟进工具，用户、场景、范围和成功标准都还没定。",
+      "expected_path": [
+        "builder-router",
+        "builder-frame",
+        "builder-spec"
+      ],
+      "expected_mode": "not_ready_for_spec",
+      "must_include": ["readiness_gate", "reroute_recommendation", "builder-frame", "next_skill_input"]
+    },
+    {
+      "id": "premature-agent-task-reroute-to-spec",
+      "input": "我已有 Feature Frame，但还没有验收标准、验证方式和 stop conditions。请生成 Codex Agent Task Packet。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task"
+      ],
+      "expected_mode": "not_ready_for_agent_task",
+      "must_include": ["readiness_gate", "reroute_recommendation", "builder-spec", "next_skill_input"]
+    },
+    {
       "id": "large-codex-work-plan-goal-path",
       "input": "请帮我把一个大仓库改造成可安装的 skill pack，我需要分阶段让 Codex 执行。",
       "expected_path": [

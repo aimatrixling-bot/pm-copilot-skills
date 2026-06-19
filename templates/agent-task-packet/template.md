@@ -1,6 +1,16 @@
 # Agent Task Packet 模板
 
 ```yaml
+readiness_gate:
+  status: ready | not_ready_for_agent_task
+  missing_inputs:
+    - input:
+      blocks:
+  reason:
+reroute_recommendation:
+  target_skill: builder-frame | builder-spec | builder-plan-goal | none
+  reason:
+  next_skill_input:
 task_name:
 background:
 desired_outcome:
@@ -24,5 +34,11 @@ forbidden_actions:
 human_approval_gates:
 risks:
 blocked_stop_condition:
+next_skill_input:
+  target_skill:
+  context:
+  missing_inputs:
+  recommended_mode:
+  blocking_questions:
 handoff_packet:
 ```

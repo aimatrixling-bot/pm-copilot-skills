@@ -87,6 +87,18 @@
       "quality_rubric": "frame before spec or prototype"
     },
     {
+      "id": "trigger-grill-frame",
+      "name": "Fuzzy request with explicit questioning should use grill_frame",
+      "input": "我有个 AI 工作台想法，但用户、场景、范围和成功标准都不确定。先追问我，帮我把关键决策树理清楚，不要直接写 PRD。",
+      "context": "No accepted frame exists and the user explicitly asks for questioning first.",
+      "expected_skill": "builder-frame",
+      "expected_mode": "grill_frame",
+      "expected_outputs": ["decision_tree", "critical_questions", "recommended_defaults", "next_skill_input"],
+      "must_include": ["blocking_questions", "assumptions", "spec_readiness"],
+      "must_not_include": ["full PRD", "Agent Task Packet"],
+      "quality_rubric": "ask high-leverage questions before producing downstream artifacts"
+    },
+    {
       "id": "trigger-builder-spec",
       "name": "Accepted frame should route to builder-spec",
       "input": "基于这份 Feature Frame 写一份可以交给工程和 agent 执行的 Mini Spec，包含验收标准和验证计划。",
@@ -97,6 +109,18 @@
       "must_include": ["non_goals", "rejection_criteria", "risks"],
       "must_not_include": ["implementation-only task list"],
       "quality_rubric": "spec is buildable and verifiable"
+    },
+    {
+      "id": "trigger-spec-reroute-to-frame",
+      "name": "Premature spec request should reroute to builder-frame",
+      "input": "请直接帮我写 PRD，但现在只有一个想法：做一个更智能的销售跟进工具，用户和成功标准还没定。",
+      "context": "No accepted Feature Frame exists.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "not_ready_for_spec",
+      "expected_outputs": ["readiness_gate", "reroute_recommendation", "next_skill_input"],
+      "must_include": ["builder-frame", "blocking_questions", "assumptions"],
+      "must_not_include": ["complete PRD", "Agent Task Packet"],
+      "quality_rubric": "spec refuses to invent missing frame"
     },
     {
       "id": "trigger-design-brief-from-spec",
@@ -133,6 +157,18 @@
       "must_include": ["non_goals", "forbidden_actions", "blocked_stop_condition", "Design Brief"],
       "must_not_include": ["direct local implementation"],
       "quality_rubric": "agent task packet is executable and bounded"
+    },
+    {
+      "id": "trigger-agent-task-reroute-to-spec",
+      "name": "Premature Agent Task Packet should reroute upstream",
+      "input": "我只有 Feature Frame，没有验收标准、验证方式和 stop conditions。请直接生成 Codex 可执行任务包。",
+      "context": "Frame exists but spec-level execution contract is missing.",
+      "expected_skill": "builder-agent-task",
+      "expected_mode": "not_ready_for_agent_task",
+      "expected_outputs": ["readiness_gate", "reroute_recommendation", "next_skill_input"],
+      "must_include": ["builder-spec", "acceptance_criteria", "verification"],
+      "must_not_include": ["fake executable Goal", "direct implementation"],
+      "quality_rubric": "agent task refuses to create a fake executable packet"
     },
     {
       "id": "trigger-decision-record-from-tradeoff",

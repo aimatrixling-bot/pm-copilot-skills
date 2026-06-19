@@ -26,6 +26,36 @@
 
 当任务仍隐藏战略、用户、范围或决策归属时，使用 `not_ready`。
 
+## Grill Frame 规则
+
+当输入仍缺少共享理解时，使用 `grill_frame`，不要直接产出完整 Feature Frame。
+
+`grill_frame` 的目标不是多问问题，而是解析会影响后续产物的关键决策树：
+
+- 一次只聚焦一个最高杠杆问题。
+- 每个问题必须给出推荐默认答案。
+- 推荐默认答案必须进入 assumptions，不能写成用户已确认事实。
+- 每个问题必须说明阻塞对象：frame、spec、prototype、agent_task、decision 或 review。
+- 如果问题可通过当前文档、代码或用户提供资料回答，先查证，不要问用户。
+- 当三次高杠杆追问后仍无法收敛，输出 `not_ready_for_spec` 或 Plan，不要无限追问。
+
+`decision_tree` 至少记录：
+
+- 需要做出的决策。
+- 可选方案及各自 tradeoff。
+- 推荐默认答案和理由。
+- 是否需要 human decision。
+- 阻塞哪个下游 skill 或产物。
+
+## Handoff 规则
+
+Feature Frame 输出给下游 skill 时，必须包含 `next_skill_input`。
+
+- 交给 `builder-spec`：必须包含用户、场景、核心能力、non-goals、成功标准、主要约束和阻塞问题。
+- 交给 `builder-prototype`：必须包含目标场景、magic moment、关键状态和不可丢失的用户价值。
+- 交给 `builder-agent-task`：必须先有验收标准、验证方式、forbidden actions 或 stop conditions；否则回退到 spec。
+- 交给 `builder-decision`：只传真实 trade-off，不把普通偏好升级成长期决策。
+
 ## 设计层级纪律
 
 轻量使用五层模型：

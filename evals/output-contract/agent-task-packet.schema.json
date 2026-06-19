@@ -1,6 +1,8 @@
 {
   "name": "agent-task-packet-contract",
   "required": [
+    "readiness_gate",
+    "reroute_recommendation",
     "task_name",
     "background",
     "desired_outcome",
@@ -16,6 +18,7 @@
     "human_approval_gates",
     "risks",
     "blocked_stop_condition",
+    "next_skill_input",
     "handoff_packet"
   ],
   "optional": [
@@ -25,5 +28,15 @@
     "design_constraints",
     "ui_states",
     "design_consistency_gate"
+  ],
+  "readiness_values": [
+    "ready",
+    "not_ready_for_agent_task"
+  ],
+  "reroute_targets": [
+    "builder-frame",
+    "builder-spec",
+    "builder-plan-goal",
+    "none"
   ]
 }

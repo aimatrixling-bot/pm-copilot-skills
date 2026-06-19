@@ -7,6 +7,7 @@
 - 不要为日常建议或轻量文案润色触发重型 builder workflow。
 - 产品或任务契约不清楚之前，不要进入构建/执行类 skill。
 - 发布、推广或验收前先做 review。
+- 当 spec、prototype 或 agent task 请求缺少关键决策树、non-goals、成功标准或验证方式时，先回到 `builder-frame` 的 `grill_frame`，不要硬交给下游 skill。
 
 ## Core Skill Map（核心 skill 映射）
 
@@ -15,6 +16,7 @@
 | 选择路径 | `builder-router` |
 | 判断 Prompt/Plan/Goal | `builder-plan-goal` |
 | 梳理模糊意图 | `builder-frame` |
+| 解析关键决策树并形成共享理解 | `builder-frame` + `loops/recipes/grill-decision.loop.md` |
 | 写可构建规格 | `builder-spec` |
 | 做视觉或原型资产 | `builder-prototype` |
 | 交给 Codex/Claude/Qoder 执行 | `builder-agent-task` |

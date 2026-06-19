@@ -18,6 +18,7 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 
 - 创建规格时，读取 `templates/builder-spec.template.md`、`references/spec-rules.zh.md` 和 `references/acceptance-criteria.zh.md`。
 - 输入来自旧 PM/PRD 产物时，读取 `references/migration-notes.md`。
+- 输入不满足 spec readiness 时，读取 `loops/recipes/grill-decision.loop.md`，并生成回退到 `builder-frame` 的 reroute recommendation。
 - 涉及界面、状态、组件或交互时，读取 `templates/design-brief/template.md`、`references/ui-ux/` 和 `kernel/gates/design-consistency-gate.zh.md`。
 - 需要判断 skill hardening 或输出契约边界时，读取 `references/skill-design/skill-design-playbook.zh.md`。
 
@@ -56,16 +57,19 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 
 1. 读取 spec 模板、spec rules 和 acceptance-criteria guide。
 2. 验证输入是否已经 spec-ready。
-3. 定义目标、范围、non-goals、角色、流程、状态和边界情况。
-4. 区分产品需求和实现猜测。
-5. 如果涉及 UI/UX，读取 Design Brief template 和 UI/UX shared contract，补充设计约束。
-6. 写出 acceptance criteria 和 rejection criteria。
-7. 定义验证或测试策略。
-8. 产出供下游 skill 使用的 Output Packet。
+3. 如果输入不成熟，输出 `readiness_gate`、`reroute_recommendation` 和 `next_skill_input`，优先回退到 `builder-frame` 的 `grill_frame`，不要写伪完整 spec。
+4. 定义目标、范围、non-goals、角色、流程、状态和边界情况。
+5. 区分产品需求和实现猜测。
+6. 如果涉及 UI/UX，读取 Design Brief template 和 UI/UX shared contract，补充设计约束。
+7. 写出 acceptance criteria 和 rejection criteria。
+8. 定义验证或测试策略。
+9. 产出供下游 skill 使用的 Output Packet。
 
 ## 输出契约
 
 ```yaml
+readiness_gate:
+reroute_recommendation:
 spec_type:
 objective:
 users:
@@ -87,6 +91,7 @@ assumptions:
 open_questions:
 risks:
 next_skill_hint:
+next_skill_input:
 ```
 
 ## 质量门禁
@@ -97,17 +102,20 @@ next_skill_hint:
 - 必须能被 `builder-prototype` 或 `builder-agent-task` 消费。
 - Acceptance criteria 必须能通过人工 review、自动检查或明确证据验证。
 - 如果实现细节只是推断，必须标成 assumption，而不是 requirement。
+- 如果目标、用户、场景、non-goals、成功标准或关键决策树不清楚，必须使用 `not_ready_for_spec`，并输出回退到 `builder-frame` 的 `reroute_recommendation`。
+- `not_ready_for_spec` 不得产出看似完整的 requirements、flows 或 acceptance criteria；只能给出缺口、推荐默认答案和下一步输入。
 - UI/UX 相关 spec 必须说明 Design Brief、状态覆盖、交互要求、响应式和可访问性基础。
 - 不要把视觉喜好写成需求，除非它可验收或来自既有设计约定。
 - 如果 acceptance criteria 无法被人工 review、自动检查或证据验证，必须降级为 open question。
 
 ## 交接
 
-交给 `builder-prototype`、`builder-agent-task`、`builder-review`，或 legacy architecture/implementation skills。交接时保留 spec_type、scope、non_goals、acceptance_criteria、verification_plan、assumptions、open_questions、risks 和 next_skill_hint。
+交给 `builder-prototype`、`builder-agent-task`、`builder-review`，或 legacy architecture/implementation skills。交接时保留 readiness_gate、reroute_recommendation、spec_type、scope、non_goals、acceptance_criteria、verification_plan、assumptions、open_questions、risks、next_skill_hint 和 next_skill_input。
 
 ## 参考
 
 - `kernel/packets/output-packet.schema.md`
+- `loops/recipes/grill-decision.loop.md`
 - `kernel/gates/design-consistency-gate.zh.md`
 - `templates/design-brief/template.md`
 - `references/ui-ux/design-principles.zh.md`

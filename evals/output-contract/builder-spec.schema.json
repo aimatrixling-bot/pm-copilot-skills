@@ -1,6 +1,8 @@
 {
   "name": "builder-spec-output-contract",
   "required": [
+    "readiness_gate",
+    "reroute_recommendation",
     "spec_type",
     "objective",
     "users",
@@ -16,7 +18,8 @@
     "assumptions",
     "open_questions",
     "risks",
-    "next_skill_hint"
+    "next_skill_hint",
+    "next_skill_input"
   ],
   "optional": [
     "design_brief",
@@ -30,5 +33,9 @@
     "prd",
     "engineering_request",
     "agent_readable_spec"
+  ],
+  "readiness_values": [
+    "ready",
+    "not_ready_for_spec"
   ]
 }

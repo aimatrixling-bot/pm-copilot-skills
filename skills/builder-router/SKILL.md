@@ -17,6 +17,7 @@ argument-hint: "[用户请求或项目上下文]"
 - 判断 Prompt / Plan / Goal / Plan -> Goal 时，读取 `kernel/routing/plan-goal-routing.zh.md`。
 - 判断 builder skill 分流时，读取 `kernel/routing/builder-router.zh.md` 和 `kernel/routing/skill-selection-rules.zh.md`。
 - 需要输出可交接上下文时，读取 `kernel/packets/intent-packet.schema.md`。
+- 输入需要先解析关键决策树时，读取 `loops/recipes/grill-decision.loop.md`，再路由到 `builder-frame`。
 - 首次进入或恢复项目时，读取 `harness/project-onboarding-policy.zh.md` 和 `memory/schemas/project-profile.schema.md`。
 - 路由边界或 skill hardening 场景不清时，读取 `references/skill-design/skill-design-playbook.zh.md`。
 
@@ -57,6 +58,8 @@ argument-hint: "[用户请求或项目上下文]"
 6. `skill_route`：用户需要明确产物，交给对应 `builder-*` skill。
 7. `ask_first`：缺少会改变方向的业务、安全、权限、数据或发布决策。
 
+如果请求已经指向 spec、prototype 或 agent task，但目标用户、场景、non-goals、成功标准或关键决策树仍不清楚，优先推荐 `builder-frame` 的 `grill_frame` 路径，不要直接进入下游执行类 skill。
+
 ## Project Onboarding 判断
 
 首次进入或恢复项目时，先判断 `project_mode`：
@@ -90,6 +93,8 @@ recommended_next_skill:
 reasoning_summary:
 missing_context:
 risk_flags:
+suggested_chain:
+next_skill_input:
 next_prompt:
 handoff_packet:
 ```
@@ -103,6 +108,8 @@ handoff_packet:
 - `project_profile_proposal` 只能是 proposal，不得声称已创建 `.ai-builder/` 或已写入 artifact index。
 - Brownfield 场景不得自动扫描全盘；不得自动清理、迁移、删除、重命名已有资产。
 - 必须解释为什么不是相邻路径，特别是 `builder-frame` vs `builder-spec`、`builder-prototype` vs `builder-agent-task`、`builder-review` vs `builder-decision`。
+- Router 可以推荐 `suggested_chain` 和 `next_skill_input`，但不得声称 runtime 会自动连续执行多个 skill。
+- 当用户显式 call 某个下游 skill 但输入不成熟时，输出 reroute 建议和可直接交给 `builder-frame` 的输入。
 - 路由结果必须包含下一步可执行动作，而不是只给 skill 名称。
 
 ## 交接
@@ -115,6 +122,7 @@ handoff_packet:
 - `kernel/routing/plan-goal-routing.zh.md`
 - `kernel/routing/skill-selection-rules.zh.md`
 - `kernel/packets/intent-packet.schema.md`
+- `loops/recipes/grill-decision.loop.md`
 - `harness/project-onboarding-policy.zh.md`
 - `memory/schemas/project-profile.schema.md`
 - `evals/output-contract/builder-router.schema.json`

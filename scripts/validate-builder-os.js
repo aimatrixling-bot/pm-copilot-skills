@@ -24,6 +24,7 @@ const requiredFiles = [
   'docs/release-runbook-m3.9.md',
   'docs/release-seal-m3.9.md',
   'docs/release-plan-1.0.md',
+  'docs/grill-loop-builder-frame-hardening-brief.md',
   'kernel/README.md',
   'kernel/packets/intent-packet.schema.md',
   'kernel/packets/output-packet.schema.md',
@@ -46,6 +47,7 @@ const requiredFiles = [
   'memory/policies/artifact-consistency-policy.zh.md',
   'loops/README.md',
   'loops/recipes/artifact-hygiene.loop.md',
+  'loops/recipes/grill-decision.loop.md',
   'bundles/core/manifest.json',
   'bundles/core/skills.list',
   'adapters/codex/README.md',
@@ -220,6 +222,7 @@ const builderCoreExpectations = {
     'harness/project-onboarding-policy.zh.md',
     'memory/schemas/project-profile.schema.md',
     'kernel/routing/skill-selection-rules.zh.md',
+    'loops/recipes/grill-decision.loop.md',
     'evals/output-contract/builder-router.schema.json',
     'evals/onboarding/project-onboarding.cases.json',
     'references/skill-design/skill-design-playbook.zh.md',
@@ -260,7 +263,13 @@ const builderCoreExpectations = {
     'idea_frame',
     'problem_frame',
     'opportunity_frame',
+    'grill_frame',
     'not_ready_for_spec',
+    'loops/recipes/grill-decision.loop.md',
+    'shared_understanding',
+    'decision_tree',
+    'critical_questions',
+    'recommended_defaults',
     'problem',
     'user',
     'scenario',
@@ -268,7 +277,13 @@ const builderCoreExpectations = {
     'magic_moment',
     'non_goals',
     'success_criteria',
+    'human_decision_points',
+    'stable_terms',
+    'frame_confidence',
+    'blocking_questions',
+    'evidence_needed',
     'spec_readiness',
+    'next_skill_input',
     'references/skill-design/skill-design-playbook.zh.md',
   ],
   'skills/builder-spec/SKILL.md': [
@@ -281,11 +296,14 @@ const builderCoreExpectations = {
     'references/spec-rules.zh.md',
     'references/acceptance-criteria.zh.md',
     'references/migration-notes.md',
+    'loops/recipes/grill-decision.loop.md',
     'mini_spec',
     'prd',
     'engineering_request',
     'agent_readable_spec',
     'not_ready_for_spec',
+    'readiness_gate',
+    'reroute_recommendation',
     'scope',
     'requirements',
     'flows',
@@ -293,6 +311,7 @@ const builderCoreExpectations = {
     'edge_cases',
     'acceptance_criteria',
     'verification_plan',
+    'next_skill_input',
     'design_brief',
     'ui_states',
     'interaction_requirements',
@@ -329,15 +348,20 @@ const builderCoreExpectations = {
     'harness/artifact-write-policy.zh.md',
     'memory/schemas/artifact-index.schema.md',
     'kernel/routing/plan-goal-routing.zh.md',
+    'loops/recipes/grill-decision.loop.md',
     'prompt',
     'plan',
     'goal',
     'plan_to_goal',
     'ask_first',
+    'not_ready_for_agent_task',
+    'readiness_gate',
+    'reroute_recommendation',
     'runtime_constraints',
     'forbidden_actions',
     'human_approval_gates',
     'blocked_stop_condition',
+    'next_skill_input',
     'artifact_index_update_proposal',
     'handoff_packet',
     'evals/output-contract/agent-task-packet.schema.json',
@@ -383,6 +407,15 @@ const builderCoreExpectations = {
     'memory_target',
     'evals/output-contract/decision-record.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
+  ],
+};
+
+const packetSchemaExpectations = {
+  'kernel/packets/agent-task-packet.schema.md': [
+    'readiness_gate',
+    'not_ready_for_agent_task',
+    'reroute_recommendation',
+    'next_skill_input',
   ],
 };
 
@@ -720,6 +753,8 @@ const outputContractExpectations = {
     'reasoning_summary',
     'missing_context',
     'risk_flags',
+    'suggested_chain',
+    'next_skill_input',
     'next_prompt',
     'handoff_packet',
   ],
@@ -737,6 +772,11 @@ const outputContractExpectations = {
   ],
   'evals/output-contract/feature-frame.schema.json': [
     'artifact_type',
+    'frame_mode',
+    'shared_understanding',
+    'decision_tree',
+    'critical_questions',
+    'recommended_defaults',
     'problem',
     'user',
     'scenario',
@@ -750,10 +790,18 @@ const outputContractExpectations = {
     'facts',
     'assumptions',
     'open_questions',
+    'human_decision_points',
+    'stable_terms',
+    'frame_confidence',
+    'blocking_questions',
+    'evidence_needed',
     'spec_readiness',
     'next_skill_hint',
+    'next_skill_input',
   ],
   'evals/output-contract/builder-spec.schema.json': [
+    'readiness_gate',
+    'reroute_recommendation',
     'spec_type',
     'objective',
     'users',
@@ -770,6 +818,7 @@ const outputContractExpectations = {
     'open_questions',
     'risks',
     'next_skill_hint',
+    'next_skill_input',
   ],
   'evals/output-contract/builder-prototype.schema.json': [
     'prototype_mode',
@@ -789,6 +838,8 @@ const outputContractExpectations = {
     'next_skill_hint',
   ],
   'evals/output-contract/agent-task-packet.schema.json': [
+    'readiness_gate',
+    'reroute_recommendation',
     'task_name',
     'background',
     'desired_outcome',
@@ -804,6 +855,7 @@ const outputContractExpectations = {
     'human_approval_gates',
     'risks',
     'blocked_stop_condition',
+    'next_skill_input',
     'handoff_packet',
   ],
   'evals/output-contract/builder-review.schema.json': [
@@ -976,6 +1028,13 @@ for (const [relativePath, expectedTerms] of Object.entries(builderCoreExpectatio
   }
 }
 
+for (const [relativePath, expectedTerms] of Object.entries(packetSchemaExpectations)) {
+  const content = read(relativePath);
+  for (const term of expectedTerms) {
+    assert(content.includes(term), `${relativePath} 缺少 packet schema 字段: ${term}`, failures);
+  }
+}
+
 for (const [relativePath, expectedTerms] of Object.entries(builderPlanGoalReferenceExpectations)) {
   const content = read(relativePath);
   for (const term of expectedTerms) {
@@ -1013,6 +1072,14 @@ for (const [relativePath, requiredFields] of Object.entries(outputContractExpect
   }
 }
 
+const featureFrameContract = readJson('evals/output-contract/feature-frame.schema.json');
+assert(Array.isArray(featureFrameContract.frame_mode_values), 'feature-frame schema 必须包含 frame_mode_values 数组', failures);
+if (Array.isArray(featureFrameContract.frame_mode_values)) {
+  for (const value of ['idea_frame', 'problem_frame', 'opportunity_frame', 'grill_frame', 'not_ready_for_spec']) {
+    assert(featureFrameContract.frame_mode_values.includes(value), `feature-frame frame_mode_values 缺少 ${value}`, failures);
+  }
+}
+
 const planGoalContract = readJson('evals/output-contract/builder-plan-goal.schema.json');
 for (const field of ['final_response_sections', 'required_reference_files', 'handoff_targets']) {
   assert(Array.isArray(planGoalContract[field]), `builder-plan-goal output contract 必须包含 ${field} 数组`, failures);
@@ -1041,6 +1108,18 @@ if (Array.isArray(agentTaskContract.optional)) {
     assert(agentTaskContract.optional.includes(field), `agent-task-packet optional 缺少 ${field}`, failures);
   }
 }
+assert(Array.isArray(agentTaskContract.readiness_values), 'agent-task-packet schema 必须包含 readiness_values 数组', failures);
+if (Array.isArray(agentTaskContract.readiness_values)) {
+  for (const value of ['ready', 'not_ready_for_agent_task']) {
+    assert(agentTaskContract.readiness_values.includes(value), `agent-task-packet readiness_values 缺少 ${value}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.reroute_targets), 'agent-task-packet schema 必须包含 reroute_targets 数组', failures);
+if (Array.isArray(agentTaskContract.reroute_targets)) {
+  for (const target of ['builder-frame', 'builder-spec', 'builder-plan-goal', 'none']) {
+    assert(agentTaskContract.reroute_targets.includes(target), `agent-task-packet reroute_targets 缺少 ${target}`, failures);
+  }
+}
 
 const builderRouterContract = readJson('evals/output-contract/builder-router.schema.json');
 assert(Array.isArray(builderRouterContract.route_type_values), 'builder-router schema 必须包含 route_type_values 数组', failures);
@@ -1057,7 +1136,13 @@ if (Array.isArray(builderRouterContract.project_mode_values)) {
 }
 assert(Array.isArray(builderRouterContract.required_reference_files), 'builder-router schema 必须包含 required_reference_files 数组', failures);
 if (Array.isArray(builderRouterContract.required_reference_files)) {
-  for (const fileName of ['harness/project-onboarding-policy.zh.md', 'memory/schemas/project-profile.schema.md']) {
+  for (const fileName of [
+    'kernel/routing/builder-router.zh.md',
+    'kernel/routing/skill-selection-rules.zh.md',
+    'loops/recipes/grill-decision.loop.md',
+    'harness/project-onboarding-policy.zh.md',
+    'memory/schemas/project-profile.schema.md',
+  ]) {
     assert(builderRouterContract.required_reference_files.includes(fileName), `builder-router required_reference_files 缺少 ${fileName}`, failures);
   }
 }
@@ -1128,6 +1213,12 @@ assert(Array.isArray(builderSpecContract.optional), 'builder-spec schema 必须�
 if (Array.isArray(builderSpecContract.optional)) {
   for (const field of ['design_brief', 'ui_states', 'interaction_requirements', 'responsive_requirements', 'accessibility_notes']) {
     assert(builderSpecContract.optional.includes(field), `builder-spec optional 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(builderSpecContract.readiness_values), 'builder-spec schema 必须包含 readiness_values 数组', failures);
+if (Array.isArray(builderSpecContract.readiness_values)) {
+  for (const value of ['ready', 'not_ready_for_spec']) {
+    assert(builderSpecContract.readiness_values.includes(value), `builder-spec readiness_values 缺少 ${value}`, failures);
   }
 }
 if (Array.isArray(planGoalContract.final_response_sections)) {
@@ -1211,6 +1302,13 @@ if (Array.isArray(builderCoreTriggerCases.cases)) {
       failures
     );
   }
+  for (const expectedCaseId of ['trigger-spec-reroute-to-frame', 'trigger-agent-task-reroute-to-spec']) {
+    assert(
+      builderCoreTriggerCases.cases.some(item => item.id === expectedCaseId),
+      `builder-core trigger eval 缺少 readiness/reroute 用例: ${expectedCaseId}`,
+      failures
+    );
+  }
 }
 
 const builderRoutingCases = readJson('evals/routing/builder-routing.cases.json');
@@ -1224,6 +1322,23 @@ if (Array.isArray(builderRoutingCases.cases)) {
     'builder routing eval 必须覆盖 builder-frame -> builder-spec 路径',
     failures
   );
+  assert(
+    builderRoutingCases.cases.some(item => item.expected_mode === 'grill_frame' && Array.isArray(item.must_include) && item.must_include.includes('decision_tree')),
+    'builder routing eval 必须覆盖 grill_frame 和 decision_tree',
+    failures
+  );
+  assert(
+    builderRoutingCases.cases.some(item => item.id === 'premature-agent-task-reroute-to-frame'),
+    'builder routing eval 必须覆盖 premature agent task reroute to builder-frame',
+    failures
+  );
+  for (const expectedCaseId of ['premature-spec-reroute-to-frame', 'premature-agent-task-reroute-to-spec']) {
+    assert(
+      builderRoutingCases.cases.some(item => item.id === expectedCaseId),
+      `builder routing eval 必须覆盖 readiness/reroute 用例: ${expectedCaseId}`,
+      failures
+    );
+  }
   assert(
     routingPaths.some(route => route.includes('builder-plan-goal>builder-agent-task')),
     'builder routing eval 必须覆盖 builder-plan-goal -> builder-agent-task 路径',

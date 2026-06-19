@@ -23,3 +23,4 @@ Loop Recipes 是 AI Builder OS 的运行协议层，用来描述可重复、可�
 | Recipe | Purpose |
 | --- | --- |
 | `recipes/artifact-hygiene.loop.md` | 对项目资产做周期盘点、一致性审计和清理提案 |
+| `recipes/grill-decision.loop.md` | 在产出 frame、spec、prototype 或 agent task 前解析关键决策树和阻塞问题 |
