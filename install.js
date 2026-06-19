@@ -70,6 +70,7 @@ if (mode === "claude-project") {
 
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
 const markerName = ".pm-copilot-skills-source.json";
+const allowedMarkerPackages = new Set(["ai-builder-os", "pm-copilot-skills", pkg.name]);
 const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "references", "templates"];
 const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
 const excludedLocalResourcePrefixes = ["references/source-blueprints"];
@@ -117,13 +118,17 @@ function writeMarker(dest, skillName) {
   );
 }
 
+function markerPackageIsAllowed(packageName) {
+  return allowedMarkerPackages.has(packageName);
+}
+
 function isPackageOwned(dest) {
   if (!fs.existsSync(dest)) return false;
   const markerFile = path.join(dest, markerName);
   if (!fs.existsSync(markerFile)) return false;
   try {
     const marker = JSON.parse(fs.readFileSync(markerFile, "utf-8"));
-    return marker.package === pkg.name;
+    return markerPackageIsAllowed(marker.package);
   } catch {
     return false;
   }

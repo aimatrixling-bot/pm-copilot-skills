@@ -2,6 +2,8 @@
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+const { TextDecoder } = require('util');
 
 const root = path.resolve(__dirname, '..');
 const home = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH;
@@ -20,6 +22,8 @@ const builderSkills = sourceEntries.filter((entry) => entry.startsWith('builder-
 const legacyInstalledNames = new Set(['download-anything', 'pdf', 'pptx', 'references']);
 const failures = [];
 const warnings = [];
+const utf8Decoder = new TextDecoder('utf-8', { fatal: true });
+const mojibakeTokens = ['�', '锛', '銆', '鐢', '浠', '璧', '杈', '妯', '璐', '浜', '鎶', '鏄', '闇'];
 const builderSharedResources = [
   'kernel/README.md',
   'kernel/gates/design-consistency-gate.zh.md',
@@ -51,6 +55,28 @@ function assert(condition, message) {
   if (!condition) failures.push(message);
 }
 
+function hashFile(filePath) {
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
+function assertCleanUtf8(filePath, label) {
+  if (!fs.existsSync(filePath)) return;
+  const buffer = fs.readFileSync(filePath);
+  try {
+    utf8Decoder.decode(buffer);
+  } catch (error) {
+    failures.push(`${label} 不是合法 UTF-8: ${error.message}`);
+    return;
+  }
+
+  const text = fs.readFileSync(filePath, 'utf8');
+  const suspiciousTokens = mojibakeTokens.filter((token) => text.includes(token));
+  assert(
+    suspiciousTokens.length === 0,
+    `${label} 包含疑似乱码 token: ${suspiciousTokens.join(', ')}`,
+  );
+}
+
 function markerPackageIsAllowed(packageName) {
   return allowedMarkerPackages.has(packageName);
 }
@@ -74,7 +100,17 @@ for (const entry of expectedEntries) {
   if (!fs.existsSync(dest)) continue;
 
   if (sourceHasSkill) {
-    assert(fs.existsSync(path.join(dest, 'SKILL.md')), `${entry} 缺少 SKILL.md`);
+    const sourceSkillFile = path.join(source, 'SKILL.md');
+    const installedSkillFile = path.join(dest, 'SKILL.md');
+    assert(fs.existsSync(installedSkillFile), `${entry} 缺少 SKILL.md`);
+    assertCleanUtf8(sourceSkillFile, `${entry} source SKILL.md`);
+    assertCleanUtf8(installedSkillFile, `${entry} installed SKILL.md`);
+    if (fs.existsSync(installedSkillFile)) {
+      assert(
+        hashFile(sourceSkillFile) === hashFile(installedSkillFile),
+        `${entry} 安装副本 SKILL.md 与源码不一致；请重新运行 npx pm-copilot-skills codex 或 node install.js codex`,
+      );
+    }
   }
 
   if (fs.existsSync(markerFile)) {
