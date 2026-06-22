@@ -28,6 +28,8 @@
 - 数据校验和一致性。
 - 相关时的向后兼容或迁移影响。
 - 相关时的 audit、logging、privacy 或 security 期望。
+- 来自 prototype 的 covered flows 和 states_covered。
+- 来自 prototype verification 的证据来源和仍缺失的证据。
 
 ## Rejection Criteria
 
@@ -37,3 +39,4 @@
 - 只有 UI 完成，但底层契约缺失。
 - 缺少验证证据。
 - 静默修改权限或 schema。
+- 把 prototype gaps 直接当作已确认需求。

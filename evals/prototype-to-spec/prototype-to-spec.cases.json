@@ -1,0 +1,52 @@
+{
+  "suite": "prototype-to-spec",
+  "status": "draft",
+  "purpose": "验证 builder-spec 能从真实 prototype brief 反向提取 spec，并由 builder-review 检查 gaps、mock boundary 和 verification provenance。",
+  "cases": [
+    {
+      "id": "visit-checkin-prototype-to-spec",
+      "source_brief_path": "D:\\PMS-Dev-AIFirst\\modules\\visit\\prototype-brief.md",
+      "fixture": "evals/prototype-to-spec/fixtures/visit-checkin.prototype-brief.md",
+      "expected_output": "evals/prototype-to-spec/expected/visit-checkin.prototype-to-spec.md",
+      "expected_mode": "prototype_to_spec",
+      "expected_review_mode": "prototype_to_spec_review",
+      "must_preserve": [
+        "source_prototype",
+        "extracted_from_prototype",
+        "prototype_gaps",
+        "prototype_verification",
+        "mock boundary",
+        "route readiness"
+      ],
+      "must_not_promote": [
+        "真实 API",
+        "权限",
+        "审计",
+        "Walk-in Appointment link 生产模型"
+      ],
+      "review_checklist": "evals/prototype-to-spec/review-checklist.md"
+    },
+    {
+      "id": "surgery-dimsum-prototype-to-spec",
+      "source_brief_path": "D:\\PMS-Dev-AIFirst\\modules\\surgery\\prototype-brief.md",
+      "fixture": "evals/prototype-to-spec/fixtures/surgery-dimsum.prototype-brief.md",
+      "expected_output": "evals/prototype-to-spec/expected/surgery-dimsum.prototype-to-spec.md",
+      "expected_mode": "prototype_to_spec",
+      "expected_review_mode": "prototype_to_spec_review",
+      "must_preserve": [
+        "source_prototype",
+        "prototype_gaps",
+        "prototype_verification",
+        "mock-only",
+        "production gap"
+      ],
+      "must_not_promote": [
+        "真实 InventoryTransaction",
+        "Billing",
+        "正式法律电子签",
+        "权限审计"
+      ],
+      "review_checklist": "evals/prototype-to-spec/review-checklist.md"
+    }
+  ]
+}

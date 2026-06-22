@@ -121,7 +121,20 @@ const requiredFiles = [
   'skills/builder-spec/templates/builder-spec.template.md',
   'skills/builder-spec/references/spec-rules.zh.md',
   'skills/builder-spec/references/acceptance-criteria.zh.md',
+  'skills/builder-spec/references/prototype-to-spec.zh.md',
+  'skills/builder-spec/references/examples-prototype-to-spec.zh.md',
   'skills/builder-spec/references/migration-notes.md',
+  'skills/builder-prototype/references/prototype-path-rules.zh.md',
+  'skills/builder-prototype/references/examples.zh.md',
+  'skills/builder-review/references/prototype-to-spec-review.zh.md',
+  'evals/prototype-to-spec/README.md',
+  'evals/prototype-to-spec/prototype-to-spec.cases.json',
+  'evals/prototype-to-spec/review-checklist.md',
+  'evals/prototype-to-spec/fixtures/visit-checkin.prototype-brief.md',
+  'evals/prototype-to-spec/fixtures/surgery-dimsum.prototype-brief.md',
+  'evals/prototype-to-spec/expected/visit-checkin.prototype-to-spec.md',
+  'evals/prototype-to-spec/expected/surgery-dimsum.prototype-to-spec.md',
+  'evals/prototype-to-spec/manual-review-results.md',
 ];
 
 const builderSkills = [
@@ -299,15 +312,22 @@ const builderCoreExpectations = {
     'references/ui-ux/design-principles.zh.md',
     'references/spec-rules.zh.md',
     'references/acceptance-criteria.zh.md',
+    'references/prototype-to-spec.zh.md',
+    'references/examples-prototype-to-spec.zh.md',
     'references/migration-notes.md',
     'loops/recipes/grill-decision.loop.md',
     'mini_spec',
     'prd',
     'engineering_request',
     'agent_readable_spec',
+    'prototype_to_spec',
     'not_ready_for_spec',
     'readiness_gate',
     'reroute_recommendation',
+    'source_prototype',
+    'extracted_from_prototype',
+    'prototype_gaps',
+    'prototype_verification',
     'scope',
     'requirements',
     'flows',
@@ -329,32 +349,30 @@ const builderCoreExpectations = {
   ],
   'skills/builder-prototype/SKILL.md': [
     '## 资源读取',
-    '## 模式判断',
+    '## 三路径模式',
     'templates/prototype-brief/template.md',
     'templates/design-brief/template.md',
+    'skills/builder-prototype/references/prototype-path-rules.zh.md',
+    'skills/builder-prototype/references/examples.zh.md',
     'kernel/gates/fake-ui-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
     'kernel/gates/product-logic-containment-gate.zh.md',
     'loops/recipes/design-plan-to-prototype.loop.md',
+    'prototype_first',
+    'boundary_first',
+    'spec_first',
+    'degraded_prototype',
     'wireframe',
-    'high_fidelity_prototype',
     'prototype_brief',
-    'not_ready_for_prototype',
     'prototype_mode',
-    'design_brief_path',
-    'design_plan',
+    'artifact_path',
+    'fidelity',
+    'covered_flows',
     'states_covered',
-    'component_usage',
     'runnable_prototype',
-    'preview_or_run_command',
-    'ui_content_boundary',
-    'business_rule_notes',
-    'rule_notes_placement',
-    'non_ui_explanations',
-    'evidence_packet',
+    'gaps',
     'verification',
-    'nudge_options',
-    'quality_gates',
+    'next',
     'evals/output-contract/builder-prototype.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
   ],
@@ -403,6 +421,8 @@ const builderCoreExpectations = {
     'kernel/gates/fake-test-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
     'kernel/gates/product-logic-containment-gate.zh.md',
+    'skills/builder-review/references/prototype-to-spec-review.zh.md',
+    'skills/builder-spec/references/prototype-to-spec.zh.md',
     'loops/recipes/artifact-hygiene.loop.md',
     'loops/recipes/design-plan-to-prototype.loop.md',
     'memory/policies/artifact-consistency-policy.zh.md',
@@ -410,6 +430,7 @@ const builderCoreExpectations = {
     'contract_review',
     'evidence_review',
     'design_review',
+    'prototype_to_spec_review',
     'release_readiness',
     'not_reviewable',
     'review_mode',
@@ -417,6 +438,7 @@ const builderCoreExpectations = {
     'design_consistency_audit',
     'product_logic_containment_audit',
     'design_plan_audit',
+    'prototype_to_spec_audit',
     'artifact_hygiene_audit',
     'artifact_index_update_proposal',
     'unverified_areas',
@@ -568,14 +590,18 @@ const builderUiUxExpectations = {
     'handoff_targets',
   ],
   'templates/prototype-brief/template.md': [
-    'design_plan',
-    'runnable_prototype',
-    'preview_or_run_command',
-    'ui_content_boundary',
-    'business_rule_notes',
-    'rule_notes_placement',
-    'nudge_options',
-    'quality_gates',
+    'prototype_first',
+    'boundary_first',
+    'spec_first',
+    'degraded_prototype',
+    'artifact_path',
+    'fidelity',
+    'covered_flows',
+    'states_covered',
+    'gaps',
+    'verification',
+    'next',
+    '业务规则说明（非界面内容）',
   ],
   'kernel/gates/design-consistency-gate.zh.md': [
     'Design Brief',
@@ -598,14 +624,15 @@ const builderUiUxExpectations = {
   'skills/builder-prototype/SKILL.md': [
     'Design Brief',
     'Design Consistency Gate',
-    'design_brief_path',
-    'component_usage',
-    'interaction_requirements',
-    'responsive_requirements',
+    'prototype_first',
+    'boundary_first',
+    'spec_first',
+    'degraded_prototype',
+    'states_covered',
+    'gaps',
     'Product Logic Containment Gate',
     'Design Plan to Prototype Loop',
-    'design_plan',
-    'business_rule_notes',
+    '业务规则说明（非界面内容）',
     'references/ui-ux/',
   ],
   'skills/builder-agent-task/SKILL.md': [
@@ -624,6 +651,9 @@ const builderUiUxExpectations = {
     'design_consistency_audit',
     'product_logic_containment_audit',
     'design_plan_audit',
+    'prototype_to_spec_audit',
+    'prototype_to_spec_review',
+    'verification provenance',
     '组件一致性',
     '状态覆盖',
     'mock/demo',
@@ -893,20 +923,13 @@ const outputContractExpectations = {
   ],
   'evals/output-contract/builder-prototype.schema.json': [
     'prototype_mode',
-    'prototype_type',
     'artifact_path',
-    'mapping_path',
-    'design_brief_path',
-    'core_flows',
+    'fidelity',
+    'covered_flows',
     'states_covered',
-    'component_usage',
-    'interaction_requirements',
-    'responsive_requirements',
-    'design_decisions',
-    'demo_data_notes',
-    'evidence_packet',
+    'gaps',
     'verification',
-    'next_skill_hint',
+    'next',
   ],
   'evals/output-contract/agent-task-packet.schema.json': [
     'readiness_gate',
@@ -936,6 +959,7 @@ const outputContractExpectations = {
     'findings',
     'evidence_audit',
     'design_consistency_audit',
+    'prototype_to_spec_audit',
     'artifact_hygiene_audit',
     'artifact_index_update_proposal',
     'risk_assessment',
@@ -1243,14 +1267,20 @@ if (Array.isArray(builderRouterContract.handoff_targets)) {
 const builderPrototypeContract = readJson('evals/output-contract/builder-prototype.schema.json');
 assert(Array.isArray(builderPrototypeContract.required), 'builder-prototype schema 必须包含 required 数组', failures);
 if (Array.isArray(builderPrototypeContract.required)) {
-  for (const field of ['design_plan', 'runnable_prototype', 'preview_or_run_command', 'ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations', 'nudge_options', 'quality_gates']) {
+  for (const field of ['prototype_mode', 'artifact_path', 'fidelity', 'covered_flows', 'states_covered', 'gaps', 'verification', 'next']) {
     assert(builderPrototypeContract.required.includes(field), `builder-prototype required 缺少 ${field}`, failures);
   }
 }
 assert(Array.isArray(builderPrototypeContract.prototype_mode_values), 'builder-prototype schema 必须包含 prototype_mode_values 数组', failures);
 if (Array.isArray(builderPrototypeContract.prototype_mode_values)) {
-  for (const value of ['wireframe', 'high_fidelity_prototype', 'prototype_brief', 'not_ready_for_prototype']) {
+  for (const value of ['prototype_first', 'boundary_first', 'spec_first', 'runnable_prototype', 'wireframe', 'prototype_brief', 'degraded_prototype']) {
     assert(builderPrototypeContract.prototype_mode_values.includes(value), `builder-prototype prototype_mode_values 缺少 ${value}`, failures);
+  }
+}
+assert(Array.isArray(builderPrototypeContract.fidelity_values), 'builder-prototype schema 必须包含 fidelity_values 数组', failures);
+if (Array.isArray(builderPrototypeContract.fidelity_values)) {
+  for (const value of ['low', 'medium', 'high', 'not_applicable']) {
+    assert(builderPrototypeContract.fidelity_values.includes(value), `builder-prototype fidelity_values 缺少 ${value}`, failures);
   }
 }
 assert(Array.isArray(builderPrototypeContract.required_states), 'builder-prototype schema 必须包含 required_states 数组', failures);
@@ -1259,17 +1289,10 @@ if (Array.isArray(builderPrototypeContract.required_states)) {
     assert(builderPrototypeContract.required_states.includes(state), `builder-prototype required_states 缺少 ${state}`, failures);
   }
 }
-for (const field of ['rule_notes_placement_values', 'runnable_prototype_values']) {
-  assert(Array.isArray(builderPrototypeContract[field]), `builder-prototype schema 必须包含 ${field} 数组`, failures);
-}
-if (Array.isArray(builderPrototypeContract.rule_notes_placement_values)) {
-  for (const value of ['below_interface', 'side_panel', 'linked_doc', 'not_applicable']) {
-    assert(builderPrototypeContract.rule_notes_placement_values.includes(value), `builder-prototype rule_notes_placement_values 缺少 ${value}`, failures);
-  }
-}
-if (Array.isArray(builderPrototypeContract.runnable_prototype_values)) {
-  for (const value of ['runnable', 'static', 'not_available']) {
-    assert(builderPrototypeContract.runnable_prototype_values.includes(value), `builder-prototype runnable_prototype_values 缺少 ${value}`, failures);
+assert(Array.isArray(builderPrototypeContract.next_values), 'builder-prototype schema 必须包含 next_values 数组', failures);
+if (Array.isArray(builderPrototypeContract.next_values)) {
+  for (const value of ['builder-review', 'builder-agent-task', 'builder-spec', 'builder-frame', 'iterate', 'ask_user']) {
+    assert(builderPrototypeContract.next_values.includes(value), `builder-prototype next_values 缺少 ${value}`, failures);
   }
 }
 
@@ -1277,10 +1300,11 @@ const builderReviewContract = readJson('evals/output-contract/builder-review.sch
 assert(Array.isArray(builderReviewContract.required), 'builder-review schema 必须包含 required 数组', failures);
 if (Array.isArray(builderReviewContract.required)) {
   assert(builderReviewContract.required.includes('product_logic_containment_audit'), 'builder-review required 缺少 product_logic_containment_audit', failures);
+  assert(builderReviewContract.required.includes('prototype_to_spec_audit'), 'builder-review required 缺少 prototype_to_spec_audit', failures);
 }
 assert(Array.isArray(builderReviewContract.review_mode_values), 'builder-review schema 必须包含 review_mode_values 数组', failures);
 if (Array.isArray(builderReviewContract.review_mode_values)) {
-  for (const value of ['contract_review', 'evidence_review', 'design_review', 'release_readiness', 'not_reviewable']) {
+  for (const value of ['contract_review', 'evidence_review', 'design_review', 'prototype_to_spec_review', 'release_readiness', 'not_reviewable']) {
     assert(builderReviewContract.review_mode_values.includes(value), `builder-review review_mode_values 缺少 ${value}`, failures);
   }
 }
@@ -1299,6 +1323,8 @@ assert(Array.isArray(builderReviewContract.required_reference_files), 'builder-r
 if (Array.isArray(builderReviewContract.required_reference_files)) {
   for (const fileName of [
     'kernel/gates/product-logic-containment-gate.zh.md',
+    'skills/builder-review/references/prototype-to-spec-review.zh.md',
+    'skills/builder-spec/references/prototype-to-spec.zh.md',
     'loops/recipes/design-plan-to-prototype.loop.md',
     'loops/recipes/artifact-hygiene.loop.md',
     'memory/policies/artifact-consistency-policy.zh.md',
@@ -1324,8 +1350,14 @@ assert(skillHardeningContract.template === 'templates/skill-hardening-brief/temp
 const builderSpecContract = readJson('evals/output-contract/builder-spec.schema.json');
 assert(Array.isArray(builderSpecContract.optional), 'builder-spec schema 必须包含 optional 数组', failures);
 if (Array.isArray(builderSpecContract.optional)) {
-  for (const field of ['design_brief', 'ui_states', 'interaction_requirements', 'responsive_requirements', 'accessibility_notes', 'ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations']) {
+  for (const field of ['design_brief', 'ui_states', 'interaction_requirements', 'responsive_requirements', 'accessibility_notes', 'ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations', 'source_prototype', 'extracted_from_prototype', 'prototype_gaps', 'prototype_verification']) {
     assert(builderSpecContract.optional.includes(field), `builder-spec optional 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(builderSpecContract.spec_type_values), 'builder-spec schema 必须包含 spec_type_values 数组', failures);
+if (Array.isArray(builderSpecContract.spec_type_values)) {
+  for (const value of ['mini_spec', 'prd', 'engineering_request', 'agent_readable_spec', 'prototype_to_spec']) {
+    assert(builderSpecContract.spec_type_values.includes(value), `builder-spec spec_type_values 缺少 ${value}`, failures);
   }
 }
 assert(Array.isArray(builderSpecContract.readiness_values), 'builder-spec schema 必须包含 readiness_values 数组', failures);
@@ -1414,10 +1446,17 @@ if (Array.isArray(builderCoreTriggerCases.cases)) {
       failures
     );
   }
-  for (const expectedCaseId of ['trigger-design-brief-from-spec', 'trigger-design-consistency-review', 'trigger-product-logic-containment-review', 'trigger-agent-task-from-spec', 'trigger-decision-record-from-tradeoff']) {
+  for (const expectedCaseId of ['trigger-design-brief-from-spec', 'trigger-design-consistency-review', 'trigger-product-logic-containment-review', 'trigger-prototype-to-spec-review', 'trigger-agent-task-from-spec', 'trigger-decision-record-from-tradeoff']) {
     assert(
       builderCoreTriggerCases.cases.some(item => item.id === expectedCaseId),
       `builder-core trigger eval 缺少 ${expectedCaseId} 用例`,
+      failures
+    );
+  }
+  for (const expectedCaseId of ['trigger-prototype-to-spec-extraction', 'trigger-prototype-to-spec-high-risk-guard']) {
+    assert(
+      builderCoreTriggerCases.cases.some(item => item.id === expectedCaseId),
+      `builder-core trigger eval 缺少 prototype-to-spec 用例: ${expectedCaseId}`,
       failures
     );
   }
@@ -1433,6 +1472,13 @@ if (Array.isArray(builderCoreTriggerCases.cases)) {
     'builder-core trigger eval 缺少 Product Logic Containment prototype 用例',
     failures
   );
+  for (const expectedCaseId of ['trigger-prototype-first-low-risk', 'trigger-prototype-degraded-insufficient-input', 'trigger-prototype-spec-first-risk']) {
+    assert(
+      builderCoreTriggerCases.cases.some(item => item.id === expectedCaseId),
+      `builder-core trigger eval 缺少 prototype 三路径/降级用例: ${expectedCaseId}`,
+      failures
+    );
+  }
 }
 
 const builderRoutingCases = readJson('evals/routing/builder-routing.cases.json');
@@ -1484,8 +1530,27 @@ if (Array.isArray(builderRoutingCases.cases)) {
     failures
   );
   assert(
-    builderRoutingCases.cases.some(item => item.id === 'pms-high-fidelity-prototype-containment-path' && Array.isArray(item.must_include) && item.must_include.includes('Product Logic Containment Gate')),
+    builderRoutingCases.cases.some(item => item.id === 'pms-high-fidelity-prototype-containment-path' && item.expected_mode === 'boundary_first' && Array.isArray(item.must_include) && item.must_include.includes('Product Logic Containment Gate')),
     'builder routing eval 必须覆盖 PMS 高保真原型的 Product Logic Containment 路径',
+    failures
+  );
+  for (const expectedCaseId of ['prototype-first-runnable-path', 'prototype-spec-first-risk-path']) {
+    assert(
+      builderRoutingCases.cases.some(item => item.id === expectedCaseId),
+      `builder routing eval 必须覆盖 prototype 三路径用例: ${expectedCaseId}`,
+      failures
+    );
+  }
+  for (const expectedCaseId of ['prototype-to-spec-extraction-path', 'prototype-to-spec-high-risk-guard-path']) {
+    assert(
+      builderRoutingCases.cases.some(item => item.id === expectedCaseId),
+      `builder routing eval 必须覆盖 prototype-to-spec 用例: ${expectedCaseId}`,
+      failures
+    );
+  }
+  assert(
+    builderRoutingCases.cases.some(item => item.id === 'prototype-to-spec-review-path' && item.expected_mode === 'prototype_to_spec_review'),
+    'builder routing eval 必须覆盖 prototype-to-spec review 路径',
     failures
   );
   assert(
@@ -1493,6 +1558,67 @@ if (Array.isArray(builderRoutingCases.cases)) {
     'builder routing eval 必须覆盖 builder-review -> builder-decision 路径',
     failures
   );
+}
+
+const prototypeToSpecCases = readJson('evals/prototype-to-spec/prototype-to-spec.cases.json');
+assert(Array.isArray(prototypeToSpecCases.cases), 'prototype-to-spec eval 必须包含 cases 数组', failures);
+if (Array.isArray(prototypeToSpecCases.cases)) {
+  assert(prototypeToSpecCases.cases.length >= 2, 'prototype-to-spec eval 至少覆盖 2 个真实 prototype brief', failures);
+  for (const testCase of prototypeToSpecCases.cases) {
+    const label = `prototype-to-spec/${testCase.id || '<missing-id>'}`;
+    assert(typeof testCase.id === 'string' && testCase.id.trim().length > 0, `${label} 必须包含 id`, failures);
+    assert(testCase.expected_mode === 'prototype_to_spec', `${label} expected_mode 必须是 prototype_to_spec`, failures);
+    assert(testCase.expected_review_mode === 'prototype_to_spec_review', `${label} expected_review_mode 必须是 prototype_to_spec_review`, failures);
+    for (const field of ['source_brief_path', 'fixture', 'expected_output', 'review_checklist']) {
+      assert(typeof testCase[field] === 'string' && testCase[field].trim().length > 0, `${label} 必须包含 ${field}`, failures);
+    }
+    if (typeof testCase.fixture === 'string') {
+      assert(fs.existsSync(path.join(root, testCase.fixture)), `${label} fixture 不存在: ${testCase.fixture}`, failures);
+    }
+    if (typeof testCase.expected_output === 'string') {
+      assert(fs.existsSync(path.join(root, testCase.expected_output)), `${label} expected_output 不存在: ${testCase.expected_output}`, failures);
+    }
+    for (const field of ['must_preserve', 'must_not_promote']) {
+      assert(Array.isArray(testCase[field]) && testCase[field].length > 0, `${label} ${field} 必须是非空数组`, failures);
+    }
+  }
+}
+
+for (const [relativePath, expectedTerms] of Object.entries({
+  'evals/prototype-to-spec/review-checklist.md': [
+    'source_prototype.artifact_path',
+    'prototype_gaps',
+    'mock boundary',
+    'verification provenance',
+    'spec-first guard',
+    'REQUEST_CHANGES',
+  ],
+  'evals/prototype-to-spec/manual-review-results.md': [
+    'Visit + Check-in',
+    'Surgery + Dimsum',
+    'prototype_gaps',
+    'prototype_verification',
+    'mock-only',
+    'PASS',
+  ],
+  'skills/builder-spec/references/examples-prototype-to-spec.zh.md': [
+    'D:\\PMS-Dev-AIFirst\\modules\\visit\\prototype-brief.md',
+    'D:\\PMS-Dev-AIFirst\\modules\\surgery\\prototype-brief.md',
+    'prototype_gaps',
+    'prototype_verification',
+  ],
+  'skills/builder-review/references/prototype-to-spec-review.zh.md': [
+    'source_prototype.artifact_path',
+    'gaps_preserved',
+    'mock_boundary',
+    'verification_provenance',
+    'spec_first_guard',
+  ],
+})) {
+  const content = read(relativePath);
+  for (const term of expectedTerms) {
+    assert(content.includes(term), `${relativePath} 缺少 prototype-to-spec 内容: ${term}`, failures);
+  }
 }
 
 const coreManifest = JSON.parse(read('bundles/core/manifest.json'));

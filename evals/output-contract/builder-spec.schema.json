@@ -30,13 +30,18 @@
     "ui_content_boundary",
     "business_rule_notes",
     "rule_notes_placement",
-    "non_ui_explanations"
+    "non_ui_explanations",
+    "source_prototype",
+    "extracted_from_prototype",
+    "prototype_gaps",
+    "prototype_verification"
   ],
   "spec_type_values": [
     "mini_spec",
     "prd",
     "engineering_request",
-    "agent_readable_spec"
+    "agent_readable_spec",
+    "prototype_to_spec"
   ],
   "readiness_values": [
     "ready",

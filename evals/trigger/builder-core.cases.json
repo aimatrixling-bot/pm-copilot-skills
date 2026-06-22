@@ -15,28 +15,52 @@
       "quality_rubric": "route before execution"
     },
     {
-      "id": "trigger-prototype",
-      "name": "Prototype request should route to builder-prototype",
+      "id": "trigger-prototype-first-low-risk",
+      "name": "Low-risk prototype request should use prototype-first delivery",
       "input": "基于这个 PRD 做一个可交互原型，并检查按钮和空状态。",
-      "context": "PRD exists.",
+      "context": "PRD exists and the requested change is UI-facing with no production data/API risk.",
       "expected_skill": "builder-prototype",
-      "expected_mode": "skill",
-      "expected_outputs": ["prototype artifact", "Evidence Packet"],
-      "must_include": ["Fake UI Gate"],
-      "must_not_include": ["PRD-only output"],
-      "quality_rubric": "visual request routes to prototype"
+      "expected_mode": "prototype_first",
+      "expected_outputs": ["prototype_mode", "artifact_path", "fidelity", "covered_flows", "states_covered", "gaps", "verification", "next"],
+      "must_include": ["prototype_first", "Fake UI Gate", "gaps"],
+      "must_not_include": ["PRD-only output", "not_ready_for_prototype"],
+      "quality_rubric": "low-risk visual request produces a reviewable prototype artifact"
+    },
+    {
+      "id": "trigger-prototype-degraded-insufficient-input",
+      "name": "Insufficient prototype input should degrade instead of refusing",
+      "input": "帮我做一个客户管理页面原型。",
+      "context": "No accepted frame, unclear user, unclear fields and flows.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "degraded_prototype",
+      "expected_outputs": ["artifact_path", "fidelity", "covered_flows", "states_covered", "gaps", "verification", "next"],
+      "must_include": ["degraded_prototype", "低保真", "最多 3 个高价值问题"],
+      "must_not_include": ["not_ready_for_prototype", "empty refusal"],
+      "quality_rubric": "missing context still yields a low-fidelity direction and gap list"
     },
     {
       "id": "trigger-prototype-business-logic-containment",
-      "name": "High fidelity prototype should separate business rule notes from UI",
+      "name": "Boundary-first prototype should separate business rule notes from UI",
       "input": "基于 PMS 业务规则做一个高保真原型，但业务逻辑说明不要直接写进页面，统一放在界面下方的规则说明区。",
       "context": "Spec and domain rules exist; output is a PM-reviewable prototype.",
       "expected_skill": "builder-prototype",
-      "expected_mode": "high_fidelity_prototype",
-      "expected_outputs": ["design_plan", "ui_content_boundary", "business_rule_notes", "preview_or_run_command"],
-      "must_include": ["Product Logic Containment Gate", "业务规则说明（非界面内容）", "Design Plan to Prototype Loop"],
+      "expected_mode": "boundary_first",
+      "expected_outputs": ["prototype_mode", "artifact_path", "fidelity", "covered_flows", "states_covered", "gaps", "verification", "next"],
+      "must_include": ["boundary_first", "Product Logic Containment Gate", "业务规则说明（非界面内容）", "Design Plan to Prototype Loop"],
       "must_not_include": ["business rules inside page body"],
       "quality_rubric": "prototype keeps non-UI business explanations outside the interface"
+    },
+    {
+      "id": "trigger-prototype-spec-first-risk",
+      "name": "High-risk API and permission request should use spec-first handoff",
+      "input": "做一个权限管理原型，顺便把角色 API、数据库表和审计逻辑都设计好。",
+      "context": "No permission matrix, API contract, audit requirements or verification plan exists.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "spec_first",
+      "expected_outputs": ["prototype_mode", "gaps", "verification", "next"],
+      "must_include": ["spec_first", "builder-spec", "权限", "API"],
+      "must_not_include": ["fake complete prototype", "production-ready implementation"],
+      "quality_rubric": "prototype skill protects high-risk engineering rules by handing off to spec"
     },
     {
       "id": "trigger-plan-goal-mode-selection",
@@ -147,6 +171,30 @@
       "quality_rubric": "UI-facing spec emits design contract"
     },
     {
+      "id": "trigger-prototype-to-spec-extraction",
+      "name": "Prototype artifact should be reverse-extracted into builder-spec",
+      "input": "基于这个 prototype brief 沉淀一份 Mini Spec：artifact_path 是 prototypes/customer-management/index.html，covered_flows 包含客户列表和客户详情，states_covered 包含 default、empty、error，gaps 包含权限和真实 API 未确认，verification 是已做浏览器人工检查。",
+      "context": "A prototype exists and should become a buildable spec without promoting gaps into requirements.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "prototype_to_spec",
+      "expected_outputs": ["source_prototype", "extracted_from_prototype", "prototype_gaps", "acceptance_criteria", "verification_plan"],
+      "must_include": ["artifact_path", "states_covered", "gaps", "verification", "open_questions"],
+      "must_not_include": ["prototype gaps as confirmed requirements", "not_ready_for_spec"],
+      "quality_rubric": "spec preserves prototype provenance and turns verified flows into testable requirements"
+    },
+    {
+      "id": "trigger-prototype-to-spec-high-risk-guard",
+      "name": "Prototype-to-spec should keep spec-first guard for API and permission gaps",
+      "input": "这个原型页面已经能点了，请直接把权限 API、数据库表和审计日志也写成工程 spec，gaps 里写了这些都还没确认。",
+      "context": "Prototype exists, but its gaps include high-risk API, database and audit decisions.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "prototype_to_spec",
+      "expected_outputs": ["prototype_gaps", "open_questions", "risks", "next_skill_input"],
+      "must_include": ["spec-first", "权限", "API", "数据库", "审计", "prototype_gaps"],
+      "must_not_include": ["production-ready implementation", "confirmed API contract"],
+      "quality_rubric": "prototype evidence does not bypass high-risk engineering readiness"
+    },
+    {
       "id": "trigger-design-consistency-review",
       "name": "Prototype review should apply Design Consistency Gate",
       "input": "请评审这个原型是否和 Design Brief 一致，特别是空态、错误态、移动端和 demo 数据标注。",
@@ -169,6 +217,18 @@
       "must_include": ["Product Logic Containment Gate", "REQUEST_CHANGES", "业务规则说明（非界面内容）"],
       "must_not_include": ["approve without checking UI content boundary"],
       "quality_rubric": "review audits product logic containment before approval"
+    },
+    {
+      "id": "trigger-prototype-to-spec-review",
+      "name": "Prototype-to-spec review should preserve gaps and evidence provenance",
+      "input": "请评审这份从 prototype brief 反向提取的 spec，重点看 artifact_path、states_covered、gaps、mock boundary 和 verification provenance 有没有被保留。",
+      "context": "A prototype_to_spec output exists with source_prototype, prototype_gaps and prototype_verification.",
+      "expected_skill": "builder-review",
+      "expected_mode": "prototype_to_spec_review",
+      "expected_outputs": ["prototype_to_spec_audit", "findings", "required_fixes", "decision"],
+      "must_include": ["source_prototype", "prototype_gaps", "mock boundary", "verification provenance", "spec-first guard"],
+      "must_not_include": ["approve without provenance", "promote gaps to requirements"],
+      "quality_rubric": "review catches loss of prototype gaps, mock boundary, or verification provenance"
     },
     {
       "id": "trigger-agent-task-from-spec",

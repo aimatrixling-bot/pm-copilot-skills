@@ -90,6 +90,17 @@
       "must_include": ["Plan -> Goal", "builder-frame", "builder-prototype", "Milestone 1"]
     },
     {
+      "id": "prototype-first-runnable-path",
+      "input": "我已经有一个低风险页面想法，请直接做一个可运行原型，让我先看主流程和空状态。",
+      "expected_path": [
+        "builder-router",
+        "builder-prototype",
+        "builder-review"
+      ],
+      "expected_mode": "prototype_first",
+      "must_include": ["prototype_first", "artifact_path", "states_covered", "gaps", "verification"]
+    },
+    {
       "id": "builder-plan-goal-to-review-handoff-path",
       "input": "Codex 已经做完第一个 milestone，我要判断结果能不能继续下一个 Goal。",
       "expected_path": [
@@ -121,8 +132,53 @@
         "builder-agent-task",
         "builder-review"
       ],
-      "expected_mode": "high_fidelity_prototype",
-      "must_include": ["design_plan", "Product Logic Containment Gate", "business_rule_notes", "rule_notes_placement", "preview_or_run_command", "nudge_options"]
+      "expected_mode": "boundary_first",
+      "must_include": ["boundary_first", "Product Logic Containment Gate", "业务规则说明（非界面内容）", "mock honesty", "route readiness", "gaps", "verification"]
+    },
+    {
+      "id": "prototype-spec-first-risk-path",
+      "input": "帮我做一个权限管理原型，同时设计角色 API、数据库表、审计日志和生产迁移策略。",
+      "expected_path": [
+        "builder-router",
+        "builder-prototype",
+        "builder-spec"
+      ],
+      "expected_mode": "spec_first",
+      "must_include": ["spec_first", "builder-spec", "gaps", "verification", "权限", "API"]
+    },
+    {
+      "id": "prototype-to-spec-extraction-path",
+      "input": "这个原型已经评审过了，请从 artifact_path、states_covered、gaps 和 verification 反向沉淀一份可以交给 Codex 的 Mini Spec。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "expected_mode": "prototype_to_spec",
+      "must_include": ["source_prototype", "extracted_from_prototype", "prototype_gaps", "verification_plan", "acceptance_criteria"]
+    },
+    {
+      "id": "prototype-to-spec-high-risk-guard-path",
+      "input": "这个权限管理原型已经有页面了，请把 gaps 里的角色 API、数据库表和审计日志直接变成工程交付规格。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task"
+      ],
+      "expected_mode": "prototype_to_spec",
+      "must_include": ["spec-first", "prototype_gaps", "open_questions", "risks", "权限", "API"]
+    },
+    {
+      "id": "prototype-to-spec-review-path",
+      "input": "我已经把 Visit 原型 brief 反向提取成 spec，请评审它有没有保留 prototype gaps、mock boundary 和 verification provenance。",
+      "expected_path": [
+        "builder-router",
+        "builder-review",
+        "builder-decision"
+      ],
+      "expected_mode": "prototype_to_spec_review",
+      "must_include": ["prototype_to_spec_audit", "source_prototype", "prototype_gaps", "mock boundary", "verification provenance"]
     },
     {
       "id": "review-to-decision-record-path",

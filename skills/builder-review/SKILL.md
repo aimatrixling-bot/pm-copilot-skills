@@ -1,7 +1,7 @@
 ---
 name: builder-review
 displayName: Builder Review
-description: "评审 spec、prototype、Design Brief、Agent Task Packet、agent 输出、代码变更、Evidence Packet、release seal 或 launch readiness。适用于用户要求 review、audit、critique、evidence check、quality gate、Go/No-Go、PASS/PARTIAL/BLOCKED、REQUEST_CHANGES、fake UI check、fake test check、design consistency audit 或 readiness assessment。不要用于创建缺失的 spec/prototype/task，也不要用于记录已做出的长期取舍；决策沉淀交给 builder-decision。"
+description: "评审 spec、prototype、prototype-to-spec 输出、Design Brief、Agent Task Packet、agent 输出、代码变更、Evidence Packet、release seal 或 launch readiness。适用于用户要求 review、audit、critique、evidence check、quality gate、Go/No-Go、PASS/PARTIAL/BLOCKED、REQUEST_CHANGES、fake UI check、fake test check、design consistency audit、prototype gaps/mock boundary/verification provenance 检查或 readiness assessment。不要用于创建缺失的 spec/prototype/task，也不要用于记录已做出的长期取舍；决策沉淀交给 builder-decision。"
 user-invocable: true
 argument-hint: "[产物路径、输出、diff 或 review target]"
 ---
@@ -15,6 +15,7 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 ## 资源读取
 
 - 通用质量评审时，读取 `kernel/gates/builder-quality-gates.zh.md` 和 `kernel/packets/evidence-packet.schema.md`。
+- 评审 `prototype_to_spec` 输出时，读取 `skills/builder-review/references/prototype-to-spec-review.zh.md` 和 `skills/builder-spec/references/prototype-to-spec.zh.md`。
 - 评审 UI、prototype 或界面实现时，读取 `kernel/gates/design-consistency-gate.zh.md`、`kernel/gates/product-logic-containment-gate.zh.md`、`templates/design-brief/template.md` 和 `references/ui-ux/`。
 - 评审高保真、可交互或可运行原型时，读取 `loops/recipes/design-plan-to-prototype.loop.md`，检查是否存在 `design_plan`、`runnable_prototype`、`preview_or_run_command` 和 Evidence Packet。
 - 检查 demo、mock 或测试可信度时，读取 `kernel/gates/fake-ui-gate.zh.md` 和 `kernel/gates/fake-test-gate.zh.md`。
@@ -26,6 +27,7 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 
 - 用户要求 review、critique、audit 或 readiness。
 - 已经有 spec、prototype、agent task、代码变更或 evidence packet。
+- 已经有从 prototype artifact / Prototype Brief / screen flow 反向提取出的 spec，需要检查 gaps、mock boundary 和 verification provenance 是否保留。
 - 用户需要 GO / NO-GO 或 PASS / PARTIAL / BLOCKED 判断。
 - 用户需要判断是否可以进入下一个 Goal、agent handoff 或发布步骤。
 
@@ -45,12 +47,14 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 - 风险上下文。
 - 当评审 UI、prototype 或产品界面时，提供 Design Brief 或 UI/UX 约束。
 - 当评审对象会产生、替代、废弃或清理项目资产时，提供 artifact index 或相关资产路径；如果没有，标记为 `not_available`，不要凭空推断。
+- 当评审 `prototype_to_spec` 输出时，提供 source prototype、Prototype Brief、covered flows、states covered、gaps、verification 和提取后的 spec。
 
 ## 模式判断
 
 - `contract_review`：检查 spec、agent task 或输出是否满足原始契约。
 - `evidence_review`：检查测试、截图、日志、命令结果或 Evidence Packet 是否可信。
 - `design_review`：检查 Design Brief、组件一致性、状态覆盖、响应式、mock/demo 标注。
+- `prototype_to_spec_review`：检查 prototype-to-spec 输出是否保留 source provenance、prototype facts、prototype gaps、mock boundary、verification provenance 和 spec-first guard。
 - `release_readiness`：检查是否达到 Go/No-Go 或 release seal 条件。
 - `not_reviewable`：缺少 review target、原始契约或证据，先要求补材料。
 
@@ -59,9 +63,10 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 1. 识别 review target 和原始契约。
 2. 对照范围和验收标准检查完整性。
 3. 应用相关门禁：Evidence Gate、Fake UI Gate、Product Logic Containment Gate、Design Consistency Gate、Fake Test Gate、Safety Gate。
-4. 如果 review target 涉及项目资产、文档膨胀、清理动作、交付物替代或 source-of-truth 变更，按 Artifact Hygiene Loop 做一次轻量审计：检查生命周期状态、index 更新需要、清理风险和一致性风险。
-5. 按严重程度列出 findings 和 required action。
-6. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
+4. 如果 review target 是 `prototype_to_spec` 输出，检查 source provenance、facts vs inference、prototype gaps、mock boundary、verification provenance 和 spec-first guard。
+5. 如果 review target 涉及项目资产、文档膨胀、清理动作、交付物替代或 source-of-truth 变更，按 Artifact Hygiene Loop 做一次轻量审计：检查生命周期状态、index 更新需要、清理风险和一致性风险。
+6. 按严重程度列出 findings 和 required action。
+7. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
 
 ## 输出契约
 
@@ -74,6 +79,7 @@ evidence_audit:
 design_consistency_audit:
 product_logic_containment_audit:
 design_plan_audit:
+prototype_to_spec_audit:
 artifact_hygiene_audit:
 artifact_index_update_proposal:
 risk_assessment:
@@ -93,6 +99,8 @@ next_step:
 - UI/prototype review 必须检查 Design Brief、组件一致性、状态覆盖、交互真实性、响应式和 mock/demo 标注。
 - UI/prototype review 必须检查 Product Logic Containment Gate；发现业务规则说明侵入界面主体时，默认 `REQUEST_CHANGES`。
 - 高保真原型 review 必须检查 Design Plan to Prototype Loop，包括 `design_plan`、`runnable_prototype`、`preview_or_run_command`、Evidence Packet 和 `nudge_options`。
+- Prototype-to-spec review 必须检查 `source_prototype`、`extracted_from_prototype`、`prototype_gaps`、`prototype_verification`、mock boundary 和 spec-first guard。
+- Prototype-to-spec review 发现 gaps 被提升为 requirements、mock endpoint 被写成最终 API、route readiness 被夸大、或 verification provenance 丢失时，默认 `REQUEST_CHANGES` 或 `BLOCKED`。
 - 不要批准只有视觉上“像真的”、但缺少交互/状态证据的 UI 工作。
 - 如果证据不足，决策必须是 PARTIAL、BLOCKED 或 REQUEST_CHANGES，不能用 APPROVE 掩盖。
 - `artifact_hygiene_audit` 必须明确为 `not_applicable`、`not_available` 或列出审计结论；不要省略。
@@ -101,7 +109,7 @@ next_step:
 
 ## 交接
 
-交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、design_consistency_audit、product_logic_containment_audit、design_plan_audit、artifact_hygiene_audit、artifact_index_update_proposal、cleanup_proposal、decision 和 next_step。
+交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、design_consistency_audit、product_logic_containment_audit、design_plan_audit、prototype_to_spec_audit、artifact_hygiene_audit、artifact_index_update_proposal、cleanup_proposal、decision 和 next_step。
 
 ## 参考
 
@@ -111,6 +119,8 @@ next_step:
 - `kernel/gates/product-logic-containment-gate.zh.md`
 - `kernel/gates/fake-test-gate.zh.md`
 - `kernel/packets/evidence-packet.schema.md`
+- `skills/builder-review/references/prototype-to-spec-review.zh.md`
+- `skills/builder-spec/references/prototype-to-spec.zh.md`
 - `loops/recipes/artifact-hygiene.loop.md`
 - `loops/recipes/design-plan-to-prototype.loop.md`
 - `memory/policies/artifact-consistency-policy.zh.md`
