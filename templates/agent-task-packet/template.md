@@ -28,6 +28,13 @@ artifact_index_update_proposal: none | proposed_changes
 design_brief:
 design_constraints:
 ui_states:
+design_plan:
+ui_content_boundary:
+business_rule_notes:
+rule_notes_placement: below_interface | side_panel | linked_doc | not_applicable
+non_ui_explanations:
+prototype_evidence_requirements:
+product_logic_containment_gate:
 design_consistency_gate:
 allowed_tools:
 forbidden_actions:

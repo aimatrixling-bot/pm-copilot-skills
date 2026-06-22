@@ -27,6 +27,18 @@
       "quality_rubric": "visual request routes to prototype"
     },
     {
+      "id": "trigger-prototype-business-logic-containment",
+      "name": "High fidelity prototype should separate business rule notes from UI",
+      "input": "基于 PMS 业务规则做一个高保真原型，但业务逻辑说明不要直接写进页面，统一放在界面下方的规则说明区。",
+      "context": "Spec and domain rules exist; output is a PM-reviewable prototype.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "high_fidelity_prototype",
+      "expected_outputs": ["design_plan", "ui_content_boundary", "business_rule_notes", "preview_or_run_command"],
+      "must_include": ["Product Logic Containment Gate", "业务规则说明（非界面内容）", "Design Plan to Prototype Loop"],
+      "must_not_include": ["business rules inside page body"],
+      "quality_rubric": "prototype keeps non-UI business explanations outside the interface"
+    },
+    {
       "id": "trigger-plan-goal-mode-selection",
       "name": "Agentic execution request should route to builder-plan-goal",
       "input": "这件事比较大，我应该给 Codex 写 /plan 还是 /goal？请给我可复制的提示词。",
@@ -145,6 +157,18 @@
       "must_include": ["Design Consistency Gate", "component", "responsive", "mock"],
       "must_not_include": ["approve without evidence"],
       "quality_rubric": "review checks design consistency before approval"
+    },
+    {
+      "id": "trigger-product-logic-containment-review",
+      "name": "Prototype review should flag business rules invading UI",
+      "input": "请评审这个原型：我怀疑它把业务逻辑说明直接塞进了页面卡片里，没有放到界面下方的说明区域。",
+      "context": "Prototype and business rules exist.",
+      "expected_skill": "builder-review",
+      "expected_mode": "design_review",
+      "expected_outputs": ["product_logic_containment_audit", "required_fixes", "decision"],
+      "must_include": ["Product Logic Containment Gate", "REQUEST_CHANGES", "业务规则说明（非界面内容）"],
+      "must_not_include": ["approve without checking UI content boundary"],
+      "quality_rubric": "review audits product logic containment before approval"
     },
     {
       "id": "trigger-agent-task-from-spec",

@@ -7,6 +7,7 @@
     "findings",
     "evidence_audit",
     "design_consistency_audit",
+    "product_logic_containment_audit",
     "artifact_hygiene_audit",
     "artifact_index_update_proposal",
     "risk_assessment",
@@ -16,9 +17,12 @@
     "next_step"
   ],
   "optional": [
-    "cleanup_proposal"
+    "cleanup_proposal",
+    "design_plan_audit"
   ],
   "required_reference_files": [
+    "kernel/gates/product-logic-containment-gate.zh.md",
+    "loops/recipes/design-plan-to-prototype.loop.md",
     "loops/recipes/artifact-hygiene.loop.md",
     "memory/policies/artifact-consistency-policy.zh.md",
     "memory/policies/artifact-cleanup-policy.zh.md"

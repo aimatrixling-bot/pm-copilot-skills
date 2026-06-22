@@ -25,6 +25,7 @@ const requiredFiles = [
   'docs/release-seal-m3.9.md',
   'docs/release-plan-1.0.md',
   'docs/grill-loop-builder-frame-hardening-brief.md',
+  'docs/prototype-quality-product-logic-containment-hardening-brief.md',
   'kernel/README.md',
   'kernel/packets/intent-packet.schema.md',
   'kernel/packets/output-packet.schema.md',
@@ -48,6 +49,7 @@ const requiredFiles = [
   'loops/README.md',
   'loops/recipes/artifact-hygiene.loop.md',
   'loops/recipes/grill-decision.loop.md',
+  'loops/recipes/design-plan-to-prototype.loop.md',
   'bundles/core/manifest.json',
   'bundles/core/skills.list',
   'adapters/codex/README.md',
@@ -105,6 +107,7 @@ const requiredFiles = [
   'templates/review-report/template.md',
   'templates/design-brief/template.md',
   'kernel/gates/design-consistency-gate.zh.md',
+  'kernel/gates/product-logic-containment-gate.zh.md',
   'scripts/validate-skill-design-playbook.js',
   'skills/builder-plan-goal/references/decision-rules.zh.md',
   'skills/builder-plan-goal/references/plan-template.zh.md',
@@ -292,6 +295,7 @@ const builderCoreExpectations = {
     'templates/builder-spec.template.md',
     'templates/design-brief/template.md',
     'kernel/gates/design-consistency-gate.zh.md',
+    'kernel/gates/product-logic-containment-gate.zh.md',
     'references/ui-ux/design-principles.zh.md',
     'references/spec-rules.zh.md',
     'references/acceptance-criteria.zh.md',
@@ -317,6 +321,10 @@ const builderCoreExpectations = {
     'interaction_requirements',
     'responsive_requirements',
     'accessibility_notes',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'non_ui_explanations',
     'references/skill-design/skill-design-playbook.zh.md',
   ],
   'skills/builder-prototype/SKILL.md': [
@@ -326,16 +334,27 @@ const builderCoreExpectations = {
     'templates/design-brief/template.md',
     'kernel/gates/fake-ui-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
+    'kernel/gates/product-logic-containment-gate.zh.md',
+    'loops/recipes/design-plan-to-prototype.loop.md',
     'wireframe',
     'high_fidelity_prototype',
     'prototype_brief',
     'not_ready_for_prototype',
     'prototype_mode',
     'design_brief_path',
+    'design_plan',
     'states_covered',
     'component_usage',
+    'runnable_prototype',
+    'preview_or_run_command',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'non_ui_explanations',
     'evidence_packet',
     'verification',
+    'nudge_options',
+    'quality_gates',
     'evals/output-contract/builder-prototype.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
   ],
@@ -349,6 +368,8 @@ const builderCoreExpectations = {
     'memory/schemas/artifact-index.schema.md',
     'kernel/routing/plan-goal-routing.zh.md',
     'loops/recipes/grill-decision.loop.md',
+    'loops/recipes/design-plan-to-prototype.loop.md',
+    'kernel/gates/product-logic-containment-gate.zh.md',
     'prompt',
     'plan',
     'goal',
@@ -363,6 +384,12 @@ const builderCoreExpectations = {
     'blocked_stop_condition',
     'next_skill_input',
     'artifact_index_update_proposal',
+    'design_plan',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'prototype_evidence_requirements',
+    'product_logic_containment_gate',
     'handoff_packet',
     'evals/output-contract/agent-task-packet.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
@@ -375,7 +402,9 @@ const builderCoreExpectations = {
     'kernel/gates/fake-ui-gate.zh.md',
     'kernel/gates/fake-test-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
+    'kernel/gates/product-logic-containment-gate.zh.md',
     'loops/recipes/artifact-hygiene.loop.md',
+    'loops/recipes/design-plan-to-prototype.loop.md',
     'memory/policies/artifact-consistency-policy.zh.md',
     'memory/policies/artifact-cleanup-policy.zh.md',
     'contract_review',
@@ -386,6 +415,8 @@ const builderCoreExpectations = {
     'review_mode',
     'evidence_audit',
     'design_consistency_audit',
+    'product_logic_containment_audit',
+    'design_plan_audit',
     'artifact_hygiene_audit',
     'artifact_index_update_proposal',
     'unverified_areas',
@@ -415,6 +446,11 @@ const packetSchemaExpectations = {
     'readiness_gate',
     'not_ready_for_agent_task',
     'reroute_recommendation',
+    'design_plan',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'prototype_evidence_requirements',
     'next_skill_input',
   ],
 };
@@ -489,6 +525,9 @@ const builderUiUxExpectations = {
     '状态完整性',
     'Design Brief',
     'mock',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
   ],
   'references/ui-ux/component-guidelines.zh.md': [
     '组件选择顺序',
@@ -522,7 +561,21 @@ const builderUiUxExpectations = {
     'responsive_requirements',
     'accessibility_notes',
     'data_notes',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'non_ui_explanations',
     'handoff_targets',
+  ],
+  'templates/prototype-brief/template.md': [
+    'design_plan',
+    'runnable_prototype',
+    'preview_or_run_command',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'nudge_options',
+    'quality_gates',
   ],
   'kernel/gates/design-consistency-gate.zh.md': [
     'Design Brief',
@@ -532,6 +585,15 @@ const builderUiUxExpectations = {
     '交互真实性',
     '响应式',
     '数据诚实性',
+    'Product Logic Containment Gate',
+  ],
+  'kernel/gates/product-logic-containment-gate.zh.md': [
+    'Product Logic Containment Gate',
+    '业务规则说明（非界面内容）',
+    'ui_content_boundary',
+    'business_rule_notes',
+    'rule_notes_placement',
+    'below_interface',
   ],
   'skills/builder-prototype/SKILL.md': [
     'Design Brief',
@@ -540,12 +602,19 @@ const builderUiUxExpectations = {
     'component_usage',
     'interaction_requirements',
     'responsive_requirements',
+    'Product Logic Containment Gate',
+    'Design Plan to Prototype Loop',
+    'design_plan',
+    'business_rule_notes',
     'references/ui-ux/',
   ],
   'skills/builder-agent-task/SKILL.md': [
     'Design Brief',
     'design_constraints',
     'ui_states',
+    'Product Logic Containment Gate',
+    'design_plan',
+    'business_rule_notes',
     'design_consistency_gate',
     'references/ui-ux/',
   ],
@@ -553,6 +622,8 @@ const builderUiUxExpectations = {
     'Design Brief',
     'Design Consistency Gate',
     'design_consistency_audit',
+    'product_logic_containment_audit',
+    'design_plan_audit',
     '组件一致性',
     '状态覆盖',
     'mock/demo',
@@ -1087,8 +1158,13 @@ for (const field of ['final_response_sections', 'required_reference_files', 'han
 
 const designBriefContract = readJson('evals/output-contract/design-brief.schema.json');
 assert(designBriefContract.artifact_type === 'design_brief', 'design-brief schema artifact_type 必须是 design_brief', failures);
-for (const field of ['required_states', 'consumers']) {
+for (const field of ['required_states', 'consumers', 'rule_notes_placement_values']) {
   assert(Array.isArray(designBriefContract[field]), `design-brief schema 必须包含 ${field} 数组`, failures);
+}
+if (Array.isArray(designBriefContract.required)) {
+  for (const field of ['ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations']) {
+    assert(designBriefContract.required.includes(field), `design-brief required 缺少 ${field}`, failures);
+  }
 }
 if (Array.isArray(designBriefContract.required_states)) {
   for (const state of ['default', 'loading', 'empty', 'error', 'success', 'disabled', 'permission']) {
@@ -1100,11 +1176,16 @@ if (Array.isArray(designBriefContract.consumers)) {
     assert(designBriefContract.consumers.includes(consumer), `design-brief consumers 缺少 ${consumer}`, failures);
   }
 }
+if (Array.isArray(designBriefContract.rule_notes_placement_values)) {
+  for (const value of ['below_interface', 'side_panel', 'linked_doc', 'not_applicable']) {
+    assert(designBriefContract.rule_notes_placement_values.includes(value), `design-brief rule_notes_placement_values 缺少 ${value}`, failures);
+  }
+}
 
 const agentTaskContract = readJson('evals/output-contract/agent-task-packet.schema.json');
 assert(Array.isArray(agentTaskContract.optional), 'agent-task-packet schema 必须包含 optional 数组', failures);
 if (Array.isArray(agentTaskContract.optional)) {
-  for (const field of ['plan_prompt', 'goal_prompt', 'design_brief', 'design_constraints', 'ui_states', 'design_consistency_gate']) {
+  for (const field of ['plan_prompt', 'goal_prompt', 'design_brief', 'design_constraints', 'ui_states', 'design_plan', 'ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations', 'prototype_evidence_requirements', 'product_logic_containment_gate', 'design_consistency_gate']) {
     assert(agentTaskContract.optional.includes(field), `agent-task-packet optional 缺少 ${field}`, failures);
   }
 }
@@ -1118,6 +1199,12 @@ assert(Array.isArray(agentTaskContract.reroute_targets), 'agent-task-packet sche
 if (Array.isArray(agentTaskContract.reroute_targets)) {
   for (const target of ['builder-frame', 'builder-spec', 'builder-plan-goal', 'none']) {
     assert(agentTaskContract.reroute_targets.includes(target), `agent-task-packet reroute_targets 缺少 ${target}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.rule_notes_placement_values), 'agent-task-packet schema 必须包含 rule_notes_placement_values 数组', failures);
+if (Array.isArray(agentTaskContract.rule_notes_placement_values)) {
+  for (const value of ['below_interface', 'side_panel', 'linked_doc', 'not_applicable']) {
+    assert(agentTaskContract.rule_notes_placement_values.includes(value), `agent-task-packet rule_notes_placement_values 缺少 ${value}`, failures);
   }
 }
 
@@ -1154,6 +1241,12 @@ if (Array.isArray(builderRouterContract.handoff_targets)) {
 }
 
 const builderPrototypeContract = readJson('evals/output-contract/builder-prototype.schema.json');
+assert(Array.isArray(builderPrototypeContract.required), 'builder-prototype schema 必须包含 required 数组', failures);
+if (Array.isArray(builderPrototypeContract.required)) {
+  for (const field of ['design_plan', 'runnable_prototype', 'preview_or_run_command', 'ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations', 'nudge_options', 'quality_gates']) {
+    assert(builderPrototypeContract.required.includes(field), `builder-prototype required 缺少 ${field}`, failures);
+  }
+}
 assert(Array.isArray(builderPrototypeContract.prototype_mode_values), 'builder-prototype schema 必须包含 prototype_mode_values 数组', failures);
 if (Array.isArray(builderPrototypeContract.prototype_mode_values)) {
   for (const value of ['wireframe', 'high_fidelity_prototype', 'prototype_brief', 'not_ready_for_prototype']) {
@@ -1166,8 +1259,25 @@ if (Array.isArray(builderPrototypeContract.required_states)) {
     assert(builderPrototypeContract.required_states.includes(state), `builder-prototype required_states 缺少 ${state}`, failures);
   }
 }
+for (const field of ['rule_notes_placement_values', 'runnable_prototype_values']) {
+  assert(Array.isArray(builderPrototypeContract[field]), `builder-prototype schema 必须包含 ${field} 数组`, failures);
+}
+if (Array.isArray(builderPrototypeContract.rule_notes_placement_values)) {
+  for (const value of ['below_interface', 'side_panel', 'linked_doc', 'not_applicable']) {
+    assert(builderPrototypeContract.rule_notes_placement_values.includes(value), `builder-prototype rule_notes_placement_values 缺少 ${value}`, failures);
+  }
+}
+if (Array.isArray(builderPrototypeContract.runnable_prototype_values)) {
+  for (const value of ['runnable', 'static', 'not_available']) {
+    assert(builderPrototypeContract.runnable_prototype_values.includes(value), `builder-prototype runnable_prototype_values 缺少 ${value}`, failures);
+  }
+}
 
 const builderReviewContract = readJson('evals/output-contract/builder-review.schema.json');
+assert(Array.isArray(builderReviewContract.required), 'builder-review schema 必须包含 required 数组', failures);
+if (Array.isArray(builderReviewContract.required)) {
+  assert(builderReviewContract.required.includes('product_logic_containment_audit'), 'builder-review required 缺少 product_logic_containment_audit', failures);
+}
 assert(Array.isArray(builderReviewContract.review_mode_values), 'builder-review schema 必须包含 review_mode_values 数组', failures);
 if (Array.isArray(builderReviewContract.review_mode_values)) {
   for (const value of ['contract_review', 'evidence_review', 'design_review', 'release_readiness', 'not_reviewable']) {
@@ -1183,10 +1293,13 @@ if (Array.isArray(builderReviewContract.decision_values)) {
 assert(Array.isArray(builderReviewContract.optional), 'builder-review schema 必须包含 optional 数组', failures);
 if (Array.isArray(builderReviewContract.optional)) {
   assert(builderReviewContract.optional.includes('cleanup_proposal'), 'builder-review optional 缺少 cleanup_proposal', failures);
+  assert(builderReviewContract.optional.includes('design_plan_audit'), 'builder-review optional 缺少 design_plan_audit', failures);
 }
 assert(Array.isArray(builderReviewContract.required_reference_files), 'builder-review schema 必须包含 required_reference_files 数组', failures);
 if (Array.isArray(builderReviewContract.required_reference_files)) {
   for (const fileName of [
+    'kernel/gates/product-logic-containment-gate.zh.md',
+    'loops/recipes/design-plan-to-prototype.loop.md',
     'loops/recipes/artifact-hygiene.loop.md',
     'memory/policies/artifact-consistency-policy.zh.md',
     'memory/policies/artifact-cleanup-policy.zh.md',
@@ -1211,7 +1324,7 @@ assert(skillHardeningContract.template === 'templates/skill-hardening-brief/temp
 const builderSpecContract = readJson('evals/output-contract/builder-spec.schema.json');
 assert(Array.isArray(builderSpecContract.optional), 'builder-spec schema 必须包含 optional 数组', failures);
 if (Array.isArray(builderSpecContract.optional)) {
-  for (const field of ['design_brief', 'ui_states', 'interaction_requirements', 'responsive_requirements', 'accessibility_notes']) {
+  for (const field of ['design_brief', 'ui_states', 'interaction_requirements', 'responsive_requirements', 'accessibility_notes', 'ui_content_boundary', 'business_rule_notes', 'rule_notes_placement', 'non_ui_explanations']) {
     assert(builderSpecContract.optional.includes(field), `builder-spec optional 缺少 ${field}`, failures);
   }
 }
@@ -1219,6 +1332,12 @@ assert(Array.isArray(builderSpecContract.readiness_values), 'builder-spec schema
 if (Array.isArray(builderSpecContract.readiness_values)) {
   for (const value of ['ready', 'not_ready_for_spec']) {
     assert(builderSpecContract.readiness_values.includes(value), `builder-spec readiness_values 缺少 ${value}`, failures);
+  }
+}
+assert(Array.isArray(builderSpecContract.rule_notes_placement_values), 'builder-spec schema 必须包含 rule_notes_placement_values 数组', failures);
+if (Array.isArray(builderSpecContract.rule_notes_placement_values)) {
+  for (const value of ['below_interface', 'side_panel', 'linked_doc', 'not_applicable']) {
+    assert(builderSpecContract.rule_notes_placement_values.includes(value), `builder-spec rule_notes_placement_values 缺少 ${value}`, failures);
   }
 }
 if (Array.isArray(planGoalContract.final_response_sections)) {
@@ -1295,7 +1414,7 @@ if (Array.isArray(builderCoreTriggerCases.cases)) {
       failures
     );
   }
-  for (const expectedCaseId of ['trigger-design-brief-from-spec', 'trigger-design-consistency-review', 'trigger-agent-task-from-spec', 'trigger-decision-record-from-tradeoff']) {
+  for (const expectedCaseId of ['trigger-design-brief-from-spec', 'trigger-design-consistency-review', 'trigger-product-logic-containment-review', 'trigger-agent-task-from-spec', 'trigger-decision-record-from-tradeoff']) {
     assert(
       builderCoreTriggerCases.cases.some(item => item.id === expectedCaseId),
       `builder-core trigger eval 缺少 ${expectedCaseId} 用例`,
@@ -1309,6 +1428,11 @@ if (Array.isArray(builderCoreTriggerCases.cases)) {
       failures
     );
   }
+  assert(
+    builderCoreTriggerCases.cases.some(item => item.id === 'trigger-prototype-business-logic-containment'),
+    'builder-core trigger eval 缺少 Product Logic Containment prototype 用例',
+    failures
+  );
 }
 
 const builderRoutingCases = readJson('evals/routing/builder-routing.cases.json');
@@ -1357,6 +1481,11 @@ if (Array.isArray(builderRoutingCases.cases)) {
   assert(
     routingPaths.some(route => route.includes('builder-spec>builder-prototype>builder-agent-task>builder-review')),
     'builder routing eval 必须覆盖 builder-spec -> builder-prototype -> builder-agent-task -> builder-review 的 UI/UX 路径',
+    failures
+  );
+  assert(
+    builderRoutingCases.cases.some(item => item.id === 'pms-high-fidelity-prototype-containment-path' && Array.isArray(item.must_include) && item.must_include.includes('Product Logic Containment Gate')),
+    'builder routing eval 必须覆盖 PMS 高保真原型的 Product Logic Containment 路径',
     failures
   );
   assert(

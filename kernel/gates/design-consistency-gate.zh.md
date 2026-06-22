@@ -14,6 +14,7 @@ Design Consistency Gate 用于审计 spec、prototype、agent task 或 UI 实现
 | 响应式 | 桌面/移动端是否不遮挡关键内容和操作？ | 补响应式策略或截图检查 |
 | 可访问性 | 标签、对比度、焦点、错误提示是否满足基础可用性？ | 标记 review 点或补充约束 |
 | 数据诚实性 | mock/demo 数据是否清楚标注？ | 标注数据来源或降级完成声明 |
+| 产品逻辑隔离 | 业务规则说明是否进入独立的非界面区域，而不是侵入界面主体？ | 应用 Product Logic Containment Gate，移动到 `业务规则说明（非界面内容）` |
 
 ## 使用场景
 
@@ -27,3 +28,4 @@ Design Consistency Gate 用于审计 spec、prototype、agent task 或 UI 实现
 - 如果只是轻微缺口，补充 Design Brief 或 acceptance criteria。
 - 如果缺口影响用户理解或验收，降级为 `PARTIAL`。
 - 如果缺口涉及 fake UI、权限误导、生产数据伪装或危险操作，标记为 `BLOCKED` 或请求人工 review。
+- 如果非界面业务说明混入界面主体，默认请求调整；只有真实面向用户的帮助内容可以保留在界面中。

@@ -17,7 +17,8 @@ argument-hint: "[frame/spec/PRD/path/description] [--fidelity=low|high]"
 ## 资源读取
 
 - 确定原型范围和格式时，读取 `templates/prototype-brief/template.md`。
-- 涉及界面规范时，读取 `templates/design-brief/template.md`、`references/ui-ux/` 和 `kernel/gates/design-consistency-gate.zh.md`。
+- 涉及界面规范时，读取 `templates/design-brief/template.md`、`references/ui-ux/`、`kernel/gates/design-consistency-gate.zh.md` 和 `kernel/gates/product-logic-containment-gate.zh.md`。
+- 高保真、可交互或可运行原型时，读取 `loops/recipes/design-plan-to-prototype.loop.md`，先形成 `design_plan` 再进入产物生成。
 - 检查 fake UI 和证据时，读取 `kernel/gates/fake-ui-gate.zh.md` 和 `kernel/packets/evidence-packet.schema.md`。
 - 需要沿用旧原型能力时，按需读取 `skills/pm-prototype/references/`。
 - 打磨或评审 skill 设计时，读取 `references/skill-design/skill-design-playbook.zh.md`。
@@ -56,10 +57,11 @@ argument-hint: "[frame/spec/PRD/path/description] [--fidelity=low|high]"
 
 1. 确认原型目的和保真度。
 2. 读取或推导 Design Brief 和 UI/UX shared contract。
-3. 识别核心流程、状态、交互要求、组件和数据。
-4. 选择低保真线框图或高保真可交互路径。
-5. 产出 prototype brief、原型产物和 mapping notes。
-6. 填写用于交互、截图或人工评审的 Evidence Packet。
+3. 识别核心流程、状态、交互要求、组件、数据和业务规则说明边界。
+4. 对 `high_fidelity_prototype` 执行 Design Plan to Prototype Loop，先输出 `design_plan`、`ui_content_boundary` 和 `rule_notes_placement`。
+5. 选择低保真线框图、高保真可交互路径或可运行前端 demo。
+6. 产出 prototype brief、原型产物、`runnable_prototype`、`preview_or_run_command` 和 mapping notes。
+7. 填写用于交互、截图或人工评审的 Evidence Packet，并给出 `nudge_options`。
 
 ## 输出契约
 
@@ -69,6 +71,7 @@ prototype_type:
 artifact_path:
 mapping_path:
 design_brief_path:
+design_plan:
 core_flows:
 states_covered:
 component_usage:
@@ -76,16 +79,26 @@ interaction_requirements:
 responsive_requirements:
 design_decisions:
 demo_data_notes:
+runnable_prototype:
+preview_or_run_command:
+ui_content_boundary:
+business_rule_notes:
+rule_notes_placement:
+non_ui_explanations:
 evidence_packet:
 verification:
+nudge_options:
+quality_gates:
 next_skill_hint:
 ```
 
 ## 质量门禁
 
 - 应用 Fake UI Gate。
+- 应用 Product Logic Containment Gate；业务规则说明必须进入 `业务规则说明（非界面内容）` 或等价独立区域，不能侵入界面主体。
 - 当 strategy/scope 不清楚时，不要过早投入高保真。
 - 高保真原型必须可运行，或清楚标注为静态。
+- 高保真原型必须先产出 `design_plan`，并说明页面目标、首屏层级、组件策略、状态策略、响应式策略和 rule_notes_strategy。
 - 主要流程和关键边界状态必须呈现，或明确说明延后。
 - 应用 Design Consistency Gate。
 - 有 Design Brief 时必须使用；缺失时应产出可交接的 Design Brief。
@@ -94,13 +107,15 @@ next_skill_hint:
 
 ## 交接
 
-带着 prototype brief、产物路径、Design Brief、mapping notes、状态覆盖和证据，交给 `builder-review`、`builder-agent-task` 或 implementation skills。
+带着 prototype brief、产物路径、Design Brief、`design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement`、mapping notes、状态覆盖和证据，交给 `builder-review`、`builder-agent-task` 或 implementation skills。
 
 ## 参考
 
 - `kernel/gates/fake-ui-gate.zh.md`
 - `kernel/gates/design-consistency-gate.zh.md`
+- `kernel/gates/product-logic-containment-gate.zh.md`
 - `kernel/packets/evidence-packet.schema.md`
+- `loops/recipes/design-plan-to-prototype.loop.md`
 - `templates/prototype-brief/template.md`
 - `templates/design-brief/template.md`
 - `references/ui-ux/design-principles.zh.md`

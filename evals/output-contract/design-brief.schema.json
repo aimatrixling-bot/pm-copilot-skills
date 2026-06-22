@@ -15,6 +15,10 @@
     "accessibility_notes",
     "visual_style",
     "data_notes",
+    "ui_content_boundary",
+    "business_rule_notes",
+    "rule_notes_placement",
+    "non_ui_explanations",
     "acceptance_criteria",
     "verification",
     "open_questions",
@@ -35,5 +39,11 @@
     "builder-prototype",
     "builder-agent-task",
     "builder-review"
+  ],
+  "rule_notes_placement_values": [
+    "below_interface",
+    "side_panel",
+    "linked_doc",
+    "not_applicable"
   ]
 }

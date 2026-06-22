@@ -18,7 +18,8 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 - 判断 Prompt / Plan / Goal / Plan -> Goal 时，读取 `kernel/routing/plan-goal-routing.zh.md`。
 - 输入缺少可执行上下文、验收标准或验证方式时，读取 `loops/recipes/grill-decision.loop.md`，并输出回退到 `builder-frame` 或 `builder-spec` 的 reroute recommendation。
 - 目标 runtime 已知时，读取 `adapters/` 中对应说明。
-- 任务涉及 UI、prototype 或产品界面时，读取 `templates/design-brief/template.md`、`references/ui-ux/` 和 `kernel/gates/design-consistency-gate.zh.md`。
+- 任务涉及 UI、prototype 或产品界面时，读取 `templates/design-brief/template.md`、`references/ui-ux/`、`kernel/gates/design-consistency-gate.zh.md` 和 `kernel/gates/product-logic-containment-gate.zh.md`。
+- 任务要求高保真原型、可交互 demo 或可运行前端代码时，读取 `loops/recipes/design-plan-to-prototype.loop.md`，把 `design_plan` 和原型证据要求传给下游 agent。
 - 任务会创建、修改、替代、归档或清理项目资产时，读取 `harness/artifact-write-policy.zh.md`、`memory/schemas/artifact-index.schema.md` 和 `kernel/packets/output-packet.schema.md`。
 - 打磨或评审 skill 设计时，读取 `references/skill-design/skill-design-playbook.zh.md`。
 
@@ -65,10 +66,11 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 3. 如果不满足，输出 `not_ready_for_agent_task`、`reroute_recommendation` 和 `next_skill_input`，不要生成伪可执行任务包。
 4. 判断推荐模式：Prompt、Plan、Goal 或 Plan -> Goal。
 5. 创建范围、non-goals、上下文来源和验证方式。
-6. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态和 Design Consistency Gate 期望。
-7. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
-8. 补充 human approval gates 和停止条件。
-9. 需要时产出可复制的 Plan/Goal 提示词。
+6. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态、Product Logic Containment Gate 和 Design Consistency Gate 期望。
+7. 如果涉及高保真原型或可运行 demo，附上 `design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `prototype_evidence_requirements`。
+8. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
+9. 补充 human approval gates 和停止条件。
+10. 需要时产出可复制的 Plan/Goal 提示词。
 
 ## 输出契约
 
@@ -92,6 +94,13 @@ artifact_index_update_proposal:
 design_brief:
 design_constraints:
 ui_states:
+design_plan:
+ui_content_boundary:
+business_rule_notes:
+rule_notes_placement:
+non_ui_explanations:
+prototype_evidence_requirements:
+product_logic_containment_gate:
 design_consistency_gate:
 allowed_tools:
 forbidden_actions:
@@ -111,6 +120,8 @@ handoff_packet:
 - 如果缺少 frame/spec、验收标准、验证方式、目标 runtime 或 stop conditions，必须输出 `not_ready_for_agent_task` 和 `reroute_recommendation`，不要生成伪可执行任务包。
 - 如果只有模糊想法，回退到 `builder-frame`；如果已有 frame 但缺少需求细节或验收方式，回退到 `builder-spec`。
 - UI/prototype 任务必须包含 Design Brief 或明确设计约束。
+- UI/prototype 任务必须包含 Product Logic Containment Gate，要求业务规则说明与界面本体分离。
+- 高保真原型或可运行 demo 任务必须包含 `design_plan`、`runnable_prototype` 或要求执行 agent 先补 Design Plan。
 - Agent 指令必须区分真实实现、mock 数据、demo-only 交互和 review-only 产物。
 - 任何 Goal 指令必须包含 Done when、Verification 和 blocked stop condition。
 - 涉及项目资产写入时，必须要求执行 agent 在 Output Packet 中提交 `artifact_index_update_proposal`；该字段可以是 `none`，但不得缺失。
@@ -119,7 +130,7 @@ handoff_packet:
 
 ## 交接
 
-输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、context_sources、non_goals、acceptance_criteria、verification、artifact_index_update_proposal、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
+输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、context_sources、non_goals、acceptance_criteria、verification、artifact_index_update_proposal、design_plan、ui_content_boundary、business_rule_notes、rule_notes_placement、prototype_evidence_requirements、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
 
 ## 参考
 
@@ -127,7 +138,9 @@ handoff_packet:
 - `kernel/packets/output-packet.schema.md`
 - `kernel/routing/plan-goal-routing.zh.md`
 - `loops/recipes/grill-decision.loop.md`
+- `loops/recipes/design-plan-to-prototype.loop.md`
 - `kernel/gates/design-consistency-gate.zh.md`
+- `kernel/gates/product-logic-containment-gate.zh.md`
 - `harness/artifact-write-policy.zh.md`
 - `memory/schemas/artifact-index.schema.md`
 - `templates/agent-task-packet/template.md`

@@ -30,6 +30,13 @@ artifact_index_update_proposal: none | proposed_changes
 design_brief:
 design_constraints:
 ui_states:
+design_plan:
+ui_content_boundary:
+business_rule_notes:
+rule_notes_placement: below_interface | side_panel | linked_doc | not_applicable
+non_ui_explanations:
+prototype_evidence_requirements:
+product_logic_containment_gate:
 design_consistency_gate:
 allowed_tools:
 forbidden_actions:
@@ -47,6 +54,8 @@ handoff_packet:
 - 必须包含 non-goals 和 forbidden actions。
 - 高风险副作用必须设置 human approval gates。
 - UI/prototype 任务必须包含 Design Brief、状态覆盖或明确设计约束。
+- UI/prototype 任务必须传递 Product Logic Containment Gate，要求业务规则说明与界面本体分离。
+- 高保真原型或可运行 demo 任务必须包含 `design_plan` 或要求执行 agent 先补 Design Plan。
 - 涉及项目资产写入、替代、归档或清理时，必须要求执行 agent 在 Output Packet 中提交 `artifact_index_update_proposal`。
 - `artifact_index_update_proposal` 只描述建议更新，不授权自动删除、自动迁移或自动提升为 `current`。
 - 缺少 frame/spec、验收标准、验证方式、目标 runtime 或 stop conditions 时，输出 `not_ready_for_agent_task` 和 `reroute_recommendation`，不要生成伪可执行任务包。

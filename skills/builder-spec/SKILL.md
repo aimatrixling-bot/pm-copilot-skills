@@ -19,7 +19,7 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 - 创建规格时，读取 `templates/builder-spec.template.md`、`references/spec-rules.zh.md` 和 `references/acceptance-criteria.zh.md`。
 - 输入来自旧 PM/PRD 产物时，读取 `references/migration-notes.md`。
 - 输入不满足 spec readiness 时，读取 `loops/recipes/grill-decision.loop.md`，并生成回退到 `builder-frame` 的 reroute recommendation。
-- 涉及界面、状态、组件或交互时，读取 `templates/design-brief/template.md`、`references/ui-ux/` 和 `kernel/gates/design-consistency-gate.zh.md`。
+- 涉及界面、状态、组件、交互或业务规则说明时，读取 `templates/design-brief/template.md`、`references/ui-ux/`、`kernel/gates/design-consistency-gate.zh.md` 和 `kernel/gates/product-logic-containment-gate.zh.md`。
 - 需要判断 skill hardening 或输出契约边界时，读取 `references/skill-design/skill-design-playbook.zh.md`。
 
 ## 何时使用
@@ -60,7 +60,7 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 3. 如果输入不成熟，输出 `readiness_gate`、`reroute_recommendation` 和 `next_skill_input`，优先回退到 `builder-frame` 的 `grill_frame`，不要写伪完整 spec。
 4. 定义目标、范围、non-goals、角色、流程、状态和边界情况。
 5. 区分产品需求和实现猜测。
-6. 如果涉及 UI/UX，读取 Design Brief template 和 UI/UX shared contract，补充设计约束。
+6. 如果涉及 UI/UX，读取 Design Brief template、UI/UX shared contract 和 Product Logic Containment Gate，补充设计约束和业务规则说明边界。
 7. 写出 acceptance criteria 和 rejection criteria。
 8. 定义验证或测试策略。
 9. 产出供下游 skill 使用的 Output Packet。
@@ -87,6 +87,10 @@ ui_states:
 interaction_requirements:
 responsive_requirements:
 accessibility_notes:
+ui_content_boundary:
+business_rule_notes:
+rule_notes_placement:
+non_ui_explanations:
 assumptions:
 open_questions:
 risks:
@@ -105,6 +109,9 @@ next_skill_input:
 - 如果目标、用户、场景、non-goals、成功标准或关键决策树不清楚，必须使用 `not_ready_for_spec`，并输出回退到 `builder-frame` 的 `reroute_recommendation`。
 - `not_ready_for_spec` 不得产出看似完整的 requirements、flows 或 acceptance criteria；只能给出缺口、推荐默认答案和下一步输入。
 - UI/UX 相关 spec 必须说明 Design Brief、状态覆盖、交互要求、响应式和可访问性基础。
+- UI-facing spec 必须说明 `ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `non_ui_explanations`。
+- 业务规则、权限矩阵、计算逻辑、状态机、接口或评审说明不得混入界面主体；默认放入 `业务规则说明（非界面内容）`。
+- 只有用户真实需要看到的规则提示才能进入界面本体，并必须标注为 user_visible_rule_exceptions。
 - 不要把视觉喜好写成需求，除非它可验收或来自既有设计约定。
 - 如果 acceptance criteria 无法被人工 review、自动检查或证据验证，必须降级为 open question。
 
@@ -117,6 +124,7 @@ next_skill_input:
 - `kernel/packets/output-packet.schema.md`
 - `loops/recipes/grill-decision.loop.md`
 - `kernel/gates/design-consistency-gate.zh.md`
+- `kernel/gates/product-logic-containment-gate.zh.md`
 - `templates/design-brief/template.md`
 - `references/ui-ux/design-principles.zh.md`
 - `references/ui-ux/component-guidelines.zh.md`

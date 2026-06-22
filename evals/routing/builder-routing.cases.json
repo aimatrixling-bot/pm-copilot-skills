@@ -112,6 +112,19 @@
       "must_include": ["Design Brief", "Design Consistency Gate", "ui_states", "responsive_requirements"]
     },
     {
+      "id": "pms-high-fidelity-prototype-containment-path",
+      "input": "基于 PMS 领域模型和业务规则生成可运行高保真原型；业务规则可以补充说明，但不能侵入界面，要放到界面下方独立区域，并给出可调整的设计方案。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-prototype",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "expected_mode": "high_fidelity_prototype",
+      "must_include": ["design_plan", "Product Logic Containment Gate", "business_rule_notes", "rule_notes_placement", "preview_or_run_command", "nudge_options"]
+    },
+    {
       "id": "review-to-decision-record-path",
       "input": "评审发现这个里程碑证据不足，但我们决定先接受 mock 数据进入下一步，请把这个取舍和反转条件记录下来。",
       "expected_path": [

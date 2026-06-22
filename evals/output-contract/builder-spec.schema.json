@@ -26,7 +26,11 @@
     "ui_states",
     "interaction_requirements",
     "responsive_requirements",
-    "accessibility_notes"
+    "accessibility_notes",
+    "ui_content_boundary",
+    "business_rule_notes",
+    "rule_notes_placement",
+    "non_ui_explanations"
   ],
   "spec_type_values": [
     "mini_spec",
@@ -37,5 +41,11 @@
   "readiness_values": [
     "ready",
     "not_ready_for_spec"
+  ],
+  "rule_notes_placement_values": [
+    "below_interface",
+    "side_panel",
+    "linked_doc",
+    "not_applicable"
   ]
 }
