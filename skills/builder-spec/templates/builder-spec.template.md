@@ -87,5 +87,5 @@ next_skill_input:
 - Acceptance criteria 必须可测试。
 - Verification 应命名能让 reviewer 信任结果的证据。
 - `readiness_gate.status` 为 `not_ready_for_spec` 时，只输出缺口、回退建议和 `next_skill_input`，不要写伪完整 spec。
-- `spec_type` 为 `prototype_to_spec` 时，必须保留 prototype provenance：`source_prototype`、`extracted_from_prototype`、`prototype_gaps` 和 `prototype_verification`。
+- `spec_type` 为 `prototype_to_spec` 时，必须保留 prototype provenance：`source_prototype`、`visual_target`、`runnable_evidence`、`design_evidence`、`extracted_from_prototype`、`prototype_gaps` 和 `prototype_verification`。
 - 原型中的 gaps 不得直接写成已确认 requirements；必须进入 open questions、risks、non-goals 或 next_skill_input。

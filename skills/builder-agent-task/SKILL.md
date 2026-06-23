@@ -16,6 +16,7 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 
 - 创建任务包时，读取 `templates/agent-task-packet/template.md` 和 `kernel/packets/agent-task-packet.schema.md`。
 - 判断 Prompt / Plan / Goal / Plan -> Goal 时，读取 `kernel/routing/plan-goal-routing.zh.md`。
+- 输入来自 Delivery Kernel 时，读取 `docs/delivery-kernel.md`、`templates/module-execution-pack/template.md`、`templates/change-contract/template.md`、`templates/branch-state/template.md` 和 `templates/definition-drift-check/template.md`。
 - 输入缺少可执行上下文、验收标准或验证方式时，读取 `loops/recipes/grill-decision.loop.md`，并输出回退到 `builder-frame` 或 `builder-spec` 的 reroute recommendation。
 - 目标 runtime 已知时，读取 `adapters/` 中对应说明。
 - 任务涉及 UI、prototype 或产品界面时，读取 `templates/design-brief/template.md`、`references/ui-ux/`、`kernel/gates/design-consistency-gate.zh.md` 和 `kernel/gates/product-logic-containment-gate.zh.md`。
@@ -47,6 +48,7 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 - 目标 runtime。
 - 验收标准和验证方式。
 - 允许工具和禁止动作。
+- Module Execution Pack、Change Contract、Branch State 或 Definition Drift Check 要求。
 - 当任务包含 UI、prototype 或产品界面时，提供 Design Brief 和 UI/UX 约束。
 - 当任务会产生项目资产时，提供预期产物路径、资产类型和 source-of-truth 关系；如果未知，在 task packet 中标记为待执行 agent 提交 proposal。
 
@@ -66,11 +68,12 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 3. 如果不满足，输出 `not_ready_for_agent_task`、`reroute_recommendation` 和 `next_skill_input`，不要生成伪可执行任务包。
 4. 判断推荐模式：Prompt、Plan、Goal 或 Plan -> Goal。
 5. 创建范围、non-goals、上下文来源和验证方式。
-6. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态、Product Logic Containment Gate 和 Design Consistency Gate 期望。
-7. 如果涉及高保真原型或可运行 demo，附上 `design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `prototype_evidence_requirements`。
-8. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
-9. 补充 human approval gates 和停止条件。
-10. 需要时产出可复制的 Plan/Goal 提示词。
+6. 如果输入包含 Module Execution Pack、Change Contract 或 Branch State，把其中的 non-goals、verification、definition_sync 和 stop conditions 传给下游 agent。
+7. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态、Product Logic Containment Gate 和 Design Consistency Gate 期望。
+8. 如果涉及高保真原型或可运行 demo，附上 `design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `prototype_evidence_requirements`。
+9. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
+10. 补充 human approval gates 和停止条件。
+11. 需要时产出可复制的 Plan/Goal 提示词。
 
 ## 输出契约
 
@@ -85,11 +88,17 @@ non_goals:
 context_sources:
 target_runtime:
 recommended_mode:
+delivery_mode: create | improve | reframe | unknown
 runtime_constraints:
 plan_prompt:
 goal_prompt:
 acceptance_criteria:
 verification:
+module_execution_pack:
+change_contract:
+branch_state:
+definition_drift_check:
+definition_sync:
 artifact_index_update_proposal:
 design_brief:
 design_constraints:
@@ -124,6 +133,9 @@ handoff_packet:
 - 高保真原型或可运行 demo 任务必须包含 `design_plan`、`runnable_prototype` 或要求执行 agent 先补 Design Plan。
 - Agent 指令必须区分真实实现、mock 数据、demo-only 交互和 review-only 产物。
 - 任何 Goal 指令必须包含 Done when、Verification 和 blocked stop condition。
+- 来自 Module Execution Pack / Change Contract 的任务必须保留 delivery_mode、non-goals、verification、definition_sync 和 forbidden actions。
+- 多轮 Goal、高保真原型、跨仓库或上下文压缩风险任务必须要求维护 Branch State。
+- 完成前如存在定义变更，必须要求 Definition Drift Check；不得把实现结果自动升级为已确认需求。
 - 涉及项目资产写入时，必须要求执行 agent 在 Output Packet 中提交 `artifact_index_update_proposal`；该字段可以是 `none`，但不得缺失。
 - `artifact_index_update_proposal` 只能是建议，不能授权自动删除、自动迁移或自动提升为 `current`。
 - 不要把“你看着办”包装成可执行任务；必须补充或标记 missing context。
@@ -137,13 +149,19 @@ handoff_packet:
 - `kernel/packets/agent-task-packet.schema.md`
 - `kernel/packets/output-packet.schema.md`
 - `kernel/routing/plan-goal-routing.zh.md`
+- `docs/delivery-kernel.md`
 - `loops/recipes/grill-decision.loop.md`
+- `loops/recipes/definition-sync.loop.md`
 - `loops/recipes/design-plan-to-prototype.loop.md`
 - `kernel/gates/design-consistency-gate.zh.md`
 - `kernel/gates/product-logic-containment-gate.zh.md`
 - `harness/artifact-write-policy.zh.md`
 - `memory/schemas/artifact-index.schema.md`
 - `templates/agent-task-packet/template.md`
+- `templates/module-execution-pack/template.md`
+- `templates/change-contract/template.md`
+- `templates/branch-state/template.md`
+- `templates/definition-drift-check/template.md`
 - `templates/design-brief/template.md`
 - `references/ui-ux/`
 - `adapters/`

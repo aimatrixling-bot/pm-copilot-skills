@@ -9,9 +9,19 @@
       "context": "No existing spec or prototype.",
       "expected_skill": "builder-router",
       "expected_mode": "plan",
-      "expected_outputs": ["mode recommendation", "missing context", "next prompt"],
-      "must_include": ["Plan", "Feature Frame", "Agent Task Packet"],
-      "must_not_include": ["direct implementation"],
+      "expected_outputs": [
+        "mode recommendation",
+        "missing context",
+        "next prompt"
+      ],
+      "must_include": [
+        "Plan",
+        "Feature Frame",
+        "Agent Task Packet"
+      ],
+      "must_not_include": [
+        "direct implementation"
+      ],
       "quality_rubric": "route before execution"
     },
     {
@@ -21,9 +31,29 @@
       "context": "PRD exists and the requested change is UI-facing with no production data/API risk.",
       "expected_skill": "builder-prototype",
       "expected_mode": "prototype_first",
-      "expected_outputs": ["prototype_mode", "artifact_path", "fidelity", "covered_flows", "states_covered", "gaps", "verification", "next"],
-      "must_include": ["prototype_first", "Fake UI Gate", "gaps"],
-      "must_not_include": ["PRD-only output", "not_ready_for_prototype"],
+      "expected_outputs": [
+        "prototype_mode",
+        "visual_target",
+        "artifact_path",
+        "fidelity",
+        "covered_flows",
+        "states_covered",
+        "gaps",
+        "runnable_evidence",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "prototype_first",
+        "visual_target",
+        "runnable_evidence",
+        "Fake UI Gate",
+        "gaps"
+      ],
+      "must_not_include": [
+        "PRD-only output",
+        "not_ready_for_prototype"
+      ],
       "quality_rubric": "low-risk visual request produces a reviewable prototype artifact"
     },
     {
@@ -33,9 +63,27 @@
       "context": "No accepted frame, unclear user, unclear fields and flows.",
       "expected_skill": "builder-prototype",
       "expected_mode": "degraded_prototype",
-      "expected_outputs": ["artifact_path", "fidelity", "covered_flows", "states_covered", "gaps", "verification", "next"],
-      "must_include": ["degraded_prototype", "低保真", "最多 3 个高价值问题"],
-      "must_not_include": ["not_ready_for_prototype", "empty refusal"],
+      "expected_outputs": [
+        "visual_target",
+        "artifact_path",
+        "fidelity",
+        "covered_flows",
+        "states_covered",
+        "gaps",
+        "runnable_evidence",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "degraded_prototype",
+        "低保真",
+        "visual_target",
+        "最多 3 个高价值问题"
+      ],
+      "must_not_include": [
+        "not_ready_for_prototype",
+        "empty refusal"
+      ],
       "quality_rubric": "missing context still yields a low-fidelity direction and gap list"
     },
     {
@@ -45,9 +93,25 @@
       "context": "Spec and domain rules exist; output is a PM-reviewable prototype.",
       "expected_skill": "builder-prototype",
       "expected_mode": "boundary_first",
-      "expected_outputs": ["prototype_mode", "artifact_path", "fidelity", "covered_flows", "states_covered", "gaps", "verification", "next"],
-      "must_include": ["boundary_first", "Product Logic Containment Gate", "业务规则说明（非界面内容）", "Design Plan to Prototype Loop"],
-      "must_not_include": ["business rules inside page body"],
+      "expected_outputs": [
+        "prototype_mode",
+        "artifact_path",
+        "fidelity",
+        "covered_flows",
+        "states_covered",
+        "gaps",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "boundary_first",
+        "Product Logic Containment Gate",
+        "业务规则说明（非界面内容）",
+        "Design Plan to Prototype Loop"
+      ],
+      "must_not_include": [
+        "business rules inside page body"
+      ],
       "quality_rubric": "prototype keeps non-UI business explanations outside the interface"
     },
     {
@@ -57,9 +121,25 @@
       "context": "No permission matrix, API contract, audit requirements or verification plan exists.",
       "expected_skill": "builder-prototype",
       "expected_mode": "spec_first",
-      "expected_outputs": ["prototype_mode", "gaps", "verification", "next"],
-      "must_include": ["spec_first", "builder-spec", "权限", "API"],
-      "must_not_include": ["fake complete prototype", "production-ready implementation"],
+      "expected_outputs": [
+        "prototype_mode",
+        "visual_target",
+        "gaps",
+        "runnable_evidence",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "spec_first",
+        "builder-spec",
+        "权限",
+        "API",
+        "not_required"
+      ],
+      "must_not_include": [
+        "fake complete prototype",
+        "production-ready implementation"
+      ],
       "quality_rubric": "prototype skill protects high-risk engineering rules by handing off to spec"
     },
     {
@@ -69,9 +149,20 @@
       "context": "The user wants execution-mode guidance before agent work.",
       "expected_skill": "builder-plan-goal",
       "expected_mode": "mode_selection",
-      "expected_outputs": ["mode_recommendation", "copy_ready_plan_prompt", "copy_ready_goal_prompt"],
-      "must_include": ["Prompt", "Plan", "Goal", "stop_conditions"],
-      "must_not_include": ["direct code edit"],
+      "expected_outputs": [
+        "mode_recommendation",
+        "copy_ready_plan_prompt",
+        "copy_ready_goal_prompt"
+      ],
+      "must_include": [
+        "Prompt",
+        "Plan",
+        "Goal",
+        "stop_conditions"
+      ],
+      "must_not_include": [
+        "direct code edit"
+      ],
       "quality_rubric": "select mode before execution"
     },
     {
@@ -81,9 +172,18 @@
       "context": "Single small copy change.",
       "expected_skill": "builder-plan-goal",
       "expected_mode": "prompt",
-      "expected_outputs": ["mode_recommendation", "reasoning_summary", "copy_ready_prompt"],
-      "must_include": ["普通 Prompt", "不需要 Plan/Goal"],
-      "must_not_include": ["Plan -> Goal"],
+      "expected_outputs": [
+        "mode_recommendation",
+        "reasoning_summary",
+        "copy_ready_prompt"
+      ],
+      "must_include": [
+        "普通 Prompt",
+        "不需要 Plan/Goal"
+      ],
+      "must_not_include": [
+        "Plan -> Goal"
+      ],
       "quality_rubric": "avoid over-triggering goal"
     },
     {
@@ -93,9 +193,19 @@
       "context": "High-risk production data operation with missing approval.",
       "expected_skill": "builder-plan-goal",
       "expected_mode": "ask_first",
-      "expected_outputs": ["missing_context", "risk_level", "stop_conditions"],
-      "must_include": ["先提问", "人工批准", "回滚"],
-      "must_not_include": ["direct goal execution"],
+      "expected_outputs": [
+        "missing_context",
+        "risk_level",
+        "stop_conditions"
+      ],
+      "must_include": [
+        "先提问",
+        "人工批准",
+        "回滚"
+      ],
+      "must_not_include": [
+        "direct goal execution"
+      ],
       "quality_rubric": "block unsafe goal conversion"
     },
     {
@@ -105,9 +215,19 @@
       "context": "Product concept is broad and should become plan-to-goal with builder handoff.",
       "expected_skill": "builder-plan-goal",
       "expected_mode": "plan_to_goal",
-      "expected_outputs": ["milestones", "copy_ready_plan_prompt", "handoff_packet"],
-      "must_include": ["builder-frame", "builder-prototype", "builder-agent-task"],
-      "must_not_include": ["one-shot full platform goal"],
+      "expected_outputs": [
+        "milestones",
+        "copy_ready_plan_prompt",
+        "handoff_packet"
+      ],
+      "must_include": [
+        "builder-frame",
+        "builder-prototype",
+        "builder-agent-task"
+      ],
+      "must_not_include": [
+        "one-shot full platform goal"
+      ],
       "quality_rubric": "connect plan-goal decision to Builder OS workflow"
     },
     {
@@ -117,9 +237,21 @@
       "context": "No accepted spec exists.",
       "expected_skill": "builder-frame",
       "expected_mode": "feature_frame",
-      "expected_outputs": ["problem", "user", "scenario", "success_criteria", "next_skill_hint"],
-      "must_include": ["non_goals", "assumptions", "spec_readiness"],
-      "must_not_include": ["screen-by-screen UI spec"],
+      "expected_outputs": [
+        "problem",
+        "user",
+        "scenario",
+        "success_criteria",
+        "next_skill_hint"
+      ],
+      "must_include": [
+        "non_goals",
+        "assumptions",
+        "spec_readiness"
+      ],
+      "must_not_include": [
+        "screen-by-screen UI spec"
+      ],
       "quality_rubric": "frame before spec or prototype"
     },
     {
@@ -129,9 +261,21 @@
       "context": "No accepted frame exists and the user explicitly asks for questioning first.",
       "expected_skill": "builder-frame",
       "expected_mode": "grill_frame",
-      "expected_outputs": ["decision_tree", "critical_questions", "recommended_defaults", "next_skill_input"],
-      "must_include": ["blocking_questions", "assumptions", "spec_readiness"],
-      "must_not_include": ["full PRD", "Agent Task Packet"],
+      "expected_outputs": [
+        "decision_tree",
+        "critical_questions",
+        "recommended_defaults",
+        "next_skill_input"
+      ],
+      "must_include": [
+        "blocking_questions",
+        "assumptions",
+        "spec_readiness"
+      ],
+      "must_not_include": [
+        "full PRD",
+        "Agent Task Packet"
+      ],
       "quality_rubric": "ask high-leverage questions before producing downstream artifacts"
     },
     {
@@ -141,9 +285,20 @@
       "context": "Feature Frame exists and is accepted.",
       "expected_skill": "builder-spec",
       "expected_mode": "spec",
-      "expected_outputs": ["scope", "requirements", "acceptance_criteria", "verification_plan"],
-      "must_include": ["non_goals", "rejection_criteria", "risks"],
-      "must_not_include": ["implementation-only task list"],
+      "expected_outputs": [
+        "scope",
+        "requirements",
+        "acceptance_criteria",
+        "verification_plan"
+      ],
+      "must_include": [
+        "non_goals",
+        "rejection_criteria",
+        "risks"
+      ],
+      "must_not_include": [
+        "implementation-only task list"
+      ],
       "quality_rubric": "spec is buildable and verifiable"
     },
     {
@@ -153,9 +308,20 @@
       "context": "No accepted Feature Frame exists.",
       "expected_skill": "builder-spec",
       "expected_mode": "not_ready_for_spec",
-      "expected_outputs": ["readiness_gate", "reroute_recommendation", "next_skill_input"],
-      "must_include": ["builder-frame", "blocking_questions", "assumptions"],
-      "must_not_include": ["complete PRD", "Agent Task Packet"],
+      "expected_outputs": [
+        "readiness_gate",
+        "reroute_recommendation",
+        "next_skill_input"
+      ],
+      "must_include": [
+        "builder-frame",
+        "blocking_questions",
+        "assumptions"
+      ],
+      "must_not_include": [
+        "complete PRD",
+        "Agent Task Packet"
+      ],
       "quality_rubric": "spec refuses to invent missing frame"
     },
     {
@@ -165,21 +331,50 @@
       "context": "Feature Frame is accepted and the output affects product UI.",
       "expected_skill": "builder-spec",
       "expected_mode": "spec",
-      "expected_outputs": ["design_brief", "ui_states", "interaction_requirements", "responsive_requirements"],
-      "must_include": ["Design Brief", "Design Consistency Gate", "empty", "error"],
-      "must_not_include": ["visual-only preference"],
+      "expected_outputs": [
+        "design_brief",
+        "ui_states",
+        "interaction_requirements",
+        "responsive_requirements"
+      ],
+      "must_include": [
+        "Design Brief",
+        "Design Consistency Gate",
+        "empty",
+        "error"
+      ],
+      "must_not_include": [
+        "visual-only preference"
+      ],
       "quality_rubric": "UI-facing spec emits design contract"
     },
     {
       "id": "trigger-prototype-to-spec-extraction",
       "name": "Prototype artifact should be reverse-extracted into builder-spec",
-      "input": "基于这个 prototype brief 沉淀一份 Mini Spec：artifact_path 是 prototypes/customer-management/index.html，covered_flows 包含客户列表和客户详情，states_covered 包含 default、empty、error，gaps 包含权限和真实 API 未确认，verification 是已做浏览器人工检查。",
+      "input": "基于这个 prototype brief 沉淀一份 Mini Spec：artifact_path 是 prototypes/customer-management/index.html，visual_target 是 source_image，preview_url 是 http://127.0.0.1:5173，screenshot_path 是 evidence/customer-default.png，covered_flows 包含客户列表和客户详情，states_covered 包含 default、empty、error，gaps 包含权限和真实 API 未确认，verification 是已做浏览器人工检查。",
       "context": "A prototype exists and should become a buildable spec without promoting gaps into requirements.",
       "expected_skill": "builder-spec",
       "expected_mode": "prototype_to_spec",
-      "expected_outputs": ["source_prototype", "extracted_from_prototype", "prototype_gaps", "acceptance_criteria", "verification_plan"],
-      "must_include": ["artifact_path", "states_covered", "gaps", "verification", "open_questions"],
-      "must_not_include": ["prototype gaps as confirmed requirements", "not_ready_for_spec"],
+      "expected_outputs": [
+        "source_prototype",
+        "extracted_from_prototype",
+        "prototype_gaps",
+        "acceptance_criteria",
+        "verification_plan"
+      ],
+      "must_include": [
+        "artifact_path",
+        "visual_target",
+        "screenshot_path",
+        "states_covered",
+        "gaps",
+        "verification",
+        "open_questions"
+      ],
+      "must_not_include": [
+        "prototype gaps as confirmed requirements",
+        "not_ready_for_spec"
+      ],
       "quality_rubric": "spec preserves prototype provenance and turns verified flows into testable requirements"
     },
     {
@@ -189,9 +384,24 @@
       "context": "Prototype exists, but its gaps include high-risk API, database and audit decisions.",
       "expected_skill": "builder-spec",
       "expected_mode": "prototype_to_spec",
-      "expected_outputs": ["prototype_gaps", "open_questions", "risks", "next_skill_input"],
-      "must_include": ["spec-first", "权限", "API", "数据库", "审计", "prototype_gaps"],
-      "must_not_include": ["production-ready implementation", "confirmed API contract"],
+      "expected_outputs": [
+        "prototype_gaps",
+        "open_questions",
+        "risks",
+        "next_skill_input"
+      ],
+      "must_include": [
+        "spec-first",
+        "权限",
+        "API",
+        "数据库",
+        "审计",
+        "prototype_gaps"
+      ],
+      "must_not_include": [
+        "production-ready implementation",
+        "confirmed API contract"
+      ],
       "quality_rubric": "prototype evidence does not bypass high-risk engineering readiness"
     },
     {
@@ -201,9 +411,20 @@
       "context": "Prototype and Design Brief exist.",
       "expected_skill": "builder-review",
       "expected_mode": "review",
-      "expected_outputs": ["design_consistency_audit", "evidence_audit", "required_fixes"],
-      "must_include": ["Design Consistency Gate", "component", "responsive", "mock"],
-      "must_not_include": ["approve without evidence"],
+      "expected_outputs": [
+        "design_consistency_audit",
+        "evidence_audit",
+        "required_fixes"
+      ],
+      "must_include": [
+        "Design Consistency Gate",
+        "component",
+        "responsive",
+        "mock"
+      ],
+      "must_not_include": [
+        "approve without evidence"
+      ],
       "quality_rubric": "review checks design consistency before approval"
     },
     {
@@ -213,9 +434,19 @@
       "context": "Prototype and business rules exist.",
       "expected_skill": "builder-review",
       "expected_mode": "design_review",
-      "expected_outputs": ["product_logic_containment_audit", "required_fixes", "decision"],
-      "must_include": ["Product Logic Containment Gate", "REQUEST_CHANGES", "业务规则说明（非界面内容）"],
-      "must_not_include": ["approve without checking UI content boundary"],
+      "expected_outputs": [
+        "product_logic_containment_audit",
+        "required_fixes",
+        "decision"
+      ],
+      "must_include": [
+        "Product Logic Containment Gate",
+        "REQUEST_CHANGES",
+        "业务规则说明（非界面内容）"
+      ],
+      "must_not_include": [
+        "approve without checking UI content boundary"
+      ],
       "quality_rubric": "review audits product logic containment before approval"
     },
     {
@@ -225,9 +456,23 @@
       "context": "A prototype_to_spec output exists with source_prototype, prototype_gaps and prototype_verification.",
       "expected_skill": "builder-review",
       "expected_mode": "prototype_to_spec_review",
-      "expected_outputs": ["prototype_to_spec_audit", "findings", "required_fixes", "decision"],
-      "must_include": ["source_prototype", "prototype_gaps", "mock boundary", "verification provenance", "spec-first guard"],
-      "must_not_include": ["approve without provenance", "promote gaps to requirements"],
+      "expected_outputs": [
+        "prototype_to_spec_audit",
+        "findings",
+        "required_fixes",
+        "decision"
+      ],
+      "must_include": [
+        "source_prototype",
+        "prototype_gaps",
+        "mock boundary",
+        "verification provenance",
+        "spec-first guard"
+      ],
+      "must_not_include": [
+        "approve without provenance",
+        "promote gaps to requirements"
+      ],
       "quality_rubric": "review catches loss of prototype gaps, mock boundary, or verification provenance"
     },
     {
@@ -237,9 +482,22 @@
       "context": "Spec and Design Brief exist; user wants another agentic runtime to execute.",
       "expected_skill": "builder-agent-task",
       "expected_mode": "agent_task_packet",
-      "expected_outputs": ["target_runtime", "recommended_mode", "acceptance_criteria", "verification", "human_approval_gates"],
-      "must_include": ["non_goals", "forbidden_actions", "blocked_stop_condition", "Design Brief"],
-      "must_not_include": ["direct local implementation"],
+      "expected_outputs": [
+        "target_runtime",
+        "recommended_mode",
+        "acceptance_criteria",
+        "verification",
+        "human_approval_gates"
+      ],
+      "must_include": [
+        "non_goals",
+        "forbidden_actions",
+        "blocked_stop_condition",
+        "Design Brief"
+      ],
+      "must_not_include": [
+        "direct local implementation"
+      ],
       "quality_rubric": "agent task packet is executable and bounded"
     },
     {
@@ -249,9 +507,20 @@
       "context": "Frame exists but spec-level execution contract is missing.",
       "expected_skill": "builder-agent-task",
       "expected_mode": "not_ready_for_agent_task",
-      "expected_outputs": ["readiness_gate", "reroute_recommendation", "next_skill_input"],
-      "must_include": ["builder-spec", "acceptance_criteria", "verification"],
-      "must_not_include": ["fake executable Goal", "direct implementation"],
+      "expected_outputs": [
+        "readiness_gate",
+        "reroute_recommendation",
+        "next_skill_input"
+      ],
+      "must_include": [
+        "builder-spec",
+        "acceptance_criteria",
+        "verification"
+      ],
+      "must_not_include": [
+        "fake executable Goal",
+        "direct implementation"
+      ],
       "quality_rubric": "agent task refuses to create a fake executable packet"
     },
     {
@@ -261,10 +530,217 @@
       "context": "The user asks to preserve a product/workflow decision.",
       "expected_skill": "builder-decision",
       "expected_mode": "decision_record",
-      "expected_outputs": ["options_considered", "decision", "rationale", "reversal_conditions"],
-      "must_include": ["tradeoffs", "assumptions", "evidence", "follow_up"],
-      "must_not_include": ["prototype implementation"],
+      "expected_outputs": [
+        "options_considered",
+        "decision",
+        "rationale",
+        "reversal_conditions"
+      ],
+      "must_include": [
+        "tradeoffs",
+        "assumptions",
+        "evidence",
+        "follow_up"
+      ],
+      "must_not_include": [
+        "prototype implementation"
+      ],
       "quality_rubric": "decision preserves rejected options and reversal conditions"
+    },
+    {
+      "id": "trigger-prototype-high-fidelity-visual-target",
+      "name": "High-fidelity prototype should require visual target and runnable evidence",
+      "input": "按这张工作台截图做一个可运行高保真原型，给出运行命令、预览地址、截图路径和 review 证据。",
+      "context": "A source screenshot exists; the user asks for high-fidelity runnable prototype.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "prototype_first",
+      "expected_outputs": [
+        "visual_target",
+        "runnable_evidence",
+        "artifact_path",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "source_image",
+        "run_command",
+        "preview_url",
+        "screenshot_path",
+        "viewport",
+        "state"
+      ],
+      "must_not_include": [
+        "brief_only as faithful visual target",
+        "approve without screenshot"
+      ],
+      "quality_rubric": "high-fidelity visual work preserves source visual and runnable evidence"
+    },
+    {
+      "id": "trigger-prototype-missing-visual-target-degrade",
+      "name": "Missing visual target should degrade high-fidelity request",
+      "input": "没有截图或 URL，你直接做一个高保真 redesign 原型。",
+      "context": "Only a text brief exists, but the request asks for high-fidelity visual redesign.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "degraded_prototype",
+      "expected_outputs": [
+        "visual_target",
+        "gaps",
+        "runnable_evidence",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "brief_only",
+        "degraded_prototype",
+        "visual target",
+        "source image",
+        "source URL"
+      ],
+      "must_not_include": [
+        "faithful high-fidelity match",
+        "No Visual Target No Build as global refusal"
+      ],
+      "quality_rubric": "missing visual target produces a useful downgraded deliverable and gap list"
+    },
+    {
+      "id": "trigger-prototype-design-evidence-review",
+      "name": "Runnable high-fidelity prototype review should check visual and screenshot evidence",
+      "input": "请评审这个可运行高保真原型，重点看 source visual、rendered implementation、preview_url、screenshot_path、viewport/state 和 P0-P3 findings。",
+      "context": "Prototype has visual_target and runnable_evidence.",
+      "expected_skill": "builder-review",
+      "expected_mode": "prototype_design_evidence_review",
+      "expected_outputs": [
+        "prototype_design_evidence_audit",
+        "findings",
+        "required_fixes",
+        "decision"
+      ],
+      "must_include": [
+        "visual_target",
+        "rendered implementation",
+        "screenshot_path",
+        "viewport",
+        "state",
+        "P0",
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "must_not_include": [
+        "approve without screenshot",
+        "visual match without source visual"
+      ],
+      "quality_rubric": "review blocks high-fidelity handoff without visual and screenshot evidence"
+    },
+    {
+      "id": "trigger-delivery-create-mode",
+      "name": "New build request should freeze Module Execution Pack",
+      "input": "从 0 做一个新的 AI Builder OS 工作流模块，请先冻结目标、非目标、字段、操作、状态、验收和验证方式。",
+      "context": "No stable baseline exists; this is a new module delivery task.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "module_execution_pack",
+      "expected_outputs": [
+        "delivery_mode",
+        "module_execution_pack",
+        "non_goals",
+        "acceptance_criteria",
+        "verification_plan",
+        "definition_sync"
+      ],
+      "must_include": [
+        "create",
+        "Module Execution Pack",
+        "目标与非目标",
+        "验收标准",
+        "definition_sync"
+      ],
+      "must_not_include": [
+        "Change Contract",
+        "direct implementation"
+      ],
+      "quality_rubric": "new work freezes an execution pack before implementation"
+    },
+    {
+      "id": "trigger-delivery-improve-mode",
+      "name": "Existing baseline change should use Change Contract",
+      "input": "已有稳定原型，只改列表密度和筛选顺序，当前路由、数据结构和主流程必须保留。",
+      "context": "A stable baseline exists and the change is local.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "change_contract",
+      "expected_outputs": [
+        "delivery_mode",
+        "change_contract",
+        "current_baseline",
+        "non_goals",
+        "verification_plan",
+        "definition_sync"
+      ],
+      "must_include": [
+        "improve",
+        "Change Contract",
+        "当前基线",
+        "必须保留",
+        "不触碰范围"
+      ],
+      "must_not_include": [
+        "full redesign",
+        "Module Execution Pack as create"
+      ],
+      "quality_rubric": "local iteration captures baseline and regression boundary"
+    },
+    {
+      "id": "trigger-delivery-reframe-mode",
+      "name": "Old assets with changed target shape should reframe first",
+      "input": "有旧页面、供应商截图和 Axure，但这次目标 IA 和流程都要重定，请先判断哪些资产可吸收，再给执行契约。",
+      "context": "Old assets exist but cannot be used as the stable baseline.",
+      "expected_skill": "builder-review",
+      "expected_mode": "definition_drift_review",
+      "expected_outputs": [
+        "delivery_mode",
+        "definition_drift_check",
+        "definition_sync_audit",
+        "required_fixes",
+        "next_step"
+      ],
+      "must_include": [
+        "reframe",
+        "Asset Digestion",
+        "Target Shape",
+        "Module Execution Pack",
+        "do_not_copy"
+      ],
+      "must_not_include": [
+        "copy old UI directly",
+        "treat old assets as source of truth"
+      ],
+      "quality_rubric": "reframe mode digests assets before execution"
+    },
+    {
+      "id": "trigger-definition-drift-check",
+      "name": "Completed work should classify definition drift before review",
+      "input": "实现已经完成，请对照 Change Contract 检查是否有 definition drift，并区分实现调整、spec gap、需求变化和冲突。",
+      "context": "Implementation exists and should be checked against an accepted delivery contract.",
+      "expected_skill": "builder-review",
+      "expected_mode": "definition_drift_review",
+      "expected_outputs": [
+        "definition_drift_check",
+        "definition_sync_audit",
+        "findings",
+        "decision",
+        "required_fixes"
+      ],
+      "must_include": [
+        "Implementation Adjustment",
+        "Spec Gap",
+        "Requirement Change",
+        "Conflict / Contradiction",
+        "definition_sync"
+      ],
+      "must_not_include": [
+        "auto promote implementation to requirement",
+        "approve without evidence"
+      ],
+      "quality_rubric": "definition drift is classified before review or merge"
     }
   ]
 }

@@ -5,6 +5,7 @@
     "recommended_mode",
     "recommended_skill",
     "project_mode",
+    "delivery_mode",
     "project_profile_proposal",
     "recommended_next_skill",
     "reasoning_summary",
@@ -31,10 +32,18 @@
     "unknown",
     "not_applicable"
   ],
+  "delivery_mode_values": [
+    "create",
+    "improve",
+    "reframe",
+    "unknown",
+    "not_applicable"
+  ],
   "required_reference_files": [
     "kernel/routing/builder-router.zh.md",
     "kernel/routing/skill-selection-rules.zh.md",
     "loops/recipes/grill-decision.loop.md",
+    "docs/delivery-kernel.md",
     "harness/project-onboarding-policy.zh.md",
     "memory/schemas/project-profile.schema.md"
   ],

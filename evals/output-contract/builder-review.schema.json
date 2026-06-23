@@ -8,7 +8,10 @@
     "evidence_audit",
     "design_consistency_audit",
     "product_logic_containment_audit",
+    "prototype_design_evidence_audit",
     "prototype_to_spec_audit",
+    "definition_drift_check",
+    "definition_sync_audit",
     "artifact_hygiene_audit",
     "artifact_index_update_proposal",
     "risk_assessment",
@@ -23,10 +26,14 @@
   ],
   "required_reference_files": [
     "kernel/gates/product-logic-containment-gate.zh.md",
+    "docs/delivery-kernel.md",
     "skills/builder-review/references/prototype-to-spec-review.zh.md",
+    "skills/builder-review/references/prototype-design-evidence-review.zh.md",
     "skills/builder-spec/references/prototype-to-spec.zh.md",
     "loops/recipes/design-plan-to-prototype.loop.md",
     "loops/recipes/artifact-hygiene.loop.md",
+    "loops/recipes/definition-sync.loop.md",
+    "templates/definition-drift-check/template.md",
     "memory/policies/artifact-consistency-policy.zh.md",
     "memory/policies/artifact-cleanup-policy.zh.md"
   ],
@@ -34,9 +41,17 @@
     "contract_review",
     "evidence_review",
     "design_review",
+    "prototype_design_evidence_review",
     "prototype_to_spec_review",
+    "definition_drift_review",
     "release_readiness",
     "not_reviewable"
+  ],
+  "severity_values": [
+    "P0",
+    "P1",
+    "P2",
+    "P3"
   ],
   "decision_values": [
     "PASS",

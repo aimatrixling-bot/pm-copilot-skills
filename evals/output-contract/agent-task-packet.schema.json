@@ -6,6 +6,7 @@
     "task_name",
     "background",
     "desired_outcome",
+    "delivery_mode",
     "scope",
     "non_goals",
     "context_sources",
@@ -18,6 +19,7 @@
     "human_approval_gates",
     "risks",
     "blocked_stop_condition",
+    "definition_sync",
     "next_skill_input",
     "handoff_packet"
   ],
@@ -34,7 +36,18 @@
     "non_ui_explanations",
     "prototype_evidence_requirements",
     "product_logic_containment_gate",
-    "design_consistency_gate"
+    "design_consistency_gate",
+    "module_execution_pack",
+    "change_contract",
+    "branch_state",
+    "definition_drift_check"
+  ],
+  "delivery_mode_values": [
+    "create",
+    "improve",
+    "reframe",
+    "unknown",
+    "not_applicable"
   ],
   "readiness_values": [
     "ready",

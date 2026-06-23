@@ -4,6 +4,7 @@
     "readiness_gate",
     "reroute_recommendation",
     "spec_type",
+    "delivery_mode",
     "objective",
     "users",
     "scope",
@@ -18,6 +19,7 @@
     "assumptions",
     "open_questions",
     "risks",
+    "definition_sync",
     "next_skill_hint",
     "next_skill_input"
   ],
@@ -34,14 +36,28 @@
     "source_prototype",
     "extracted_from_prototype",
     "prototype_gaps",
-    "prototype_verification"
+    "prototype_verification",
+    "visual_target",
+    "runnable_evidence",
+    "design_evidence",
+    "module_execution_pack",
+    "change_contract"
   ],
   "spec_type_values": [
     "mini_spec",
     "prd",
     "engineering_request",
     "agent_readable_spec",
-    "prototype_to_spec"
+    "prototype_to_spec",
+    "module_execution_pack",
+    "change_contract"
+  ],
+  "delivery_mode_values": [
+    "create",
+    "improve",
+    "reframe",
+    "unknown",
+    "not_applicable"
   ],
   "readiness_values": [
     "ready",

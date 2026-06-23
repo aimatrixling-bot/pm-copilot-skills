@@ -11,7 +11,11 @@
         "builder-spec",
         "builder-agent-task"
       ],
-      "must_include": ["non_goals", "verification", "human_approval_gates"]
+      "must_include": [
+        "non_goals",
+        "verification",
+        "human_approval_gates"
+      ]
     },
     {
       "id": "fuzzy-intent-to-spec-path",
@@ -21,7 +25,11 @@
         "builder-frame",
         "builder-spec"
       ],
-      "must_include": ["problem", "spec_readiness", "acceptance_criteria"]
+      "must_include": [
+        "problem",
+        "spec_readiness",
+        "acceptance_criteria"
+      ]
     },
     {
       "id": "fuzzy-intent-grill-frame-path",
@@ -31,7 +39,12 @@
         "builder-frame"
       ],
       "expected_mode": "grill_frame",
-      "must_include": ["decision_tree", "recommended_defaults", "blocking_questions", "next_skill_input"]
+      "must_include": [
+        "decision_tree",
+        "recommended_defaults",
+        "blocking_questions",
+        "next_skill_input"
+      ]
     },
     {
       "id": "premature-agent-task-reroute-to-frame",
@@ -43,7 +56,12 @@
         "builder-agent-task"
       ],
       "expected_mode": "grill_frame",
-      "must_include": ["reroute", "spec_readiness", "human_decision_points", "not_ready"]
+      "must_include": [
+        "reroute",
+        "spec_readiness",
+        "human_decision_points",
+        "not_ready"
+      ]
     },
     {
       "id": "premature-spec-reroute-to-frame",
@@ -54,7 +72,12 @@
         "builder-spec"
       ],
       "expected_mode": "not_ready_for_spec",
-      "must_include": ["readiness_gate", "reroute_recommendation", "builder-frame", "next_skill_input"]
+      "must_include": [
+        "readiness_gate",
+        "reroute_recommendation",
+        "builder-frame",
+        "next_skill_input"
+      ]
     },
     {
       "id": "premature-agent-task-reroute-to-spec",
@@ -65,7 +88,12 @@
         "builder-agent-task"
       ],
       "expected_mode": "not_ready_for_agent_task",
-      "must_include": ["readiness_gate", "reroute_recommendation", "builder-spec", "next_skill_input"]
+      "must_include": [
+        "readiness_gate",
+        "reroute_recommendation",
+        "builder-spec",
+        "next_skill_input"
+      ]
     },
     {
       "id": "large-codex-work-plan-goal-path",
@@ -75,7 +103,11 @@
         "builder-plan-goal",
         "builder-agent-task"
       ],
-      "must_include": ["milestones", "copy_ready_goal_prompt", "stop_conditions"]
+      "must_include": [
+        "milestones",
+        "copy_ready_goal_prompt",
+        "stop_conditions"
+      ]
     },
     {
       "id": "builder-plan-goal-to-prototype-handoff-path",
@@ -87,7 +119,12 @@
         "builder-prototype",
         "builder-agent-task"
       ],
-      "must_include": ["Plan -> Goal", "builder-frame", "builder-prototype", "Milestone 1"]
+      "must_include": [
+        "Plan -> Goal",
+        "builder-frame",
+        "builder-prototype",
+        "Milestone 1"
+      ]
     },
     {
       "id": "prototype-first-runnable-path",
@@ -98,7 +135,15 @@
         "builder-review"
       ],
       "expected_mode": "prototype_first",
-      "must_include": ["prototype_first", "artifact_path", "states_covered", "gaps", "verification"]
+      "must_include": [
+        "prototype_first",
+        "visual_target",
+        "artifact_path",
+        "states_covered",
+        "gaps",
+        "runnable_evidence",
+        "verification"
+      ]
     },
     {
       "id": "builder-plan-goal-to-review-handoff-path",
@@ -108,7 +153,11 @@
         "builder-plan-goal",
         "builder-review"
       ],
-      "must_include": ["verification", "evidence", "next Goal"]
+      "must_include": [
+        "verification",
+        "evidence",
+        "next Goal"
+      ]
     },
     {
       "id": "ui-spec-to-design-brief-path",
@@ -120,7 +169,12 @@
         "builder-agent-task",
         "builder-review"
       ],
-      "must_include": ["Design Brief", "Design Consistency Gate", "ui_states", "responsive_requirements"]
+      "must_include": [
+        "Design Brief",
+        "Design Consistency Gate",
+        "ui_states",
+        "responsive_requirements"
+      ]
     },
     {
       "id": "pms-high-fidelity-prototype-containment-path",
@@ -133,7 +187,15 @@
         "builder-review"
       ],
       "expected_mode": "boundary_first",
-      "must_include": ["boundary_first", "Product Logic Containment Gate", "业务规则说明（非界面内容）", "mock honesty", "route readiness", "gaps", "verification"]
+      "must_include": [
+        "boundary_first",
+        "Product Logic Containment Gate",
+        "业务规则说明（非界面内容）",
+        "mock honesty",
+        "route readiness",
+        "gaps",
+        "verification"
+      ]
     },
     {
       "id": "prototype-spec-first-risk-path",
@@ -144,7 +206,15 @@
         "builder-spec"
       ],
       "expected_mode": "spec_first",
-      "must_include": ["spec_first", "builder-spec", "gaps", "verification", "权限", "API"]
+      "must_include": [
+        "spec_first",
+        "builder-spec",
+        "gaps",
+        "verification",
+        "权限",
+        "API",
+        "visual_target"
+      ]
     },
     {
       "id": "prototype-to-spec-extraction-path",
@@ -156,7 +226,13 @@
         "builder-review"
       ],
       "expected_mode": "prototype_to_spec",
-      "must_include": ["source_prototype", "extracted_from_prototype", "prototype_gaps", "verification_plan", "acceptance_criteria"]
+      "must_include": [
+        "source_prototype",
+        "extracted_from_prototype",
+        "prototype_gaps",
+        "verification_plan",
+        "acceptance_criteria"
+      ]
     },
     {
       "id": "prototype-to-spec-high-risk-guard-path",
@@ -167,7 +243,14 @@
         "builder-agent-task"
       ],
       "expected_mode": "prototype_to_spec",
-      "must_include": ["spec-first", "prototype_gaps", "open_questions", "risks", "权限", "API"]
+      "must_include": [
+        "spec-first",
+        "prototype_gaps",
+        "open_questions",
+        "risks",
+        "权限",
+        "API"
+      ]
     },
     {
       "id": "prototype-to-spec-review-path",
@@ -178,7 +261,13 @@
         "builder-decision"
       ],
       "expected_mode": "prototype_to_spec_review",
-      "must_include": ["prototype_to_spec_audit", "source_prototype", "prototype_gaps", "mock boundary", "verification provenance"]
+      "must_include": [
+        "prototype_to_spec_audit",
+        "source_prototype",
+        "prototype_gaps",
+        "mock boundary",
+        "verification provenance"
+      ]
     },
     {
       "id": "review-to-decision-record-path",
@@ -188,7 +277,151 @@
         "builder-review",
         "builder-decision"
       ],
-      "must_include": ["evidence_audit", "tradeoffs", "reversal_conditions", "follow_up"]
+      "must_include": [
+        "evidence_audit",
+        "tradeoffs",
+        "reversal_conditions",
+        "follow_up"
+      ]
+    },
+    {
+      "id": "prototype-high-fidelity-visual-target-path",
+      "input": "我有一张 dashboard 截图，请按它做高保真可运行原型，并输出 preview URL 和截图证据。",
+      "expected_path": [
+        "builder-router",
+        "builder-prototype",
+        "builder-review"
+      ],
+      "expected_mode": "prototype_first",
+      "must_include": [
+        "source_image",
+        "visual_target",
+        "runnable_evidence",
+        "preview_url",
+        "screenshot_path",
+        "prototype_design_evidence_audit"
+      ]
+    },
+    {
+      "id": "prototype-missing-visual-target-degrade-path",
+      "input": "我没有截图、URL 或现有代码，请直接做一个高保真 redesign。",
+      "expected_path": [
+        "builder-router",
+        "builder-prototype"
+      ],
+      "expected_mode": "degraded_prototype",
+      "must_include": [
+        "brief_only",
+        "degraded_prototype",
+        "visual target",
+        "gaps",
+        "ask_user"
+      ]
+    },
+    {
+      "id": "prototype-to-spec-path",
+      "must_include": [
+        "source_prototype",
+        "visual_target",
+        "runnable_evidence",
+        "extracted_from_prototype",
+        "prototype_gaps",
+        "verification_plan",
+        "acceptance_criteria"
+      ]
+    },
+    {
+      "id": "prototype-design-evidence-review-path",
+      "input": "请评审这个高保真可运行原型有没有保留 source visual、preview URL、screenshot path、viewport/state 和 P0-P3 findings。",
+      "expected_path": [
+        "builder-router",
+        "builder-review"
+      ],
+      "expected_mode": "prototype_design_evidence_review",
+      "must_include": [
+        "prototype_design_evidence_audit",
+        "visual_target",
+        "rendered implementation",
+        "screenshot_path",
+        "P0",
+        "P3"
+      ]
+    },
+    {
+      "id": "delivery-create-module-execution-pack-path",
+      "input": "我要从 0 做一个新的 AI 审批工作流模块，请先冻结目标、非目标、字段、操作、状态和验收，再交给 Codex 实现。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "expected_mode": "create",
+      "must_include": [
+        "delivery_mode",
+        "create",
+        "Module Execution Pack",
+        "non_goals",
+        "definition_sync",
+        "verification"
+      ]
+    },
+    {
+      "id": "delivery-improve-change-contract-path",
+      "input": "这个现有页面只做局部优化：保留当前路由和数据结构，调整列表密度、筛选顺序和空态，请不要重做整页。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "expected_mode": "improve",
+      "must_include": [
+        "delivery_mode",
+        "improve",
+        "Change Contract",
+        "current_baseline",
+        "do_not_touch",
+        "regression"
+      ]
+    },
+    {
+      "id": "delivery-reframe-asset-digestion-path",
+      "input": "我们有旧 React 原型、Axure 和竞品截图，但目标 IA 和流程要重定，请先消化资产、定目标形态，再生成执行包。",
+      "expected_path": [
+        "builder-router",
+        "builder-review",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "expected_mode": "reframe",
+      "must_include": [
+        "delivery_mode",
+        "reframe",
+        "Asset Digestion",
+        "Target Shape",
+        "Module Execution Pack",
+        "do_not_copy"
+      ]
+    },
+    {
+      "id": "definition-drift-review-path",
+      "input": "实现已经完成，请检查它是否偏离了 Module Execution Pack，区分实现细节调整、spec gap、requirement change 和 conflict。",
+      "expected_path": [
+        "builder-router",
+        "builder-review",
+        "builder-spec"
+      ],
+      "expected_mode": "definition_drift_review",
+      "must_include": [
+        "Definition Drift Check",
+        "definition_sync_audit",
+        "Implementation Adjustment",
+        "Spec Gap",
+        "Requirement Change",
+        "Conflict / Contradiction"
+      ]
     }
   ]
 }

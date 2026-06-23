@@ -2,12 +2,16 @@
   "name": "builder-prototype-output-contract",
   "required": [
     "prototype_mode",
+    "delivery_mode",
+    "visual_target",
     "artifact_path",
     "fidelity",
     "covered_flows",
     "states_covered",
     "gaps",
+    "runnable_evidence",
     "verification",
+    "definition_sync",
     "next"
   ],
   "prototype_mode_values": [
@@ -19,11 +23,49 @@
     "prototype_brief",
     "degraded_prototype"
   ],
+  "visual_target_type_values": [
+    "none",
+    "brief_only",
+    "source_image",
+    "source_url",
+    "existing_code",
+    "generated_option",
+    "not_required"
+  ],
   "fidelity_values": [
     "low",
     "medium",
     "high",
     "not_applicable"
+  ],
+  "delivery_mode_values": [
+    "create",
+    "improve",
+    "reframe",
+    "unknown",
+    "not_applicable"
+  ],
+  "runnable_evidence_fields": [
+    "run_command",
+    "preview_url",
+    "screenshot_path",
+    "viewport",
+    "state",
+    "design_qa"
+  ],
+  "design_qa_values": [
+    "not_run",
+    "passed",
+    "blocked",
+    "not_applicable"
+  ],
+  "next_values": [
+    "builder-review",
+    "builder-agent-task",
+    "builder-spec",
+    "builder-frame",
+    "iterate",
+    "ask_user"
   ],
   "required_states": [
     "default",
@@ -33,13 +75,5 @@
     "success",
     "disabled",
     "permission"
-  ],
-  "next_values": [
-    "builder-review",
-    "builder-agent-task",
-    "builder-spec",
-    "builder-frame",
-    "iterate",
-    "ask_user"
   ]
 }

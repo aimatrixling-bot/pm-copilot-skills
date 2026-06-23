@@ -52,6 +52,12 @@
 - 输出可视化范围、规格缺口、最多 3 个澄清问题和 `builder-spec` 下一步输入。
 - 如仍有 UI 价值，可给最低保真结构草图，但标记为 `degraded_prototype`。
 
+## Visual Target 边界
+
+- 低保真 wireframe、screen flow、信息架构和概念探索不强制 visual target；可标记 `visual_target.type: brief_only` 或 `not_required`。
+- 高保真视觉还原、截图转代码、URL 克隆、design-system faithful prototype 和 redesign implementation 必须有 `source_image`、`source_url`、`existing_code` 或用户选中的 `generated_option`。
+- 只有文字 brief 时，不能输出“faithful high-fidelity match”；应降级为中/低保真、给视觉方向选项，或要求用户补 source visual。
+- visual target 只能证明视觉参考来源，不能证明业务规则、权限、API、数据模型或生产 route readiness。
 ## 降级交付阶梯
 
 信息不足时按以下顺序降级：

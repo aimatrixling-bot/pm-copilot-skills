@@ -34,6 +34,7 @@
 - **权威源优先**：本包先迭代，满意后再同步到下游 Agent。
 - **中文优先输出**：用户可见内容默认中文；必要的代码/API/产品术语保留英文。
 - **低配置使用**：安装一次，即可在 Claude Code 等 skill runtime 中使用。
+- **Delivery Kernel**：M6-M9 增加“新建 / 迭代 / 重塑”三种中文优先交付模式，用 Module Execution Pack、Change Contract、Branch State、Definition Drift Check、schema/eval/validator 和运行时安装同步减少复杂构建任务的定义漂移。
 
 ## AI Builder OS 1.0 目标骨架
 
@@ -69,7 +70,7 @@ AI Builder OS
 | `builder-review` | 评审规格、原型、Agent 输出和证据 | Review Report / Evidence Audit |
 | `builder-decision` | 记录关键取舍 | Decision Record |
 
-Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。Milestone 3.9 新增发布 runbook 和 dry-run-only 双包发布准备脚本；真实发布仍需用户再次明确批准。Milestone 4/5 新增 Artifact Governance 与 Project Onboarding 的轻量横切协议、回归样例和专用 validator，仍保持 8 个 active builder skills。
+Milestone 2 已将 `builder-plan-goal`、`builder-frame`、`builder-spec` 提升为 v0.1 核心契约：每个 skill 都有本地 references/templates/output-contract evals，不再只依赖旧 `pm-*` skill 或外部安装路径。Milestone 2.2 补充了 UI/UX shared contract、Design Brief template 和 Design Consistency Gate，供 `builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review` 共同消费。Milestone 2.4 新增 Skill Design Playbook 和 Skill Hardening Brief；随后 `builder-router`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision` 已按该 playbook 补强触发边界、模式判断、handoff、模板和 output-contract validator。Milestone 3.2 新增 `skill-pack.json` 和 `agents/openai.yaml`，让 package surface 可被机器读取和验证。Milestone 3.4 新增 Trigger description gate，约束 8 个 builder skills 的 frontmatter 触发描述和 confusing skill 边界。Milestone 3.5 形成 AI Builder OS 1.0 Release Candidate seal，用于最终确认当前 package surface 可评审、可安装、可打包、可回滚。Milestone 3.7 新增 dual package dry-run gate，用于验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包的 pack/install 可行性。Milestone 3.8 冻结 AI Builder OS 1.0 final release seal，用于确认正式 tag、publish 顺序和 post-release verification。Milestone 3.8.1 验证 Codex、Claude Code 和 generic-agent/QoderWork 的多 runtime 安装与加载路径。Milestone 3.9 新增发布 runbook 和 dry-run-only 双包发布准备脚本；真实发布仍需用户再次明确批准。Milestone 4/5 新增 Artifact Governance 与 Project Onboarding 的轻量横切协议、回归样例和专用 validator，仍保持 8 个 active builder skills。Milestone 6-M9 新增 Delivery Kernel v0.1，以“新建 / 迭代 / 重塑”三种模式补齐 Execution Pack、Change Contract、Branch State、Definition Drift Check、output-contract schema、routing/trigger/delivery eval、validator 和 Codex runtime 安装同步。
 
 ## 快速安装
 
@@ -137,6 +138,7 @@ M3.2 后，对外 package surface 由这些文件共同定义：
 - `scripts/validate-trigger-descriptions.js` 与 `evals/trigger/builder-description.cases.json`：验证 8 个 builder skills 的 frontmatter trigger description。
 - `scripts/validate-artifact-evals.js` 与 `evals/artifact/*.cases.json`：验证 Artifact Governance 回归样例的结构、fail-closed 约束和 proposal-only 关键词。
 - `scripts/validate-onboarding-evals.js` 与 `evals/onboarding/project-onboarding.cases.json`：验证 Project Onboarding 的 greenfield、brownfield、resume、unknown 路由样例。
+- `docs/delivery-kernel.md`、`loops/recipes/definition-sync.loop.md`、`templates/*execution* / *contract* / *drift*` 与 `evals/delivery-kernel/delivery-kernel.cases.json`：验证复杂交付任务的新建、迭代、重塑和 definition drift 闭环。
 - `scripts/validate-dual-package-dry-run.js`：在临时目录验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包都能 pack dry-run 和安装 dry-run。
 
 `_archived/`、`research/` 和本地 ignored `references/source-blueprints/` 不进入 npm package surface；它们只作为审阅、回滚、研究或后续迁移材料。

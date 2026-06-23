@@ -21,6 +21,16 @@ AI Builder OS 是一套 AI 原生构建操作系统，服务于产品经理、�
 想法 -> 判断路径 -> 规格 -> 原型 -> Agent Task Packet -> 执行 -> 证据 -> 发布/评审 -> 演进
 ```
 
+M6 Delivery Kernel 在该链路中提供轻量交付内核：
+
+```text
+新建 create -> Module Execution Pack -> Agent Task / Prototype / Review
+迭代 improve -> Change Contract -> 实现 -> Definition Drift Check
+重塑 reframe -> Asset Digestion + Target Shape -> Execution Pack -> 实现/评审
+```
+
+Delivery Kernel 是横切协议，不是新的 core skill。它用中文优先的“新建 / 迭代 / 重塑”模式约束复杂构建任务的开工准备、范围冻结、状态续接和定义同步。
+
 首次进入项目时，AI Builder OS 先通过 Project Onboarding Protocol 判断项目模式：
 
 ```text
@@ -57,7 +67,7 @@ AI Builder OS
 | Memory & Evolution | 用户记忆、项目记忆、project profile、产物索引、决策记忆、skill 演进 | `memory/` |
 | Core Skills | 面向构建工作的核心 workflow，带明确输出契约 | `skills/builder-*` |
 | Scenario Bundles | 按使用场景组织的可安装 skill 组合 | `bundles/core/` |
-| References & Templates | 方法论、检查清单、产物模板、示例 | `references/`, `templates/` |
+| References & Templates | 方法论、检查清单、产物模板、示例；M6 增加 Module Execution Pack、Change Contract、Branch State、Definition Drift Check | `references/`, `templates/` |
 | Eval System | 触发、路由、契约、质量、证据、artifact、onboarding、e2e、回归和个性化评测 | `evals/` |
 | Runtime Adapters | 面向不同 runtime 的投影说明，不复制方法论 | `adapters/` |
 
@@ -158,6 +168,7 @@ _archived/pm-copilot-legacy-v1.0/
 19. Project Onboarding Protocol 用于首次进入或恢复项目时生成 project profile 和 artifact index 初始化建议；它只输出 proposal，不自动写入、扫描、迁移、删除或重命名用户项目资产。
 20. `docs/release-note-milestone-5-project-onboarding.md` 是 Milestone 5 Project Onboarding 的用户价值和交付摘要，不替代架构说明或发布 runbook。
 21. `references/source-blueprints/` 只作为本地研究归档存在，已被 git ignore；它可保存早期源蓝图、历史设计输入和 benchmark synthesis，但不覆盖当前协议、schema、loop、skill、eval，也不得进入 package surface 或 runtime export。
+22. M6 Delivery Kernel 记录在 `docs/delivery-kernel.md`；它新增 `create`、`improve`、`reframe` 三种交付模式和 Definition Sync Loop，但仍保持 8 个 active builder skills，不新增用户显性 skill。
 
 ## 验证策略
 

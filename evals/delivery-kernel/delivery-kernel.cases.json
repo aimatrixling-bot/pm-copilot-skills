@@ -1,0 +1,108 @@
+{
+  "suite": "delivery-kernel",
+  "status": "m8",
+  "purpose": "覆盖 Delivery Kernel v0.1 的三种交付模式和 Definition Sync 分类，确保复杂构建任务先冻结定义、再执行、完成前检查漂移。",
+  "cases": [
+    {
+      "id": "delivery-create-module-execution-pack",
+      "delivery_mode": "create",
+      "input": "从 0 做一个新模块，没有稳定基线，需要先冻结目标、非目标、字段、操作、状态和验收标准。",
+      "expected_artifact": "module_execution_pack",
+      "expected_template": "templates/module-execution-pack/template.md",
+      "expected_next_skills": [
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "delivery_mode",
+        "create",
+        "non_goals",
+        "acceptance",
+        "verification",
+        "definition_sync"
+      ],
+      "must_not_include": [
+        "change_contract",
+        "reuse unstable baseline",
+        "direct implementation before contract"
+      ]
+    },
+    {
+      "id": "delivery-improve-change-contract",
+      "delivery_mode": "improve",
+      "input": "已有稳定页面，只做局部优化，必须保留路由、主流程、数据结构和现有验证方式。",
+      "expected_artifact": "change_contract",
+      "expected_template": "templates/change-contract/template.md",
+      "expected_next_skills": [
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "current_baseline",
+        "preserve",
+        "do_not_touch",
+        "acceptance",
+        "verification",
+        "definition_sync"
+      ],
+      "must_not_include": [
+        "full redesign",
+        "reframe without human decision",
+        "scope expansion"
+      ]
+    },
+    {
+      "id": "delivery-reframe-asset-digestion",
+      "delivery_mode": "reframe",
+      "input": "有旧资产，但目标 IA、流程和页面形态需要重定，不能直接复制旧实现。",
+      "expected_artifact": "module_execution_pack",
+      "expected_template": "templates/module-execution-pack/template.md",
+      "expected_next_skills": [
+        "builder-review",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "source_assets",
+        "do_not_copy",
+        "target_shape",
+        "delivery_mode",
+        "reframe",
+        "definition_sync"
+      ],
+      "must_not_include": [
+        "treat old assets as source of truth",
+        "copy competitor UI directly",
+        "skip target shape"
+      ]
+    },
+    {
+      "id": "definition-sync-drift-classes",
+      "delivery_mode": "improve",
+      "input": "实现完成后发现部分行为和 Change Contract 不一致，需要完成前分类漂移。",
+      "expected_artifact": "definition_drift_check",
+      "expected_template": "templates/definition-drift-check/template.md",
+      "expected_next_skills": [
+        "builder-review",
+        "builder-spec",
+        "builder-decision"
+      ],
+      "must_include": [
+        "Implementation Adjustment",
+        "Spec Gap",
+        "Requirement Change",
+        "Conflict / Contradiction",
+        "definition_sync_audit",
+        "docs_to_update"
+      ],
+      "must_not_include": [
+        "auto promote implementation to requirement",
+        "approve without evidence",
+        "auto delete artifacts"
+      ]
+    }
+  ]
+}

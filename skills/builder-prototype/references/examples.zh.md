@@ -120,10 +120,97 @@ next: ask_user
 2. 最核心的 1 个任务是查看、创建、编辑还是跟进？
 3. 是否涉及权限或敏感数据？
 
+
+## 示例 5：高保真 visual target 可运行原型
+
+输入：
+
+> 按这张工作台截图做一个可运行高保真原型，并给出预览地址和截图证据。
+
+推荐输出：
+
+```yaml
+prototype_mode: prototype_first
+visual_target:
+  type: source_image
+  source: screenshots/workbench-target.png
+  required_for_fidelity: true
+  decision: high-fidelity visual recreation can proceed
+artifact_path: prototypes/workbench/index.html
+fidelity: high
+covered_flows:
+  - 工作台默认视图
+  - 筛选和详情切换
+states_covered:
+  - default
+  - empty
+  - error
+gaps:
+  - 未覆盖移动端 viewport
+  - 未连接真实 API
+runnable_evidence:
+  run_command: npm run dev -- --host 127.0.0.1
+  preview_url: http://127.0.0.1:5173
+  screenshot_path: evidence/workbench-default-1440.png
+  viewport: 1440x900
+  state: default
+  design_qa: not_run
+verification:
+  - 对照 source image 检查布局、密度、状态和关键 copy
+next: builder-review
+```
+
+要点：高保真不是只产出代码，还要保留 source visual、运行方式和截图证据。
+
+## 示例 6：缺少 visual target 的高保真降级
+
+输入：
+
+> 没有截图或 URL，你直接做一个高保真 redesign。
+
+推荐输出：
+
+```yaml
+prototype_mode: degraded_prototype
+visual_target:
+  type: brief_only
+  source: text brief only
+  required_for_fidelity: true
+  decision: degrade high-fidelity request because no source visual exists
+artifact_path: prototypes/redesign/wireframe.md
+fidelity: medium
+covered_flows:
+  - 页面结构
+  - 主流程草图
+states_covered:
+  - default
+  - empty
+gaps:
+  - 缺少 source image、source URL、existing code 或用户选中的 generated option
+  - 不能声称 faithful high-fidelity match
+runnable_evidence:
+  run_command: open prototypes/redesign/wireframe.md
+  preview_url: not_applicable
+  screenshot_path: not_verified
+  viewport: not_applicable
+  state: default/empty
+  design_qa: not_applicable
+verification:
+  - 人工评审结构是否值得进入 visual target 生成或截图还原
+next: ask_user
+```
+
+高价值问题最多 3 个：
+
+1. 是否有截图、Figma、URL 或现有页面代码作为 visual target？
+2. 这次 redesign 是要视觉还原、方向探索，还是信息架构验证？
+3. 需要先生成 2-3 个视觉方向供选择吗？
+
 ## 反模式
 
 - 只输出 `not_ready_for_prototype`，没有低保真产物、缺口或下一步。
 - 所有场景都走 `Frame -> Prototype -> Spec`，忽略高风险工程和 PMS boundary。
 - 把业务规则、领域解释、验收标准塞进界面主体。
 - 输出 20+ 字段但没有可看的 artifact、状态覆盖或验证方式。
+- 高保真视觉还原没有 visual target、preview URL、screenshot_path 或 runnable evidence，却声称已经通过设计验证。
 - active skill 指向不存在的 legacy runtime references。
