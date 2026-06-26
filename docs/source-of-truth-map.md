@@ -5,6 +5,7 @@
 | Question / Concern | Source of Truth | Supporting Assets | Do Not Duplicate In | Notes |
 | --- | --- | --- | --- | --- |
 | AI Builder OS 是什么、如何安装、如何验证 | `README.md` | `skill-pack.json`、`package.json`、`docs/architecture.md` | skill、template、release seal | README 只放入口说明和命令，不承载细粒度运行协议。 |
+| Claude Code source checkout 如何进入本仓库 | `AGENTS.md` | `CLAUDE.md`、`adapters/claude-code/`、`docs/architecture.md` | skill、release seal、Review Packet | `CLAUDE.md` 是 Claude Code 入口 shim，只指向事实源，不承载第二套长期规则。 |
 | 系统分层、package surface、runtime adapter 边界 | `docs/architecture.md` | `skill-pack.json`、`agents/openai.yaml`、`adapters/` | README、release seal、skill | 架构文档说明结构，不写具体 skill 的长执行步骤。 |
 | What are delivery modes? | `docs/delivery-kernel.md` | `skills/builder-router/SKILL.md`、`templates/module-execution-pack/template.md`、`templates/change-contract/template.md` | release seal、README、Branch State | delivery mode 的长期定义只在 Delivery Kernel 维护。 |
 | How does routing work? | `skills/builder-router/SKILL.md` | `kernel/routing/`、`evals/routing/builder-routing.cases.json`、`evals/output-contract/builder-router.schema.json` | README、Delivery Kernel、review packet | Router skill 定义实时输出结构；eval/schema 只验证关键纪律。 |

@@ -24,6 +24,7 @@
   "files": [
     "skill-pack.json",
     "AGENTS.md",
+    "CLAUDE.md",
     "agents/",
     "kernel/",
     "harness/",

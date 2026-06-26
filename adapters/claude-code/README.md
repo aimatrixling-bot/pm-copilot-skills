@@ -2,6 +2,8 @@
 
 本适配器说明 AI Builder OS 如何投影到 Claude Code。
 
+源码仓库中的 `CLAUDE.md` 只作为 Claude Code source checkout 入口；长期规则仍以 `AGENTS.md` 和 `docs/source-of-truth-map.md` 为准。
+
 ## 调用方式（Invocation）
 
 - 显式 slash 风格：`/builder-spec`

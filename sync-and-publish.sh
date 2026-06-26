@@ -79,6 +79,7 @@ const pack = JSON.parse(output)[0];
 const files = pack.files.map(f => f.path);
 const required = [
   'README.md',
+  'CLAUDE.md',
   'install.js',
   'package.json',
   'skill-pack.json',

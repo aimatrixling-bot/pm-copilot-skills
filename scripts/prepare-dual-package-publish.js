@@ -30,6 +30,7 @@ const allowedPackageDocs = [
 const requiredPackFiles = [
   'README.md',
   'AGENTS.md',
+  'CLAUDE.md',
   'install.js',
   'package.json',
   'skill-pack.json',

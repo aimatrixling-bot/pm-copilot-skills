@@ -130,6 +130,7 @@ M3.2 后，对外 package surface 由这些文件共同定义：
 
 - `package.json`：保留 `pm-copilot-skills` 兼容 npm package id，并提供 `ai-builder-os` 命令别名。
 - `skill-pack.json`：机器可读的 AI Builder OS manifest，声明 active skills、共享资源、runtime adapters、release gates 和 legacy 排除边界。
+- `AGENTS.md` 与 `CLAUDE.md`：source repo agent contract 和 Claude Code 入口 shim；长期规则仍以 `docs/source-of-truth-map.md` 指定位置为准。
 - `agents/openai.yaml`：面向 OpenAI/Codex 生态的轻量 metadata，声明 pure builder core surface。
 - `bundles/core/manifest.json`：AI Builder OS core bundle。
 - `install.js`：把 8 个 active builder skills、共享 `kernel/harness/memory/loops/references/templates/adapters`，以及运行时必需的 `docs/delivery-kernel.md`、`docs/source-of-truth-map.md` 投影到 Claude Code / Codex / generic skill 目录。

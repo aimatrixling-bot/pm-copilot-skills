@@ -62,6 +62,7 @@ const packageJson = readJson('package.json');
 const skillPack = readJson('skill-pack.json');
 const coreManifest = readJson('bundles/core/manifest.json');
 const openaiYaml = read('agents/openai.yaml');
+const claudeMd = read('CLAUDE.md');
 const readme = read('README.md');
 const installScript = read('install.js');
 const syncScript = read('sync-and-publish.sh');
@@ -85,6 +86,7 @@ assert(packageJson.scripts['prepare:dual-package-publish'] === 'node scripts/pre
 for (const requiredFileEntry of [
   'skill-pack.json',
   'AGENTS.md',
+  'CLAUDE.md',
   'agents/',
   'skills/',
   'kernel/',
@@ -171,6 +173,11 @@ assert(openaiYaml.includes('npm run validate:dual-package-dry-run'), 'agents/ope
 assert(openaiYaml.includes('npm run prepare:dual-package-publish'), 'agents/openai.yaml 必须声明 dual package publish prep gate');
 
 assert(readme.includes('AI Builder OS package surface'), 'README 必须说明 AI Builder OS package surface');
+assert(readme.includes('CLAUDE.md'), 'README 必须说明 Claude Code 入口 shim');
+assert(claudeMd.includes('Claude Code Project Shim'), 'CLAUDE.md 必须声明 Claude Code Project Shim');
+assert(claudeMd.includes('不是新的长期 source of truth'), 'CLAUDE.md 必须声明不是新的长期 source of truth');
+assert(claudeMd.includes('AGENTS.md') && claudeMd.includes('docs/source-of-truth-map.md'), 'CLAUDE.md 必须指向 AGENTS.md 和 source-of-truth map');
+assert(claudeMd.includes('active core skills 必须保持 8 个'), 'CLAUDE.md 必须保留 8 core skills 边界');
 assert(readme.includes('Runtime adapter/export'), 'README 必须说明 runtime adapter/export');
 assert(readme.includes('Trigger description'), 'README 必须说明 Trigger description gate');
 assert(readme.includes('Milestone 3.9'), 'README 必须说明当前 publish prep 阶段');
@@ -185,6 +192,7 @@ assert(readme.includes('兼容 npm package id'), 'README 必须说明 pm-copilot
 assert(installScript.includes('ai-builder-os'), 'install.js 必须暴露 ai-builder-os 用法或命令别名说明');
 assert(syncScript.includes('validate:package-surface'), 'sync-and-publish.sh 必须运行 validate:package-surface');
 assert(syncScript.includes('skill-pack.json'), 'sync-and-publish.sh pack gate 必须检查 skill-pack.json');
+assert(syncScript.includes('CLAUDE.md'), 'sync-and-publish.sh pack gate 必须检查 CLAUDE.md');
 assert(syncScript.includes('agents/openai.yaml'), 'sync-and-publish.sh pack gate 必须检查 agents/openai.yaml');
 assert(syncScript.includes('scripts/export-ai-builder-os.js'), 'sync-and-publish.sh pack gate 必须检查 export script');
 assert(syncScript.includes('validate:runtime-adapters'), 'sync-and-publish.sh 必须运行 validate:runtime-adapters');
