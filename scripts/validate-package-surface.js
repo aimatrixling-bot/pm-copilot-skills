@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
 const builderSkills = [
@@ -13,6 +14,11 @@ const builderSkills = [
   'builder-agent-task',
   'builder-review',
   'builder-decision',
+];
+const allowedPackageDocs = [
+  'docs/architecture.md',
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
 ];
 
 const failures = [];
@@ -37,6 +43,19 @@ function listDirs(relativePath) {
 
 function sameSet(actual, expected) {
   return actual.length === expected.length && expected.every((item) => actual.includes(item));
+}
+
+function isForbiddenPackageDoc(filePath) {
+  return filePath.startsWith('docs/release-') || (filePath.startsWith('docs/') && filePath.includes('hardening-brief'));
+}
+
+function npmPackFiles() {
+  const output = execSync('npm pack --dry-run --json', {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  return JSON.parse(output)[0].files.map((file) => file.path).sort();
 }
 
 const packageJson = readJson('package.json');
@@ -73,17 +92,18 @@ for (const requiredFileEntry of [
   'memory/',
   'loops/',
   'references/README.md',
+  'references/prototype-to-spec.zh.md',
   'references/legacy-pm-methods/',
   'references/skill-design/',
   'references/ui-ux/',
   'templates/',
   'adapters/',
   'evals/',
-  'docs/',
+  ...allowedPackageDocs,
 ]) {
   assert(packageJson.files.includes(requiredFileEntry), `package files 必须包含 ${requiredFileEntry}`);
 }
-for (const forbiddenFileEntry of ['_archived/', 'research/', 'references/', 'references/source-blueprints/']) {
+for (const forbiddenFileEntry of ['_archived/', 'research/', 'references/', 'references/source-blueprints/', 'docs/']) {
   assert(!packageJson.files.includes(forbiddenFileEntry), `package files 不应包含 ${forbiddenFileEntry}`);
 }
 
@@ -101,7 +121,15 @@ for (const sharedResource of ['kernel/', 'harness/', 'memory/', 'loops/', 'docs/
 }
 assert(coreManifest.references.includes('loops/'), 'core bundle manifest references 必须包含 loops/');
 assert(coreManifest.references.includes('docs/'), 'core bundle manifest references 必须包含 docs/');
-assert(installScript.includes('"docs"'), 'install.js 必须把 docs 复制到 runtime shared resources');
+assert(installScript.includes('runtimeDocResourcePaths'), 'install.js 必须使用 runtime docs allowlist');
+for (const docPath of ['docs/delivery-kernel.md', 'docs/source-of-truth-map.md']) {
+  assert(installScript.includes(docPath), `install.js runtime docs allowlist 缺少 ${docPath}`);
+}
+assert(!/builderSharedResourceNames\s*=\s*\[[^\]]*"docs"/.test(installScript), 'install.js 不得把整个 docs/ 复制到 runtime shared resources');
+assert(installScript.includes('parseArgs'), 'install.js 必须使用显式参数解析');
+assert(installScript.includes('--help') && installScript.includes('--version'), 'install.js 必须支持无写入 help/version 参数');
+assert(installScript.includes('path.resolve(process.cwd(), ".agents", "skills")'), 'install.js codex-project 必须安装到项目 .agents/skills');
+assert(!installScript.includes('path.resolve(process.cwd(), ".codex", "skills")'), 'install.js codex-project 不得安装到旧 .codex/skills');
 
 assert(skillPack.export.script === 'scripts/export-ai-builder-os.js', 'skill-pack export.script 必须指向 export-ai-builder-os.js');
 assert(skillPack.export.validator === 'scripts/validate-runtime-adapters.js', 'skill-pack export.validator 必须指向 validate-runtime-adapters.js');
@@ -122,6 +150,9 @@ assert(skillPack.release_gates.includes('npm run prepare:dual-package-publish'),
 
 for (const excluded of ['_archived/', 'research/', 'skills/pm-*', 'skills/pdf', 'skills/pptx', 'skills/download-anything', 'skills/references', 'references/source-blueprints/']) {
   assert(skillPack.active_surface.excluded_from_package_surface.includes(excluded), `skill-pack 必须声明排除 ${excluded}`);
+}
+for (const excludedDoc of ['docs/release-*.md', 'docs/*hardening-brief.md']) {
+  assert(skillPack.active_surface.excluded_from_package_surface.includes(excludedDoc), `skill-pack 必须声明排除 ${excludedDoc}`);
 }
 
 for (const skillName of builderSkills) {
@@ -164,14 +195,28 @@ assert(syncScript.includes('validate:onboarding-evals'), 'sync-and-publish.sh �
 assert(syncScript.includes('scripts/validate-dual-package-dry-run.js'), 'sync-and-publish.sh pack gate 必须检查 dual package dry-run validator');
 assert(syncScript.includes('validate:dual-package-dry-run'), 'sync-and-publish.sh 必须运行 validate:dual-package-dry-run');
 assert(syncScript.includes('scripts/prepare-dual-package-publish.js'), 'sync-and-publish.sh pack gate 必须检查 dual package publish prep script');
-assert(syncScript.includes('docs/release-seal-m3.5.md'), 'sync-and-publish.sh pack gate 必须检查 M3.5 release seal');
-assert(syncScript.includes('docs/release-seal-m3.7.md'), 'sync-and-publish.sh pack gate 必须检查 M3.7 release seal');
-assert(syncScript.includes('docs/release-seal-m3.8.md'), 'sync-and-publish.sh pack gate 必须检查 M3.8 release seal');
-assert(syncScript.includes('docs/release-seal-m3.8.1.md'), 'sync-and-publish.sh pack gate 必须检查 M3.8.1 release seal');
-assert(syncScript.includes('docs/release-runbook-m3.9.md'), 'sync-and-publish.sh pack gate 必须检查 M3.9 release runbook');
-assert(syncScript.includes('docs/release-seal-m3.9.md'), 'sync-and-publish.sh pack gate 必须检查 M3.9 release seal');
-assert(syncScript.includes('docs/release-plan-1.0.md'), 'sync-and-publish.sh pack gate 必须检查 1.0 release plan');
+for (const docPath of allowedPackageDocs) {
+  assert(syncScript.includes(docPath), `sync-and-publish.sh pack gate 必须检查 package docs allowlist: ${docPath}`);
+}
+assert(syncScript.includes('docs/release-'), 'sync-and-publish.sh pack gate 必须禁止 release docs');
+assert(syncScript.includes('hardening-brief'), 'sync-and-publish.sh pack gate 必须禁止 docs hardening briefs');
 assert(syncScript.includes('forbiddenPrefixes'), 'sync-and-publish.sh pack gate 必须检查 forbidden package prefixes');
+
+try {
+  const packFiles = npmPackFiles();
+  const packDocs = packFiles.filter((file) => file.startsWith('docs/')).sort();
+  assert(
+    sameSet(packDocs, allowedPackageDocs),
+    `npm pack docs surface 必须只包含 ${allowedPackageDocs.join(', ')}，实际: ${packDocs.join(', ')}`,
+  );
+  const forbiddenPackDocs = packFiles.filter(isForbiddenPackageDoc);
+  assert(
+    forbiddenPackDocs.length === 0,
+    `npm pack 不得包含 release/hardening docs: ${forbiddenPackDocs.join(', ')}`,
+  );
+} catch (error) {
+  failures.push(`npm pack --dry-run --json 执行失败: ${error.message}`);
+}
 
 if (failures.length > 0) {
   console.error('Package surface 验证失败:');

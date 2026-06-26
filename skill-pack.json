@@ -44,6 +44,8 @@
       "skills/pptx",
       "skills/download-anything",
       "skills/references",
+      "docs/release-*.md",
+      "docs/*hardening-brief.md",
       "references/source-blueprints/"
     ]
   },

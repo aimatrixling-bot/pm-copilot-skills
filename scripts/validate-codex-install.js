@@ -22,6 +22,10 @@ const builderSkills = sourceEntries.filter((entry) => entry.startsWith('builder-
 const legacyInstalledNames = new Set(['download-anything', 'pdf', 'pptx', 'references']);
 const failures = [];
 const warnings = [];
+const allowedRuntimeDocs = [
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
+];
 const utf8Decoder = new TextDecoder('utf-8', { fatal: true });
 const mojibakeTokens = ['�', '锛', '銆', '鐢', '浠', '璧', '杈', '妯', '璐', '浜', '鎶', '鏄', '闇'];
 const builderSharedResources = [
@@ -41,6 +45,7 @@ const builderSharedResources = [
   'docs/delivery-kernel.md',
   'docs/source-of-truth-map.md',
   'references/README.md',
+  'references/prototype-to-spec.zh.md',
   'references/skill-design/README.md',
   'references/skill-design/skill-design-playbook.zh.md',
   'references/ui-ux/design-principles.zh.md',
@@ -92,6 +97,24 @@ function markerPackageIsAllowed(packageName) {
 
 function allowedMarkerPackageLabel() {
   return Array.from(allowedMarkerPackages).sort().join(' / ');
+}
+
+function listFiles(dirPath, baseDir = dirPath) {
+  if (!fs.existsSync(dirPath)) return [];
+  const files = [];
+  for (const entry of fs.readdirSync(dirPath)) {
+    const fullPath = path.join(dirPath, entry);
+    if (fs.statSync(fullPath).isDirectory()) {
+      files.push(...listFiles(fullPath, baseDir));
+    } else {
+      files.push(path.relative(baseDir, fullPath).split(path.sep).join('/'));
+    }
+  }
+  return files.sort();
+}
+
+function sameSet(actual, expected) {
+  return actual.length === expected.length && expected.every((item) => actual.includes(item));
 }
 
 assert(fs.existsSync(targetDir), `Codex 用户级 skills 目录不存在: ${targetDir}`);
@@ -184,6 +207,12 @@ for (const skillName of builderSkills) {
       `${skillName} 缺少共享资源 ${relativePath}`,
     );
   }
+
+  const docs = listFiles(path.join(skillDir, 'docs')).map((file) => `docs/${file}`).sort();
+  assert(
+    sameSet(docs, allowedRuntimeDocs),
+    `${skillName} docs runtime surface 必须只包含 ${allowedRuntimeDocs.join(', ')}，实际: ${docs.join(', ')}`,
+  );
 }
 
 if (failures.length > 0) {

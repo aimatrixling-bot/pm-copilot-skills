@@ -38,11 +38,14 @@
     "templates/",
     "adapters/",
     "examples/",
-    "docs/",
+    "docs/architecture.md",
+    "docs/delivery-kernel.md",
+    "docs/source-of-truth-map.md",
     "scripts/",
     "evals/",
     "install.js",
-    "README.md"
+    "README.md",
+    "references/prototype-to-spec.zh.md"
   ],
   "keywords": [
     "ai-builder-os",

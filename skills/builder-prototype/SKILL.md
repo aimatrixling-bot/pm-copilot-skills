@@ -16,10 +16,10 @@ argument-hint: "[frame/spec/PRD/path/description] [--fidelity=low|medium|high]"
 
 ## 资源读取
 
-- 判断三路径和降级策略时，读取 `skills/builder-prototype/references/prototype-path-rules.zh.md`。
-- 判断 visual target、source visual 和高保真降级策略时，读取 `skills/builder-prototype/references/visual-target-rules.zh.md`。
-- 生成或交接可运行原型证据时，读取 `skills/builder-prototype/references/coded-prototype-recipe.zh.md`。
-- 需要示例、反模式或输出风格时，读取 `skills/builder-prototype/references/examples.zh.md`。
+- 判断三路径和降级策略时，读取 `references/prototype-path-rules.zh.md`。
+- 判断 visual target、source visual 和高保真降级策略时，读取 `references/visual-target-rules.zh.md`。
+- 生成或交接可运行原型证据时，读取 `references/coded-prototype-recipe.zh.md`。
+- 需要示例、反模式或输出风格时，读取 `references/examples.zh.md`。
 - 编写 prototype brief 或交接原型产物时，读取 `templates/prototype-brief/template.md`。
 - 输入来自 Delivery Kernel 时，读取 `docs/delivery-kernel.md`、`templates/module-execution-pack/template.md`、`templates/change-contract/template.md` 和 `templates/branch-state/template.md`。
 - 涉及界面规范时，读取 `templates/design-brief/template.md`、`references/ui-ux/`、`kernel/gates/design-consistency-gate.zh.md` 和 `kernel/gates/product-logic-containment-gate.zh.md`。
@@ -151,10 +151,10 @@ next: builder-review | builder-agent-task | builder-spec | builder-frame | itera
 
 ## 参考
 
-- `skills/builder-prototype/references/prototype-path-rules.zh.md`
-- `skills/builder-prototype/references/visual-target-rules.zh.md`
-- `skills/builder-prototype/references/coded-prototype-recipe.zh.md`
-- `skills/builder-prototype/references/examples.zh.md`
+- `references/prototype-path-rules.zh.md`
+- `references/visual-target-rules.zh.md`
+- `references/coded-prototype-recipe.zh.md`
+- `references/examples.zh.md`
 - `templates/prototype-brief/template.md`
 - `docs/delivery-kernel.md`
 - `templates/module-execution-pack/template.md`

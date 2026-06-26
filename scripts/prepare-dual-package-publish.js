@@ -18,6 +18,14 @@ const builderSkills = [
   'builder-review',
   'builder-decision',
 ];
+const allowedRuntimeDocs = [
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
+];
+const allowedPackageDocs = [
+  'docs/architecture.md',
+  ...allowedRuntimeDocs,
+];
 
 const requiredPackFiles = [
   'README.md',
@@ -39,19 +47,15 @@ const requiredPackFiles = [
   'loops/README.md',
   'loops/recipes/artifact-hygiene.loop.md',
   'loops/recipes/definition-sync.loop.md',
+  'docs/architecture.md',
   'docs/delivery-kernel.md',
   'docs/source-of-truth-map.md',
   'evals/artifact/artifact-index-sync.cases.json',
   'evals/artifact/artifact-cleanup-proposal.cases.json',
   'evals/artifact/artifact-consistency-audit.cases.json',
   'evals/onboarding/project-onboarding.cases.json',
-  'docs/release-note-milestone-5-project-onboarding.md',
-  'docs/release-runbook-m3.9.md',
-  'docs/release-seal-m3.9.md',
-  'docs/release-plan-1.0.md',
-  'docs/release-seal-m3.8.md',
-  'docs/release-seal-m3.8.1.md',
   'references/README.md',
+  'references/prototype-to-spec.zh.md',
   'references/legacy-pm-methods/README.md',
   'references/skill-design/README.md',
   'references/skill-design/skill-design-playbook.zh.md',
@@ -75,6 +79,7 @@ const forbiddenPrefixes = [
   'skills/pptx',
   'skills/download-anything',
   'skills/references',
+  'docs/release-',
   'references/source-blueprints/',
 ];
 
@@ -190,6 +195,29 @@ function writeJson(filePath, value) {
   fs.writeFileSync(filePath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
 }
 
+function listFiles(dirPath, baseDir = dirPath) {
+  if (!fs.existsSync(dirPath)) return [];
+  const files = [];
+  for (const entry of fs.readdirSync(dirPath)) {
+    const fullPath = path.join(dirPath, entry);
+    if (fs.statSync(fullPath).isDirectory()) {
+      files.push(...listFiles(fullPath, baseDir));
+    } else {
+      files.push(path.relative(baseDir, fullPath).split(path.sep).join('/'));
+    }
+  }
+  return files.sort();
+}
+
+function sameSet(actual, expected) {
+  return actual.length === expected.length && expected.every((item) => actual.includes(item));
+}
+
+function isForbiddenPackFile(filePath) {
+  return forbiddenPrefixes.some((prefix) => filePath.startsWith(prefix)) ||
+    (filePath.startsWith('docs/') && filePath.includes('hardening-brief'));
+}
+
 function sha512(filePath) {
   return crypto.createHash('sha512').update(fs.readFileSync(filePath)).digest('hex');
 }
@@ -249,7 +277,8 @@ function rewriteProjectionMetadata(targetRoot, target) {
 function validatePack(pack, target) {
   const files = pack.files.map((file) => file.path);
   const missing = requiredPackFiles.filter((file) => !files.includes(file));
-  const forbidden = files.filter((file) => forbiddenPrefixes.some((prefix) => file.startsWith(prefix)));
+  const forbidden = files.filter(isForbiddenPackFile);
+  const docs = files.filter((file) => file.startsWith('docs/')).sort();
 
   if (pack.name !== target.packageName) {
     throw new Error(`${target.id} package name mismatch: expected ${target.packageName}, got ${pack.name}`);
@@ -263,11 +292,14 @@ function validatePack(pack, target) {
   if (forbidden.length > 0) {
     throw new Error(`${target.id} package contains forbidden files: ${forbidden.join(', ')}`);
   }
+  if (!sameSet(docs, allowedPackageDocs)) {
+    throw new Error(`${target.id} package docs surface mismatch. expected=${allowedPackageDocs.join(', ')} actual=${docs.join(', ')}`);
+  }
 }
 
 function validateInstallProjection(targetRoot, target) {
   run(process.execPath, ['install.js', 'codex-project', '--overwrite'], { cwd: targetRoot });
-  const installRoot = path.join(targetRoot, '.codex', 'skills');
+  const installRoot = path.join(targetRoot, '.agents', 'skills');
   const installedDirs = fs.readdirSync(installRoot)
     .filter((entry) => fs.statSync(path.join(installRoot, entry)).isDirectory())
     .sort();
@@ -278,6 +310,13 @@ function validateInstallProjection(targetRoot, target) {
     throw new Error(
       `${target.id} install projection mismatch. unexpected=${unexpected.join(', ')} missing=${missing.join(', ')}`,
     );
+  }
+
+  for (const skillName of builderSkills) {
+    const docs = listFiles(path.join(installRoot, skillName, 'docs')).map((file) => `docs/${file}`).sort();
+    if (!sameSet(docs, allowedRuntimeDocs)) {
+      throw new Error(`${target.id}/${skillName} installed docs surface mismatch. expected=${allowedRuntimeDocs.join(', ')} actual=${docs.join(', ')}`);
+    }
   }
 }
 

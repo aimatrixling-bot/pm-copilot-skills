@@ -89,7 +89,7 @@ M3.7 不 publish，只验证技术可行性：
 - 从当前 source projection 出 `ai-builder-os` 主包。
 - 从当前 source projection 出 `pm-copilot-skills` 兼容包。
 - 两个 projection 都运行 `npm pack --dry-run --json`。
-- 两个 projection 都在临时目录运行 `node install.js codex-project --overwrite`。
+- 两个 projection 都在临时目录运行 `node install.js codex-project --overwrite`，并验证安装根目录是项目 `.agents/skills`。
 - 两个 projection 都只安装 8 个 active builder skills。
 - forbidden package prefixes 不进入任何 projection。
 

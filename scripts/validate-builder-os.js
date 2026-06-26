@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
@@ -131,7 +132,7 @@ const requiredFiles = [
   'skills/builder-spec/templates/builder-spec.template.md',
   'skills/builder-spec/references/spec-rules.zh.md',
   'skills/builder-spec/references/acceptance-criteria.zh.md',
-  'skills/builder-spec/references/prototype-to-spec.zh.md',
+  'references/prototype-to-spec.zh.md',
   'skills/builder-spec/references/examples-prototype-to-spec.zh.md',
   'skills/builder-spec/references/migration-notes.md',
   'skills/builder-prototype/references/prototype-path-rules.zh.md',
@@ -410,10 +411,10 @@ const builderCoreExpectations = {
     'templates/change-contract/template.md',
     'templates/branch-state/template.md',
     'docs/delivery-kernel.md',
-    'skills/builder-prototype/references/prototype-path-rules.zh.md',
-    'skills/builder-prototype/references/visual-target-rules.zh.md',
-    'skills/builder-prototype/references/coded-prototype-recipe.zh.md',
-    'skills/builder-prototype/references/examples.zh.md',
+    'references/prototype-path-rules.zh.md',
+    'references/visual-target-rules.zh.md',
+    'references/coded-prototype-recipe.zh.md',
+    'references/examples.zh.md',
     'kernel/gates/fake-ui-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
     'kernel/gates/product-logic-containment-gate.zh.md',
@@ -513,9 +514,9 @@ const builderCoreExpectations = {
     'kernel/gates/fake-test-gate.zh.md',
     'kernel/gates/design-consistency-gate.zh.md',
     'kernel/gates/product-logic-containment-gate.zh.md',
-    'skills/builder-review/references/prototype-to-spec-review.zh.md',
-    'skills/builder-review/references/prototype-design-evidence-review.zh.md',
-    'skills/builder-spec/references/prototype-to-spec.zh.md',
+    'references/prototype-to-spec-review.zh.md',
+    'references/prototype-design-evidence-review.zh.md',
+    'references/prototype-to-spec.zh.md',
     'loops/recipes/artifact-hygiene.loop.md',
     'loops/recipes/design-plan-to-prototype.loop.md',
     'loops/recipes/definition-sync.loop.md',
@@ -1477,6 +1478,75 @@ function assert(condition, message, failures) {
   if (!condition) failures.push(message);
 }
 
+function validateActiveSkillRuntimeReferences(failures) {
+  for (const skillName of builderSkills) {
+    const relativePath = path.join('skills', skillName, 'SKILL.md');
+    const content = read(relativePath);
+    assert(!/skills\/builder-[^`\s]+\/references\//.test(content), `${relativePath} 不得引用 source-only builder private references 路径`, failures);
+    assert(!/skills\/pm-[^`\s]+/.test(content), `${relativePath} 不得引用 legacy skills/pm-* 路径`, failures);
+    assert(!/C:\\Users\\max\.ling/.test(content), `${relativePath} 不得包含本机绝对路径`, failures);
+  }
+}
+
+function validateInstallerSafeArgs(failures) {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-builder-os-installer-safe-'));
+  const tempHome = path.join(tempRoot, 'home');
+  const tempProject = path.join(tempRoot, 'project');
+  fs.mkdirSync(tempHome, { recursive: true });
+  fs.mkdirSync(tempProject, { recursive: true });
+
+  const env = {
+    ...process.env,
+    HOME: tempHome,
+    USERPROFILE: tempHome,
+    CODEX_HOME: path.join(tempRoot, 'codex-home'),
+  };
+  const installScriptPath = path.join(root, 'install.js');
+
+  function assertNoInstallArtifacts(label) {
+    for (const baseDir of [tempHome, tempProject, env.CODEX_HOME]) {
+      for (const entry of ['.agents', '.claude', '.codex']) {
+        assert(
+          !fs.existsSync(path.join(baseDir, entry)),
+          `${label} 不应创建 ${path.join(baseDir, entry)}`,
+          failures,
+        );
+      }
+    }
+  }
+
+  try {
+    execFileSync(process.execPath, [installScriptPath, '--help'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    assertNoInstallArtifacts('install.js --help');
+
+    execFileSync(process.execPath, [installScriptPath, '--version'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    assertNoInstallArtifacts('install.js --version');
+
+    let unknownArgFailed = false;
+    try {
+      execFileSync(process.execPath, [installScriptPath, '--not-a-real-option'], {
+        cwd: tempProject,
+        env,
+        stdio: 'pipe',
+      });
+    } catch {
+      unknownArgFailed = true;
+    }
+    assert(unknownArgFailed, 'install.js unknown args 必须失败退出', failures);
+    assertNoInstallArtifacts('install.js unknown args');
+  } finally {
+    fs.rmSync(tempRoot, { recursive: true, force: true });
+  }
+}
+
 const failures = [];
 
 for (const relativePath of requiredFiles) {
@@ -1492,6 +1562,8 @@ if (fs.existsSync(path.join(root, '.git'))) {
     }
   }
 }
+
+validateActiveSkillRuntimeReferences(failures);
 
 for (const [relativePath, expectedTerms] of Object.entries(legacyArchiveExpectations)) {
   const fullPath = path.join(root, relativePath);
@@ -1992,9 +2064,9 @@ if (Array.isArray(builderReviewContract.required_reference_files)) {
   for (const fileName of [
     'kernel/gates/product-logic-containment-gate.zh.md',
     'docs/delivery-kernel.md',
-    'skills/builder-review/references/prototype-to-spec-review.zh.md',
-    'skills/builder-review/references/prototype-design-evidence-review.zh.md',
-    'skills/builder-spec/references/prototype-to-spec.zh.md',
+    'references/prototype-to-spec-review.zh.md',
+    'references/prototype-design-evidence-review.zh.md',
+    'references/prototype-to-spec.zh.md',
     'loops/recipes/design-plan-to-prototype.loop.md',
     'loops/recipes/artifact-hygiene.loop.md',
     'loops/recipes/definition-sync.loop.md',
@@ -2085,8 +2157,13 @@ assert(syncScript.includes('canonical source'), 'sync-and-publish.sh 必须声�
 assert(!syncScript.includes('sync: v$NEW_VERSION'), 'sync-and-publish.sh 不得使用旧的 agent sync commit message', failures);
 assert(!/^AGENT_SKILLS_DIR=/m.test(syncScript), 'sync-and-publish.sh 不得把 agent 目录定义为上游源', failures);
 assert(installScript.includes('codex-user'), 'install.js 必须支持 Codex 用户级安装模式', failures);
+assert(installScript.includes('parseArgs'), 'install.js 必须使用显式参数解析，避免 flag-only 调用落回安装', failures);
+assert(installScript.includes('--help') && installScript.includes('--version'), 'install.js 必须支持无写入的 --help 和 --version', failures);
 assert(installScript.includes('--overwrite'), 'install.js 必须提供显式覆盖外部 skill 的开关', failures);
+assert(installScript.includes('path.resolve(process.cwd(), ".agents", "skills")'), 'install.js codex-project 必须安装到项目 .agents/skills', failures);
+assert(!installScript.includes('path.resolve(process.cwd(), ".codex", "skills")'), 'install.js codex-project 不得安装到旧 .codex/skills', failures);
 assert(gitignore.includes('references/source-blueprints/'), '.gitignore 必须排除本地 source blueprints 研究资料', failures);
+validateInstallerSafeArgs(failures);
 
 const readme = read('README.md');
 const legacyQualityGates = read('_archived/pm-copilot-legacy-v1.0/skills/references/quality-gates-shared.md');
@@ -2443,6 +2520,12 @@ for (const [relativePath, expectedTerms] of Object.entries({
     'D:\\PMS-Dev-AIFirst\\modules\\surgery\\prototype-brief.md',
     'prototype_gaps',
     'prototype_verification',
+  ],
+  'references/prototype-to-spec.zh.md': [
+    'source_prototype.artifact_path',
+    'prototype_gaps',
+    'Spec-first 保护',
+    'Visual Evidence 保护',
   ],
   'skills/builder-review/references/prototype-to-spec-review.zh.md': [
     'source_prototype.artifact_path',

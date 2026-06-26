@@ -15,8 +15,8 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 ## 资源读取
 
 - 通用质量评审时，读取 `kernel/gates/builder-quality-gates.zh.md` 和 `kernel/packets/evidence-packet.schema.md`。
-- 评审 `prototype_to_spec` 输出时，读取 `skills/builder-review/references/prototype-to-spec-review.zh.md` 和 `skills/builder-spec/references/prototype-to-spec.zh.md`。
-- 评审高保真、可运行或 visual-target 原型证据时，读取 `skills/builder-review/references/prototype-design-evidence-review.zh.md`。
+- 评审 `prototype_to_spec` 输出时，读取 `references/prototype-to-spec-review.zh.md` 和共享 `references/prototype-to-spec.zh.md`。
+- 评审高保真、可运行或 visual-target 原型证据时，读取 `references/prototype-design-evidence-review.zh.md`。
 - 评审 UI、prototype 或界面实现时，读取 `kernel/gates/design-consistency-gate.zh.md`、`kernel/gates/product-logic-containment-gate.zh.md`、`templates/design-brief/template.md` 和 `references/ui-ux/`。
 - 评审高保真、可交互或可运行原型时，读取 `loops/recipes/design-plan-to-prototype.loop.md`，检查是否存在 `design_plan`、`runnable_prototype`、`preview_or_run_command`、screenshot 和 Evidence Packet。
 - 检查 demo、mock 或测试可信度时，读取 `kernel/gates/fake-ui-gate.zh.md` 和 `kernel/gates/fake-test-gate.zh.md`。
@@ -287,9 +287,9 @@ profile_specific_sections:
 - `kernel/gates/fake-test-gate.zh.md`
 - `docs/delivery-kernel.md`
 - `kernel/packets/evidence-packet.schema.md`
-- `skills/builder-review/references/prototype-to-spec-review.zh.md`
-- `skills/builder-review/references/prototype-design-evidence-review.zh.md`
-- `skills/builder-spec/references/prototype-to-spec.zh.md`
+- `references/prototype-to-spec-review.zh.md`
+- `references/prototype-design-evidence-review.zh.md`
+- `references/prototype-to-spec.zh.md`
 - `loops/recipes/artifact-hygiene.loop.md`
 - `loops/recipes/design-plan-to-prototype.loop.md`
 - `loops/recipes/definition-sync.loop.md`
@@ -301,4 +301,3 @@ profile_specific_sections:
 - `references/ui-ux/`
 - `evals/output-contract/builder-review.schema.json`
 - `references/skill-design/skill-design-playbook.zh.md`
-- 既有来源：`skills/pm-code-review/SKILL.md`

@@ -9,6 +9,14 @@ const root = path.resolve(__dirname, '..');
 const exportScript = path.join(root, 'scripts', 'export-ai-builder-os.js');
 const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'ai-builder-os-runtime-'));
 const failures = [];
+const allowedRuntimeDocs = [
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
+];
+const allowedPackageDocs = [
+  'docs/architecture.md',
+  ...allowedRuntimeDocs,
+];
 
 function assert(condition, message) {
   if (!condition) failures.push(message);
@@ -27,6 +35,20 @@ function listDirs(dirPath) {
   return fs.readdirSync(dirPath)
     .filter((entry) => fs.statSync(path.join(dirPath, entry)).isDirectory())
     .sort();
+}
+
+function listFiles(dirPath, baseDir = dirPath) {
+  if (!fs.existsSync(dirPath)) return [];
+  const files = [];
+  for (const entry of fs.readdirSync(dirPath)) {
+    const fullPath = path.join(dirPath, entry);
+    if (fs.statSync(fullPath).isDirectory()) {
+      files.push(...listFiles(fullPath, baseDir));
+    } else {
+      files.push(path.relative(baseDir, fullPath).split(path.sep).join('/'));
+    }
+  }
+  return files.sort();
 }
 
 function sameSet(actual, expected) {
@@ -90,7 +112,13 @@ function validateFlatTarget(targetName, targetDir) {
     assert(fs.existsSync(path.join(skillDir, 'loops', 'recipes', 'definition-sync.loop.md')), `${targetName}/${skillName} 缺少 embedded definition sync loop`);
     assert(fs.existsSync(path.join(skillDir, 'docs', 'delivery-kernel.md')), `${targetName}/${skillName} 缺少 embedded delivery kernel docs`);
     assert(fs.existsSync(path.join(skillDir, 'docs', 'source-of-truth-map.md')), `${targetName}/${skillName} 缺少 embedded source-of-truth map`);
+    const docs = listFiles(path.join(skillDir, 'docs')).map((file) => `docs/${file}`).sort();
+    assert(
+      sameSet(docs, allowedRuntimeDocs),
+      `${targetName}/${skillName} docs runtime surface 必须只包含 ${allowedRuntimeDocs.join(', ')}，实际: ${docs.join(', ')}`,
+    );
     assert(fs.existsSync(path.join(skillDir, 'references', 'README.md')), `${targetName}/${skillName} 缺少 embedded references`);
+    assert(fs.existsSync(path.join(skillDir, 'references', 'prototype-to-spec.zh.md')), `${targetName}/${skillName} 缺少 embedded prototype-to-spec shared reference`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'README.md')), `${targetName}/${skillName} 缺少 embedded templates`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'module-execution-pack', 'template.md')), `${targetName}/${skillName} 缺少 embedded module execution pack template`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'change-contract', 'template.md')), `${targetName}/${skillName} 缺少 embedded change contract template`);
@@ -120,6 +148,7 @@ function validateGenericTarget(targetDir) {
     'docs/delivery-kernel.md',
     'docs/source-of-truth-map.md',
     'references/README.md',
+    'references/prototype-to-spec.zh.md',
     'templates/README.md',
     'templates/module-execution-pack/template.md',
     'templates/change-contract/template.md',
@@ -131,6 +160,12 @@ function validateGenericTarget(targetDir) {
   ]) {
     assert(fs.existsSync(path.join(targetDir, resourcePath)), `generic-agent export 缺少 ${resourcePath}`);
   }
+
+  const docs = listFiles(path.join(targetDir, 'docs')).map((file) => `docs/${file}`).sort();
+  assert(
+    sameSet(docs, allowedPackageDocs),
+    `generic-agent docs package surface 必须只包含 ${allowedPackageDocs.join(', ')}，实际: ${docs.join(', ')}`,
+  );
 }
 
 try {

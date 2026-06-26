@@ -84,7 +84,7 @@ npx pm-copilot-skills project
 # 安装到 Codex 用户级 skills 目录（~/.agents/skills）
 npx pm-copilot-skills codex
 
-# 安装到当前项目的 Codex skills 目录
+# 安装到当前项目的 Codex skills 目录（./.agents/skills）
 npx pm-copilot-skills codex-project
 
 # 安装到 Codex home skills 目录（兼容/排查用途）
@@ -132,7 +132,7 @@ M3.2 后，对外 package surface 由这些文件共同定义：
 - `skill-pack.json`：机器可读的 AI Builder OS manifest，声明 active skills、共享资源、runtime adapters、release gates 和 legacy 排除边界。
 - `agents/openai.yaml`：面向 OpenAI/Codex 生态的轻量 metadata，声明 pure builder core surface。
 - `bundles/core/manifest.json`：AI Builder OS core bundle。
-- `install.js`：把 8 个 active builder skills 和共享 `kernel/harness/memory/loops/references/templates/adapters` 投影到 Claude Code / Codex / generic skill 目录。
+- `install.js`：把 8 个 active builder skills、共享 `kernel/harness/memory/loops/references/templates/adapters`，以及运行时必需的 `docs/delivery-kernel.md`、`docs/source-of-truth-map.md` 投影到 Claude Code / Codex / generic skill 目录。
 - `scripts/export-ai-builder-os.js`：把 active builder core 导出到 Codex、Claude Code 或 generic-agent 目标目录。
 - `adapters/*/adapter.json`：声明 runtime target 的 export layout、默认目标和 invocation prefix。
 - `scripts/validate-trigger-descriptions.js` 与 `evals/trigger/builder-description.cases.json`：验证 8 个 builder skills 的 frontmatter trigger description。
@@ -141,7 +141,7 @@ M3.2 后，对外 package surface 由这些文件共同定义：
 - `docs/delivery-kernel.md`、`loops/recipes/definition-sync.loop.md`、`templates/*execution* / *contract* / *drift*` 与 `evals/delivery-kernel/delivery-kernel.cases.json`：验证复杂交付任务的新建、迭代、重塑和 definition drift 闭环。
 - `scripts/validate-dual-package-dry-run.js`：在临时目录验证 `ai-builder-os` 主包和 `pm-copilot-skills` 兼容包都能 pack dry-run 和安装 dry-run。
 
-`_archived/`、`research/` 和本地 ignored `references/source-blueprints/` 不进入 npm package surface；它们只作为审阅、回滚、研究或后续迁移材料。
+`_archived/`、`research/`、本地 ignored `references/source-blueprints/`、`docs/release-*` 和 `docs/*hardening-brief.md` 不进入 npm package surface 或 runtime export；它们只作为审阅、回滚、研究、发布证据或后续迁移材料。npm package 仅发布长期可复用的 `docs/architecture.md`、`docs/delivery-kernel.md`、`docs/source-of-truth-map.md`。
 
 ## Dual package dry-run
 
@@ -156,7 +156,7 @@ npm run validate:dual-package-dry-run
 - `ai-builder-os`：1.0 正式主包候选。
 - `pm-copilot-skills`：兼容包候选。
 
-两个 projection 都必须通过 `npm pack --dry-run --json`，并在临时项目中运行 `node install.js codex-project --overwrite`，确认只安装 8 个 active builder skills。
+两个 projection 都必须通过 `npm pack --dry-run --json`，并在临时项目中运行 `node install.js codex-project --overwrite`，确认项目 `.agents/skills` 中只安装 8 个 active builder skills。
 
 M3.8 之后，`sync-and-publish.sh` 仍只能视为 canonical source 的 release gate helper 和历史单包发布脚本；它不是 `ai-builder-os` / `pm-copilot-skills` 正式双包发布器。M3.9 发布时必须按 [`docs/release-runbook-m3.9.md`](./docs/release-runbook-m3.9.md) 的顺序执行，并先通过专用双包发布准备脚本的 dry-run。
 
@@ -398,7 +398,7 @@ pm-copilot-skills/
 +-- references/                # Runtime-neutral 的 Builder OS references 新位置
 +-- templates/                 # Reusable asset templates
 +-- adapters/                  # Codex / Claude Code / generic-agent projection notes
-+-- docs/                      # 架构和 roadmap 文档
++-- docs/                      # 架构、交付协议和 source-only 发布证据
 +-- scripts/                   # package validation scripts
 +-- evals/                     # trigger/routing/contract/quality/evidence/e2e/regression cases
 |   +-- artifact/              # Artifact Governance 回归样例

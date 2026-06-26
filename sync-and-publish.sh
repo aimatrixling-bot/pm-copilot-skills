@@ -120,16 +120,9 @@ const required = [
   'adapters/codex/adapter.json',
   'adapters/claude-code/adapter.json',
   'adapters/generic-agent/adapter.json',
-  'docs/release-plan-1.0.md',
-  'docs/release-seal-m3.2.md',
-  'docs/release-seal-m3.3.md',
-  'docs/release-seal-m3.4.md',
-  'docs/release-seal-m3.5.md',
-  'docs/release-seal-m3.7.md',
-  'docs/release-seal-m3.8.md',
-  'docs/release-seal-m3.8.1.md',
-  'docs/release-runbook-m3.9.md',
-  'docs/release-seal-m3.9.md'
+  'docs/architecture.md',
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md'
 ];
 const missing = required.filter(p => !files.includes(p));
 if (missing.length) {
@@ -144,11 +137,28 @@ const forbiddenPrefixes = [
   'skills/pptx',
   'skills/download-anything',
   'skills/references',
+  'docs/release-',
   'references/source-blueprints/'
 ];
-const forbidden = files.filter(p => forbiddenPrefixes.some(prefix => p.startsWith(prefix)));
+const allowedDocs = [
+  'docs/architecture.md',
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md'
+];
+const forbidden = files.filter(p =>
+  forbiddenPrefixes.some(prefix => p.startsWith(prefix)) ||
+  (p.startsWith('docs/') && p.includes('hardening-brief'))
+);
 if (forbidden.length) {
   console.error('ERROR: npm package includes non-surface legacy files: ' + forbidden.join(', '));
+  process.exit(1);
+}
+const docs = files.filter(p => p.startsWith('docs/')).sort();
+if (
+  docs.length !== allowedDocs.length ||
+  !allowedDocs.every(p => docs.includes(p))
+) {
+  console.error('ERROR: npm package docs surface mismatch. expected ' + allowedDocs.join(', ') + '; got ' + docs.join(', '));
   process.exit(1);
 }
 console.log('  Package: ' + pack.filename + ' (' + pack.entryCount + ' files)');

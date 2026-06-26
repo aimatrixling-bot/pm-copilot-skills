@@ -165,4 +165,3 @@ handoff 时至少包含：目标、上下文来源、推荐模式、关键假设
 - `assets/output-format.zh.md`
 - `references/skill-design/skill-design-playbook.zh.md`
 - `templates/skill-hardening-brief/template.md`
-- 迁移来源：已安装的 Plan Goal Coach，路径为 `C:\Users\max.ling\.codex\skills\plan-goal-coach`

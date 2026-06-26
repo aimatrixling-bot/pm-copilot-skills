@@ -212,4 +212,3 @@ next_skill_input:
 - `references/migration-notes.md`
 - `evals/output-contract/builder-spec.schema.json`
 - `references/skill-design/skill-design-playbook.zh.md`
-- 既有来源：`skills/pm-prd/SKILL.md`

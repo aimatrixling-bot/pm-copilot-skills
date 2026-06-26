@@ -8,6 +8,15 @@ const root = path.resolve(__dirname, '..');
 const markerName = '.ai-builder-os-export-target';
 const metadataDirName = '.ai-builder-os';
 const excludedLocalResourcePrefixes = ['references/source-blueprints'];
+const sharedResourceNames = ['adapters', 'kernel', 'harness', 'memory', 'loops', 'references', 'templates'];
+const runtimeDocResourcePaths = [
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
+];
+const packageDocResourcePaths = [
+  'docs/architecture.md',
+  ...runtimeDocResourcePaths,
+];
 
 function usage() {
   console.log(`Usage:
@@ -71,6 +80,7 @@ function copyRecursive(src, dest) {
       copyRecursive(path.join(src, entry), path.join(dest, entry));
     }
   } else {
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(src, dest);
   }
 }
@@ -128,8 +138,11 @@ function copyMetadata(targetDir, targetName, adapter, skillPack, activeSkills) {
 }
 
 function copySharedResources(dest) {
-  for (const resourceName of ['adapters', 'kernel', 'harness', 'memory', 'loops', 'docs', 'references', 'templates']) {
+  for (const resourceName of sharedResourceNames) {
     copyRecursive(path.join(root, resourceName), path.join(dest, resourceName));
+  }
+  for (const relativePath of runtimeDocResourcePaths) {
+    copyRecursive(path.join(root, relativePath), path.join(dest, relativePath));
   }
 }
 
@@ -152,8 +165,11 @@ function exportPackageRoot(targetDir, targetName, activeSkills) {
     copyRecursive(path.join(root, 'skills', skillName), path.join(targetDir, 'skills', skillName));
   }
 
-  for (const resourceName of ['adapters', 'kernel', 'harness', 'memory', 'loops', 'docs', 'references', 'templates', 'evals']) {
+  for (const resourceName of [...sharedResourceNames, 'evals']) {
     copyRecursive(path.join(root, resourceName), path.join(targetDir, resourceName));
+  }
+  for (const relativePath of packageDocResourcePaths) {
+    copyRecursive(path.join(root, relativePath), path.join(targetDir, relativePath));
   }
 
   fs.writeFileSync(

@@ -95,4 +95,3 @@ date:
 - `memory/schemas/decision-memory.schema.md`
 - `evals/output-contract/decision-record.schema.json`
 - `references/skill-design/skill-design-playbook.zh.md`
-- 既有来源：`skills/pm-decision/SKILL.md`

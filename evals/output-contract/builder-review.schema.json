@@ -118,9 +118,9 @@
   "required_reference_files": [
     "kernel/gates/product-logic-containment-gate.zh.md",
     "docs/delivery-kernel.md",
-    "skills/builder-review/references/prototype-to-spec-review.zh.md",
-    "skills/builder-review/references/prototype-design-evidence-review.zh.md",
-    "skills/builder-spec/references/prototype-to-spec.zh.md",
+    "references/prototype-to-spec-review.zh.md",
+    "references/prototype-design-evidence-review.zh.md",
+    "references/prototype-to-spec.zh.md",
     "loops/recipes/design-plan-to-prototype.loop.md",
     "loops/recipes/artifact-hygiene.loop.md",
     "loops/recipes/definition-sync.loop.md",

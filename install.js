@@ -10,7 +10,7 @@
  *   target: "global" | "claude" (default) -> ~/.claude/skills/
  *          "project" | "claude-project"  -> ./.claude/skills/
  *          "codex" | "codex-user"        -> ~/.agents/skills/
- *          "codex-project"               -> ./.codex/skills/
+ *          "codex-project"               -> ./.agents/skills/
  *          "codex-home"                  -> ~/.codex/skills/ (legacy/system-adjacent)
  */
 
@@ -18,8 +18,84 @@ const fs = require("fs");
 const path = require("path");
 
 const args = process.argv.slice(2);
-const overwrite = args.includes("--overwrite");
-const targetArg = args.find((arg) => !arg.startsWith("--")) || "global";
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
+
+function printUsage() {
+  console.log(`AI Builder OS Installer v${pkg.version}
+
+Usage:
+  npx pm-copilot-skills [target] [--overwrite]
+  npx -p pm-copilot-skills ai-builder-os [target] [--overwrite]
+  node install.js [target] [--overwrite]
+
+Targets:
+  global | claude | claude-global       ~/.claude/skills/
+  project | claude-project              ./.claude/skills/
+  codex | codex-user                    ~/.agents/skills/
+  codex-project                         ./.agents/skills/
+  codex-home                            ~/.codex/skills/ (legacy/system-adjacent)
+
+Options:
+  --overwrite                           overwrite package-owned or external existing skills
+  --help, -h                            show this help without installing
+  --version, -v                         print version without installing
+`);
+}
+
+function parseArgs(argv) {
+  const parsed = {
+    overwrite: false,
+    help: false,
+    version: false,
+    target: "global",
+  };
+  const targetArgs = [];
+
+  for (const arg of argv) {
+    if (arg === "--overwrite") {
+      parsed.overwrite = true;
+    } else if (arg === "--help" || arg === "-h") {
+      parsed.help = true;
+    } else if (arg === "--version" || arg === "-v") {
+      parsed.version = true;
+    } else if (arg.startsWith("-")) {
+      throw new Error(`未知参数: ${arg}`);
+    } else {
+      targetArgs.push(arg);
+    }
+  }
+
+  if (targetArgs.length > 1) {
+    throw new Error(`只能指定一个 target，收到: ${targetArgs.join(", ")}`);
+  }
+  if (targetArgs.length === 1) {
+    parsed.target = targetArgs[0];
+  }
+
+  return parsed;
+}
+
+let parsedArgs;
+try {
+  parsedArgs = parseArgs(args);
+} catch (error) {
+  console.error(error.message);
+  printUsage();
+  process.exit(1);
+}
+
+if (parsedArgs.help) {
+  printUsage();
+  process.exit(0);
+}
+
+if (parsedArgs.version) {
+  console.log(pkg.version);
+  process.exit(0);
+}
+
+const overwrite = parsedArgs.overwrite;
+const targetArg = parsedArgs.target;
 
 function normalizeMode(value) {
   switch (value) {
@@ -63,15 +139,18 @@ if (mode === "claude-project") {
   const codexHome = process.env.CODEX_HOME || path.join(home, ".codex");
   targetDir = path.join(codexHome, "skills");
 } else if (mode === "codex-project") {
-  targetDir = path.resolve(process.cwd(), ".codex", "skills");
+  targetDir = path.resolve(process.cwd(), ".agents", "skills");
 } else {
   targetDir = path.join(home, ".claude", "skills");
 }
 
-const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
 const markerName = ".pm-copilot-skills-source.json";
 const allowedMarkerPackages = new Set(["ai-builder-os", "pm-copilot-skills", pkg.name]);
-const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "docs", "references", "templates"];
+const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "references", "templates"];
+const runtimeDocResourcePaths = [
+  "docs/delivery-kernel.md",
+  "docs/source-of-truth-map.md",
+];
 const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
 const excludedLocalResourcePrefixes = ["references/source-blueprints"];
 
@@ -99,6 +178,7 @@ function copyRecursive(src, dest) {
       copyRecursive(path.join(src, entry), path.join(dest, entry));
     }
   } else {
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
     fs.copyFileSync(src, dest);
   }
 }
@@ -161,6 +241,13 @@ function copyBuilderSharedResources(dest) {
     const src = path.join(__dirname, resourceName);
     if (fs.existsSync(src)) {
       copyRecursive(src, path.join(dest, resourceName));
+    }
+  }
+
+  for (const relativePath of runtimeDocResourcePaths) {
+    const src = path.join(__dirname, relativePath);
+    if (fs.existsSync(src)) {
+      copyRecursive(src, path.join(dest, relativePath));
     }
   }
 }
