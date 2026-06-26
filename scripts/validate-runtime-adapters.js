@@ -87,8 +87,15 @@ function validateFlatTarget(targetName, targetDir) {
     assert(fs.existsSync(path.join(skillDir, 'harness', 'artifact-write-policy.zh.md')), `${targetName}/${skillName} 缺少 embedded artifact write policy`);
     assert(fs.existsSync(path.join(skillDir, 'memory', 'policies', 'artifact-lifecycle-policy.zh.md')), `${targetName}/${skillName} 缺少 embedded artifact lifecycle policy`);
     assert(fs.existsSync(path.join(skillDir, 'loops', 'recipes', 'artifact-hygiene.loop.md')), `${targetName}/${skillName} 缺少 embedded artifact hygiene loop`);
+    assert(fs.existsSync(path.join(skillDir, 'loops', 'recipes', 'definition-sync.loop.md')), `${targetName}/${skillName} 缺少 embedded definition sync loop`);
+    assert(fs.existsSync(path.join(skillDir, 'docs', 'delivery-kernel.md')), `${targetName}/${skillName} 缺少 embedded delivery kernel docs`);
+    assert(fs.existsSync(path.join(skillDir, 'docs', 'source-of-truth-map.md')), `${targetName}/${skillName} 缺少 embedded source-of-truth map`);
     assert(fs.existsSync(path.join(skillDir, 'references', 'README.md')), `${targetName}/${skillName} 缺少 embedded references`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'README.md')), `${targetName}/${skillName} 缺少 embedded templates`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'module-execution-pack', 'template.md')), `${targetName}/${skillName} 缺少 embedded module execution pack template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'change-contract', 'template.md')), `${targetName}/${skillName} 缺少 embedded change contract template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'branch-state', 'template.md')), `${targetName}/${skillName} 缺少 embedded branch state template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'definition-drift-check', 'template.md')), `${targetName}/${skillName} 缺少 embedded definition drift template`);
     assert(fs.existsSync(path.join(skillDir, 'adapters', targetName, 'README.md')), `${targetName}/${skillName} 缺少 target adapter docs`);
     assert(fs.existsSync(path.join(skillDir, '.ai-builder-os', 'runtime.json')), `${targetName}/${skillName} 缺少 runtime metadata`);
   }
@@ -109,8 +116,15 @@ function validateGenericTarget(targetDir) {
     'memory/README.md',
     'loops/README.md',
     'loops/recipes/artifact-hygiene.loop.md',
+    'loops/recipes/definition-sync.loop.md',
+    'docs/delivery-kernel.md',
+    'docs/source-of-truth-map.md',
     'references/README.md',
     'templates/README.md',
+    'templates/module-execution-pack/template.md',
+    'templates/change-contract/template.md',
+    'templates/branch-state/template.md',
+    'templates/definition-drift-check/template.md',
     'adapters/generic-agent/README.md',
     'evals/builder-os-trigger-evals.json',
     'README.md',

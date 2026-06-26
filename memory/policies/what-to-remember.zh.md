@@ -1,11 +1,11 @@
-# What To Remember
+# 应记忆的内容（What To Remember）
 
-Remember:
+应记忆：
 
-- durable user output preferences;
-- stable project goals and constraints;
-- accepted decisions and reversal conditions;
-- artifact paths and status;
-- repeated skill trigger failures;
-- reusable review findings;
-- eval cases created from real failures.
+- 稳定的用户输出偏好；
+- 稳定的项目目标和约束；
+- 已接受的决策及其反转条件；
+- artifact 路径和状态；
+- 重复出现的 skill 触发失败；
+- 可复用的 review 发现；
+- 从真实失败中沉淀的 eval cases。

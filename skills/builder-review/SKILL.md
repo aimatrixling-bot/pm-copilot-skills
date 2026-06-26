@@ -61,8 +61,118 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 - `prototype_design_evidence_review`：检查高保真或可运行原型是否保留 source visual、rendered implementation、preview URL、screenshot、viewport/state、design QA 和 P0-P3 findings。
 - `prototype_to_spec_review`：检查 prototype-to-spec 输出是否保留 source provenance、prototype facts、prototype gaps、mock boundary、verification provenance 和 spec-first guard。
 - `definition_drift_review`：检查实现、原型、agent 输出或文档是否偏离 Module Execution Pack、Change Contract、Branch State、Spec 或 Agent Task Packet，并输出 definition_sync_audit。
+- `skill_quality_review`：检查 builder skill 或 skill patch 是否存在 no-op、sediment、sprawl、context_load、progressive_disclosure、completion_criterion 和 source_of_truth_boundary 问题。
+- `agent_navigability_review`：检查 agent 是否能用当前 skill/template/schema/eval 顺利导航任务，尤其是复杂度分层、handoff、Branch State、review profile、usage metrics v2 是否可见且不过载。
 - `release_readiness`：检查是否达到 Go/No-Go 或 release seal 条件。
 - `not_reviewable`：缺少 review target、原始契约或证据，先要求补材料。
+
+## Review Profile
+
+```yaml
+review_profile: quick_change_review | prototype_review | definition_drift_review | skill_quality_review | agent_navigability_review | release_readiness
+profile_selection_rule:
+  default: quick_change_review
+  use_release_readiness_when:
+    - version_or_install_surface_changes
+    - publish_or_release_gate_requested
+  use_definition_drift_review_when:
+    - module_execution_pack_or_change_contract_exists
+    - implementation_differs_from_contract
+    - mode_switch_risk_exists
+  use_prototype_review_when:
+    - prototype_or_ui_evidence_exists
+    - design_brief_or_visual_target_exists
+  use_skill_quality_review_when:
+    - skill_or_skill_pack_changed
+    - skill_design_playbook_referenced
+    - no_op_sediment_sprawl_or_context_load_risk_exists
+  use_agent_navigability_review_when:
+    - agent_failed_to_choose_right_next_step
+    - runtime_or_installed_surface_changed
+    - workflow_hygiene_or_usage_metrics_visibility_changed
+profile_required_sections:
+  quick_change_review:
+    - review_mode
+    - review_profile
+    - review_target
+    - contract_checked
+    - findings
+    - evidence_audit
+    - risk_assessment
+    - decision
+    - required_fixes
+    - unverified_areas
+    - next_step
+  prototype_review:
+    - review_mode
+    - review_profile
+    - review_target
+    - findings
+    - evidence_audit
+    - design_consistency_audit
+    - product_logic_containment_audit
+    - prototype_design_evidence_audit
+    - prototype_to_spec_audit
+    - decision
+    - required_fixes
+    - unverified_areas
+    - next_step
+  definition_drift_review:
+    - review_mode
+    - review_profile
+    - review_target
+    - findings
+    - definition_drift_check
+    - definition_sync_audit
+    - mode_switch_assessment
+    - branch_state_audit
+    - decision
+    - required_fixes
+    - unverified_areas
+    - next_step
+  release_readiness:
+    - review_mode
+    - review_profile
+    - review_target
+    - findings
+    - evidence_audit
+    - branch_state_audit
+    - artifact_hygiene_audit
+    - artifact_index_update_proposal
+    - risk_assessment
+    - decision
+    - required_fixes
+    - unverified_areas
+    - next_step
+  skill_quality_review:
+    - review_mode
+    - review_profile
+    - review_target
+    - findings
+    - skill_quality_audit
+    - usage_metrics_v2
+    - risk_assessment
+    - decision
+    - required_fixes
+    - unverified_areas
+    - next_step
+  agent_navigability_review:
+    - review_mode
+    - review_profile
+    - review_target
+    - findings
+    - agent_navigability_audit
+    - usage_metrics_v2
+    - risk_assessment
+    - decision
+    - required_fixes
+    - unverified_areas
+    - next_step
+```
+
+默认使用 `quick_change_review`，只输出轻量 required sections；不要展开全量 audit 框架。只在原型证据、definition drift、skill quality、agent navigability、release readiness、跨模块或高风险场景升级 profile。
+
+Usage metrics v2 只在 `skill_quality_review`、`agent_navigability_review`、`release_readiness` 或用户明确要求审计输出时展示；quick review 不默认展示。
 
 ## 执行流程
 
@@ -72,33 +182,69 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 4. 如果 review target 是高保真或可运行原型，检查 visual target、rendered implementation、viewport/state、screenshot evidence、design QA 和 P0-P3 findings。
 5. 如果 review target 是 `prototype_to_spec` 输出，检查 source provenance、facts vs inference、prototype gaps、mock boundary、verification provenance 和 spec-first guard。
 6. 如果 review target 涉及 Module Execution Pack、Change Contract、Branch State 或实现结果漂移，按 Definition Sync Loop 做 definition drift check。
-7. 如果 review target 涉及项目资产、文档膨胀、清理动作、交付物替代或 source-of-truth 变更，按 Artifact Hygiene Loop 做一次轻量审计：检查生命周期状态、index 更新需要、清理风险和一致性风险。
-8. 按严重程度列出 findings 和 required action。
-9. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
+7. 检查 Branch State 是否 stale；高保真原型、多轮 Goal、跨仓库、跨资产、上下文压缩风险或复杂业务系统任务缺少 Branch State 时，默认 `REQUEST_CHANGES` 或 `BLOCKED`。
+8. 检查 `mode_switch_assessment`：任务是否从 improve 漂移成 reframe、从 prototype-first 漂移成 spec-first，或局部改动变成全局重塑。
+9. 如果 review target 涉及项目资产、文档膨胀、清理动作、交付物替代或 source-of-truth 变更，按 Artifact Hygiene Loop 做一次轻量审计：检查生命周期状态、index 更新需要、清理风险和一致性风险。
+10. 如果 review target 是 skill、skill patch、manifest、template、schema 或 eval，执行 `skill_quality_review` 或 `agent_navigability_review`，检查 no-op、sediment、sprawl、context_load、progressive_disclosure、completion_criterion 和 source_of_truth_boundary。
+11. 按严重程度列出 findings 和 required action。
+12. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
 
 ## 输出契约
 
 ```yaml
 review_mode:
+review_profile:
+profile_required_sections:
 review_target:
 contract_checked:
 findings:
-evidence_audit:
-design_consistency_audit:
-product_logic_containment_audit:
-design_plan_audit:
-prototype_design_evidence_audit:
-prototype_to_spec_audit:
-definition_drift_check:
-definition_sync_audit:
-artifact_hygiene_audit:
-artifact_index_update_proposal:
 risk_assessment:
 decision:
 required_fixes:
 unverified_areas:
 cleanup_proposal:
 next_step:
+
+profile_specific_sections:
+  evidence_audit:
+  design_consistency_audit:
+  product_logic_containment_audit:
+  design_plan_audit:
+  prototype_design_evidence_audit:
+  prototype_to_spec_audit:
+  definition_drift_check:
+  definition_sync_audit:
+  mode_switch_assessment:
+    should_switch_mode:
+  branch_state_audit:
+  artifact_hygiene_audit:
+  artifact_index_update_proposal:
+  skill_quality_audit:
+    no_op:
+    sediment:
+    sprawl:
+    context_load:
+    progressive_disclosure:
+    completion_criterion:
+    source_of_truth_boundary:
+  agent_navigability_audit:
+    route_clarity:
+    artifact_lifecycle:
+    installed_surface:
+    profile_visibility:
+    blocked_recovery:
+  usage_metrics_v2:
+    source_requirement_lines:
+    response_output_lines:
+    contract_output_lines:
+    references_loaded_count:
+    expected_files_touched:
+    files_touched:
+    files_outside_allowed_scope:
+    implementation_rounds:
+    review_rounds:
+    branch_state_required:
+    docs_updated:
 ```
 
 ## 质量门禁
@@ -115,17 +261,22 @@ next_step:
 - Prototype-to-spec review 必须检查 `source_prototype`、`extracted_from_prototype`、`prototype_gaps`、`prototype_verification`、mock boundary 和 spec-first guard。
 - Prototype-to-spec review 发现 gaps 被提升为 requirements、mock endpoint 被写成最终 API、route readiness 被夸大、或 verification provenance 丢失时，默认 `REQUEST_CHANGES` 或 `BLOCKED`。
 - Definition drift review 必须区分 `Implementation Adjustment`、`Spec Gap`、`Requirement Change` 和 `Conflict / Contradiction`。
+- Definition drift review 必须输出 `mode_switch_assessment`；发现应切换模式时不能直接 `APPROVE`。
+- Review 阶段必须检查 Branch State 是否 stale；需要 Branch State 但缺失或过期时，默认 `REQUEST_CHANGES`。
 - 发现实现扩大范围、违背 non-goals、或把实现结果自动升级为需求时，默认 `REQUEST_CHANGES`。
 - 发现定义冲突或需要业务/安全/权限/数据/发布决策时，默认 `BLOCKED` 或转 `builder-decision`。
 - 不要批准只有视觉上“像真的”、但缺少交互/状态证据的 UI 工作。
 - 如果证据不足，决策必须是 PARTIAL、BLOCKED 或 REQUEST_CHANGES，不能用 APPROVE 掩盖。
-- `artifact_hygiene_audit` 必须明确为 `not_applicable`、`not_available` 或列出审计结论；不要省略。
+- 只有交付物、项目输出、资产替代、release readiness 或 source-of-truth 变更相关评审必须输出 `artifact_hygiene_audit`；quick_change_review 默认不展开该字段。
+- `skill_quality_review` 必须检查 no-op、sediment、sprawl、context_load、progressive_disclosure、completion_criterion 和 source_of_truth_boundary；发现只增加文字但不改变行为时默认 `REQUEST_CHANGES`。
+- `agent_navigability_review` 必须检查 agent 是否能从当前 skill、template、schema、eval、manifest 和 installed surface 找到下一步；找不到时输出 required fixes。
+- `usage_metrics_v2` 默认只在 skill quality、agent navigability、release readiness 或明确审计诉求中展示；不得让小任务 quick review 输出 metrics 噪音。
 - `artifact_index_update_proposal` 只允许提出建议，不得声称已经更新 index，除非 evidence packet 中有可验证证据。
 - 高风险清理只能进入 `cleanup_proposal`，不得在 review 中要求自动删除；涉及 `current`、`accepted`、`source_of_truth`、`decision_record` 或 evidence 的资产必须要求人工确认。
 
 ## 交接
 
-交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、design_consistency_audit、product_logic_containment_audit、design_plan_audit、prototype_design_evidence_audit、prototype_to_spec_audit、artifact_hygiene_audit、artifact_index_update_proposal、cleanup_proposal、decision 和 next_step。
+交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、decision、next_step 和当前 review_profile 要求的 profile_specific_sections。
 
 ## 参考
 

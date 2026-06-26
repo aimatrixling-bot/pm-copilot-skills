@@ -20,6 +20,8 @@ AI Builder OS 的目标不是堆叠更多 skill，而是让产品经理、企业
 
 Plan Goal Coach 的强点不是模板多，而是清楚知道自己不做什么：它不实现代码、不替用户做业务决策、不把所有问题都升级成 Goal。
 
+Matt Pocock 的 AI Skills for Real Engineers 给 AI Builder OS 的启发也不是照搬某条流程，而是把 skill 当成工程系统来维护：skill 必须压缩重复劳动、约束 agent 行为、降低上下文负担，并且能被真实任务验证。没有改变行为的文本不是资产。
+
 打磨其他 builder skill 时，也要先写清：
 
 - 这个 skill 负责把什么输入转成什么产物。
@@ -152,6 +154,13 @@ handoff 至少包含目标、上下文来源、关键假设、non-goals、验收
 - 需要类比读 examples。
 - 输出前读 output format 或 checklist。
 
+额外要求：
+
+- 默认 progressive disclosure；先读入口规则，再按模式读相关 template/reference。
+- 禁止为了“更完整”加载所有 references、examples、历史说明和 release seal。
+- 每个新增 reference 都要说明触发条件和不读取时的安全 fallback。
+- 真实任务中若某个文件长期没有改变输出，应从默认读取路径移除。
+
 ### Step 5: 设计输出契约
 
 先写 YAML-like 输出契约，再写模板。输出契约应进入 `evals/output-contract/`。
@@ -218,6 +227,28 @@ AI Builder OS 的 builder skills 安装后会被单独读取。凡是 `SKILL.md`
 ### Step 10: 保持迭代纪律
 
 每次 hardening 只处理一个可审查里程碑。不要在同一个 goal 中同时重写所有 skill、改安装器、加新 runtime、补 E2E、优化描述。
+
+## Matt-Inspired Skill Engineering Discipline
+
+这些纪律用于评审 builder skill，而不是要求所有任务走同一个工程流程：
+
+| Check | 含义 | 处理 |
+| --- | --- | --- |
+| `process_invariant` | 规则是否改变 agent 的路由、输出、验证、停止或 handoff 行为 | 不改变行为就删除或降级为说明 |
+| `no_op` | 文案看起来正确但没有触发条件、字段、eval 或 validator | 移除或补上可验证接口 |
+| `sediment` | 历史规则叠加导致 skill 变长，但当前流程不再需要 | 合并到 source of truth 或归档 |
+| `sprawl` | 同一规则散落在 README、skill、template、loop、release seal | 回到 source-of-truth map 归一 |
+| `context_load` | agent 为小任务加载了过多参考、示例或审计框架 | 改成按需读取和轻量 profile |
+| `progressive_disclosure` | 是否先给最小可执行输出，再在风险升高时展开 | Router/spec/review 必须按复杂度控制输出 |
+| `completion_criterion` | skill 是否定义了何时完成、何时 blocked、何时 handoff | 补上验收、证据和停止条件 |
+| `source_of_truth_boundary` | 长期规则、临时 handoff、Branch State、Decision Record 是否混淆 | 迁移到正确事实源 |
+
+Temporary artifact policy / Lifecycle 规则：
+
+- Handoff packet 是当前交接上下文，只保存 pointer、关键假设、验收和停止条件；不要把它当知识库。
+- Branch State 是分支 runtime cache，用于长线程和恢复；合并前长期规则必须迁移到正式 source of truth 或 open gap。
+- Decision Record 只在 hard-to-reverse、surprising、real tradeoff 或人类明确要求时创建；小任务和普通实现细节不创建。
+- Throwaway prototype 可用于快速回答问题，但必须有删除、吸收或不采纳结论；durable product demo 才进入后续 spec/review 生命周期。
 
 ## Skill Hardening Brief 必填字段
 

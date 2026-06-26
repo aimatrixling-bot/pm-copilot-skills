@@ -1,21 +1,21 @@
-# Execution Harness
+# 执行 Harness（Execution Harness）
 
-Execution Harness defines how AI Builder OS work should run safely and verifiably.
+执行 Harness 定义 AI Builder OS 工作应如何安全、可验证地运行。
 
-Skill defines what to produce. Harness defines how to avoid drift, fake completion, unsafe side effects, and unreviewable output.
+Skill 定义要产出什么；Harness 定义如何避免目标漂移、虚假完成、不安全副作用和不可评审输出。
 
-## Modules
+## 模块
 
-| Module | Purpose |
+| 模块 | 作用 |
 | --- | --- |
-| Guides | Set task, context, scope, and minimum output before execution |
-| Sensors | Watch for drift, fake UI, fake tests, missing evidence |
-| Gates | Enforce decision points before claiming completion |
-| Steering Loop | Adjust when execution deviates from the goal |
-| Tool Policy | Define allowed, cautious, and approval-required actions |
-| Artifact Write Policy | Define how project assets are written, promoted, indexed, and handed off |
-| Run Report | Summarize result, evidence, risk, and handoff |
+| Guides（执行指南） | 执行前明确任务、上下文、范围和最低输出 |
+| Sensors（传感器） | 监测范围漂移、Fake UI、Fake Tests 和证据缺失 |
+| Gates（门禁） | 在声明完成前强制检查关键决策点 |
+| Steering Loop（调向循环） | 当执行偏离目标时调整方向 |
+| Tool Policy（工具策略） | 定义默认允许、谨慎使用和需要人工确认的动作 |
+| Artifact Write Policy（资产写入策略） | 定义项目资产如何写入、提升、登记和交接 |
+| Run Report（运行报告） | 汇总结论、证据、风险和交接信息 |
 
-## Rule
+## 规则
 
-Harness must stay lightweight. It should constrain execution, not become a second methodology stack.
+Harness 必须保持轻量。它约束执行过程，不应演变成第二套方法论栈。

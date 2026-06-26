@@ -21,6 +21,7 @@ const builderSkills = [
 
 const requiredPackFiles = [
   'README.md',
+  'AGENTS.md',
   'install.js',
   'package.json',
   'skill-pack.json',
@@ -37,6 +38,9 @@ const requiredPackFiles = [
   'harness/artifact-write-policy.zh.md',
   'loops/README.md',
   'loops/recipes/artifact-hygiene.loop.md',
+  'loops/recipes/definition-sync.loop.md',
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
   'evals/artifact/artifact-index-sync.cases.json',
   'evals/artifact/artifact-cleanup-proposal.cases.json',
   'evals/artifact/artifact-consistency-audit.cases.json',
@@ -56,6 +60,10 @@ const requiredPackFiles = [
   'references/ui-ux/component-guidelines.zh.md',
   'references/ui-ux/interaction-patterns.zh.md',
   'references/ui-ux/visual-style.zh.md',
+  'templates/module-execution-pack/template.md',
+  'templates/change-contract/template.md',
+  'templates/branch-state/template.md',
+  'templates/definition-drift-check/template.md',
   ...builderSkills.map((skillName) => `skills/${skillName}/SKILL.md`),
 ];
 

@@ -1,8 +1,8 @@
-# Greenfield Bootstrap Policy
+# 从零项目启动策略（Greenfield Bootstrap Policy）
 
 本策略定义用户从 0 开始使用 AI Builder OS 创建项目或产品时的最小 bootstrap 行为。目标是建立项目锚点，而不是生成一整套沉重项目文档。
 
-## Trigger
+## 触发信号（Trigger）
 
 使用 `greenfield` 的典型信号：
 
@@ -11,7 +11,7 @@
 - 用户只提供想法、问题、目标用户或业务机会。
 - `.ai-builder/` 和 artifact index 不存在。
 
-## Minimum Inputs
+## 最小输入（Minimum Inputs）
 
 如果缺少以下信息，应先提问或标记为 open question：
 
@@ -22,7 +22,7 @@
 - 明确 non-goals 或暂不做事项。
 - 关键约束，例如时间、技术、数据、权限、发布或合规。
 
-## Minimum Output
+## 最小输出（Minimum Output）
 
 Greenfield bootstrap 至少输出：
 
@@ -58,7 +58,7 @@ greenfield_bootstrap:
   next_action:
 ```
 
-## Bootstrap Rules
+## 启动规则（Bootstrap Rules）
 
 - 默认只提出 `.ai-builder/` runtime 建议，不自动创建。
 - 初始产物默认是 `draft` 或 `working`，不得直接标记为 `current`。
@@ -67,7 +67,7 @@ greenfield_bootstrap:
 - 如果用户已经要交给外部 agent 执行，可以进入 `builder-agent-task`，但必须带上 `artifact_index_update_proposal`。
 - 不一次性生成大量模板；只生成当前下一步需要的最小资产。
 
-## Recommended Initial Assets
+## 推荐初始资产（Recommended Initial Assets）
 
 仅在用户确认或任务明确要求时，建议创建：
 
@@ -76,7 +76,7 @@ greenfield_bootstrap:
 - Decision Record：当已有关键取舍或约束。
 - Artifact Index：当已经有可复用资产需要登记。
 
-## Anti-Patterns
+## 反模式（Anti-Patterns）
 
 - 把 greenfield bootstrap 变成完整 PRD、路线图、数据库设计、页面设计和 Agent Task 的混合大文档。
 - 在没有 review 或用户确认前，把初稿标记为 `current`。
@@ -84,7 +84,7 @@ greenfield_bootstrap:
 - 自动生成一堆空文件作为“项目初始化”。
 - 跳过用户、问题、non-goals，直接进入实现任务。
 
-## Handoff
+## 交接（Handoff）
 
 Greenfield bootstrap 的 handoff 必须保留：
 

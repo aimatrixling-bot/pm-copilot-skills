@@ -1,15 +1,15 @@
-# Sensors
+# 传感器（Sensors）
 
-During execution, watch for:
+执行期间持续观察：
 
-- scope expansion;
-- unrequested refactor;
-- invented files or facts;
-- fake UI;
-- fake tests;
-- missing verification;
-- hidden assumptions;
-- unsafe side effects;
-- outputs that cannot be handed off.
+- scope 扩张；
+- 未被请求的重构；
+- 编造的文件或事实；
+- Fake UI；
+- Fake Tests；
+- 缺失验证；
+- 隐藏假设；
+- 不安全副作用；
+- 无法交接的输出。
 
-When a sensor triggers, stop, adjust, and report the reason.
+当 sensor 触发时，停止、调整，并报告原因。

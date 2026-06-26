@@ -1,17 +1,17 @@
-# Claude Code Install Notes
+# Claude Code 安装说明（Claude Code Install Notes）
 
-Current commands:
+当前命令：
 
 ```bash
 npx pm-copilot-skills
 npx pm-copilot-skills project
 ```
 
-These commands install the package skills into Claude Code global or project-level skill directories.
+这些命令会把 package skills 安装到 Claude Code 全局或项目级 skill 目录。
 
-They install only the AI Builder OS active builder core.
+它们只安装 AI Builder OS active builder core。
 
-Export command:
+导出命令：
 
 ```bash
 npm run export:runtime -- --target claude-code --out ".\dist\ai-builder-os\claude-code" --clean

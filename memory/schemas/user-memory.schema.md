@@ -1,4 +1,4 @@
-# User Memory Schema
+# 用户记忆 Schema（User Memory Schema）
 
 ```yaml
 language_preference:
@@ -12,4 +12,4 @@ last_updated:
 source:
 ```
 
-Record stable working preferences only. Do not store sensitive personal data unless explicitly required and approved.
+只记录稳定的工作偏好。除非明确需要且已获批准，不要存储敏感个人数据。

@@ -30,6 +30,35 @@ M6 解决复杂构建任务中的几个反复问题：
 | 迭代模式 | `improve` | 在旧上改 | 已有页面、原型或代码上的优化、修复、删减、调整 | Change Contract |
 | 重塑模式 | `reframe` | 先重定再做 | 有旧资产，但目标形态、IA、流程或技术栈明显变化 | Asset Digestion + Target Shape + Execution Pack |
 
+## v0.2.2 Complexity-Aware Workflow Hygiene
+
+v0.2.2 在三种交付模式之上增加复杂度分层，目标是让小任务轻响应、大任务强治理。复杂度不是新的 skill，也不是新的流程分支；它只控制 Router 展示、契约重量、上下文读取和 review 强度。
+
+| complexity | 适用场景 | 默认 response | 默认 contract | 默认 context |
+| --- | --- | --- | --- | --- |
+| `micro` | 1-2 个文件、文案/样式/小 UI、无领域或状态变化 | `terse` | `none` / `micro_note` | `direct_answer` |
+| `lite` | 2-5 个文件、局部 UI/交互、轻微回归风险 | `terse` / `normal` | `lite_change_contract` | `direct_contract` |
+| `standard` | 跨组件、局部状态/流程、导航分类或领域语义变化 | `normal` | `standard_change_contract` | `direct_contract` / `review_first` |
+| `full` | 跨模块、权限、API、数据、审计、安全、发布或重塑 | `audit` | `full_change_contract` | `branch_state_required` / `handoff_required` |
+
+输出纪律：
+
+- `micro` / `lite` 默认 `secondary_mode: none`，不得自动升级 reframe。
+- 只有 IA、状态模型、页面类型、领域语义、导航分类或 target shape 发生风险时，才升级 `reframe_risk` 并考虑 `standard` / `full`。
+- `response_profile: terse` 只展示需求理解、模式、复杂度、contract profile、Branch State 是否需要和下一步；完整 `delivery_decision`、usage metrics、memory/evidence 默认只在 `audit` 展示。
+- 小任务 Change Contract 必须包含 `allowed_files_or_areas`、`max_expected_files_touched`、`requires_human_approval_if`、`reframe_risk`，用于防止范围膨胀。
+
+## Skill Load 与生命周期纪律
+
+AI Builder OS 吸收 Matt Pocock 式 skill 设计中的工程纪律，但不复制固定 `/to-prd -> /to-issues -> /tdd` 流程。可复用原则如下：
+
+- Process invariant：每条新增规则必须改变 agent 行为，并进入 schema、eval 或 validator；否则删除。
+- No-op removal：如果某段 skill 文案不会改变路由、输出、验证或停止条件，应移除或移到参考文档。
+- Context load：默认只加载完成当前任务必要的 instruction/template/reference；examples 和长参考只在风险或不确定时加载。
+- Progressive disclosure：Router 输出先轻后重，skill 内部也应按任务风险逐层加载上下文。
+- Single source of truth：长期规则只写入 source-of-truth map 指定位置；release seal、handoff、Branch State 不承载长期规则。
+- Temporary artifact policy：handoff 是临时 pointer-only；Branch State 是分支 runtime cache；Decision Record 是 durable，但只在难逆、意外或真实取舍时创建。
+
 ### 新建模式 create
 
 触发条件：

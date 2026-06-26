@@ -1,4 +1,4 @@
-# Project Onboarding Policy
+# 项目接入策略（Project Onboarding Policy）
 
 本策略定义 AI Builder OS 首次进入或恢复一个项目时的最小判断和交接规则。它是 Memory / Harness / Artifact Governance 的横切协议，不是新的核心 skill。
 
@@ -25,7 +25,7 @@ Project Onboarding 解决三个问题：
 - 用户明确要求 review 某个已知产物；此时直接用 `builder-review`。
 - 用户明确要求生成 Agent Task Packet；此时直接用 `builder-agent-task`，但应携带 artifact proposal。
 
-## Project Mode 判断
+## 项目模式判断（Project Mode）
 
 按以下顺序判断：
 
@@ -103,7 +103,7 @@ project_onboarding_report:
 - 不把聊天上下文置于 durable artifact 之上。
 - 如果项目已有规则冲突，优先读取 durable artifacts，再提出冲突和人工决策问题。
 
-## Stop Conditions
+## 停止条件（Stop Conditions）
 
 遇到以下情况必须停止并要求人工确认：
 

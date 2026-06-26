@@ -1,25 +1,25 @@
-# Claude Code Adapter
+# Claude Code Adapter（Claude Code 适配器）
 
-This adapter documents how AI Builder OS projects to Claude Code.
+本适配器说明 AI Builder OS 如何投影到 Claude Code。
 
-## Invocation
+## 调用方式（Invocation）
 
-- Explicit slash style: `/builder-spec`
-- Automatic loading depends on skill `description`
-- Side-effect-heavy skills should require user approval.
+- 显式 slash 风格：`/builder-spec`
+- 自动加载依赖 skill `description`
+- 具有明显副作用的 skill 应要求用户批准
 
 ## M3.2 Package Surface
 
-`install.js` supports global and project Claude skills directories and installs only the pure AI Builder OS active surface.
+`install.js` 支持 Claude 全局和项目级 skills 目录，并且只安装纯 AI Builder OS active surface。
 
-The npm package id remains `pm-copilot-skills` for compatibility; `ai-builder-os` is the product identity and command alias.
+npm package id 为兼容性仍保留 `pm-copilot-skills`；`ai-builder-os` 是产品身份和命令别名。
 
-## M3.3 Export
+## M3.3 导出（Export）
 
-Adapter manifest: `adapters/claude-code/adapter.json`
+适配器 manifest：`adapters/claude-code/adapter.json`
 
 ```bash
 npm run export:runtime -- --target claude-code --out ".\dist\ai-builder-os\claude-code" --clean
 ```
 
-Layout: `flat-skill-root`. Each exported builder skill embeds shared `kernel`, `references`, `templates`, and `adapters` resources.
+布局：`flat-skill-root`。每个导出的 builder skill 都内嵌共享的 `kernel`、`references`、`templates` 和 `adapters` 资源。

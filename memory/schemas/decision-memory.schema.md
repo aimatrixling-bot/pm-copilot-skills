@@ -1,4 +1,4 @@
-# Decision Memory Schema
+# 决策记忆 Schema（Decision Memory Schema）
 
 ```yaml
 decisions:
@@ -13,4 +13,4 @@ decisions:
     date:
 ```
 
-Decision memory prevents recurring re-litigation of accepted tradeoffs.
+Decision memory 用于避免已接受的取舍在后续工作中被反复争论。

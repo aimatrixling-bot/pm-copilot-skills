@@ -65,6 +65,7 @@ assert(packageJson.scripts['prepare:dual-package-publish'] === 'node scripts/pre
 
 for (const requiredFileEntry of [
   'skill-pack.json',
+  'AGENTS.md',
   'agents/',
   'skills/',
   'kernel/',
@@ -95,10 +96,12 @@ assert(sameSet(skillPack.package.bins, Object.keys(packageJson.bin).sort()), 'sk
 assert(skillPack.active_surface.type === 'pure-builder-core', 'skill-pack active_surface.type 必须是 pure-builder-core');
 assert(sameSet(skillPack.active_surface.skills, builderSkills), 'skill-pack active_surface.skills 必须等于 8 个 builder skills');
 assert(sameSet(coreManifest.skills, builderSkills), 'core bundle manifest skills 必须等于 8 个 builder skills');
-for (const sharedResource of ['kernel/', 'harness/', 'memory/', 'loops/', 'references/', 'templates/', 'adapters/']) {
+for (const sharedResource of ['kernel/', 'harness/', 'memory/', 'loops/', 'docs/', 'references/', 'templates/', 'adapters/']) {
   assert(skillPack.active_surface.shared_resources.includes(sharedResource), `skill-pack shared_resources 必须包含 ${sharedResource}`);
 }
 assert(coreManifest.references.includes('loops/'), 'core bundle manifest references 必须包含 loops/');
+assert(coreManifest.references.includes('docs/'), 'core bundle manifest references 必须包含 docs/');
+assert(installScript.includes('"docs"'), 'install.js 必须把 docs 复制到 runtime shared resources');
 
 assert(skillPack.export.script === 'scripts/export-ai-builder-os.js', 'skill-pack export.script 必须指向 export-ai-builder-os.js');
 assert(skillPack.export.validator === 'scripts/validate-runtime-adapters.js', 'skill-pack export.validator 必须指向 validate-runtime-adapters.js');

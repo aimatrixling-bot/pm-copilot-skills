@@ -1,12 +1,12 @@
-# Gates
+# 门禁（Gates）
 
-| Gate | When | Pass condition |
+| Gate | 触发时机 | 通过条件 |
 | --- | --- | --- |
-| Intent Gate | before work | objective is clear |
-| Scope Gate | before edits | scope and non-goals are explicit |
-| Plan Gate | before large work | Plan exists or task is small enough |
-| Evidence Gate | before completion | evidence packet can be filled |
-| Safety Gate | before side effects | risky actions are approved |
-| Handoff Gate | before final report | next consumer can continue |
+| Intent Gate | 开始工作前 | 目标清楚 |
+| Scope Gate | 编辑前 | scope 和 non-goals 明确 |
+| Plan Gate | 大工作量开始前 | 已有 Plan，或任务足够小 |
+| Evidence Gate | 声明完成前 | evidence packet 可填写 |
+| Safety Gate | 产生副作用前 | 高风险动作已获批准 |
+| Handoff Gate | final report 前 | 下游接手者可以继续 |
 
-Gate failure means revise, ask, or report PARTIAL/BLOCKED.
+Gate 失败意味着需要修正、提问，或报告 `PARTIAL` / `BLOCKED`。

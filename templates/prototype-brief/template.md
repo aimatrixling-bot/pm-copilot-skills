@@ -2,6 +2,12 @@
 
 ```yaml
 prototype_mode: prototype_first | boundary_first | spec_first | runnable_prototype | wireframe | prototype_brief | degraded_prototype
+prototype_intent: throwaway_question_probe | durable_product_demo | visual_variation_experiment | coded_reference
+intent_lifecycle:
+  retain_until:
+  absorb_into:
+  deletion_or_archive_rule:
+  review_required: true | false
 visual_target:
   type: none | brief_only | source_image | source_url | existing_code | generated_option | not_required
   source:
@@ -26,6 +32,8 @@ next: builder-review | builder-agent-task | builder-spec | builder-frame | itera
 ## Purpose
 
 - 原型要帮助谁做什么决策。
+- `prototype_intent`：这是 throwaway question probe、durable product demo、visual variation experiment 还是 coded reference。
+- lifecycle：保留到什么时候、吸收到哪里、何时删除/归档、是否必须 review。
 - 当前选择 `prototype_first`、`boundary_first` 或 `spec_first` 的原因。
 - 保真度目标，以及是否需要 visual target。
 

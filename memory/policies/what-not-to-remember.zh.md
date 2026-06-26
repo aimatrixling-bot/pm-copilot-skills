@@ -1,11 +1,11 @@
-# What Not To Remember
+# 不应记忆的内容（What Not To Remember）
 
-Do not remember by default:
+默认不要记忆：
 
-- all chat content;
-- temporary brainstorming;
-- sensitive secrets;
-- personal data not needed for work;
-- unverified speculation;
-- one-off wording preferences;
-- raw logs when a summary is enough.
+- 全量聊天内容；
+- 临时头脑风暴；
+- 敏感 secrets；
+- 工作不需要的个人数据；
+- 未验证猜测；
+- 一次性文案偏好；
+- 已可摘要表达的原始日志。

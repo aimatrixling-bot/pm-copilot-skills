@@ -12,10 +12,15 @@
     "context_sources",
     "target_runtime",
     "recommended_mode",
+    "delegation_mode",
+    "slice_plan",
+    "hitl_checkpoints",
+    "verification_policy",
     "runtime_constraints",
     "acceptance_criteria",
     "verification",
     "artifact_index_update_proposal",
+    "branch_state_policy",
     "human_approval_gates",
     "risks",
     "blocked_stop_condition",
@@ -42,6 +47,30 @@
     "branch_state",
     "definition_drift_check"
   ],
+  "branch_state_policy_required": [
+    "required",
+    "path_policy",
+    "file_path",
+    "create_before_implementation",
+    "update_triggers",
+    "recovery_instruction",
+    "merge_disposition"
+  ],
+  "branch_state_path_policy_required": [
+    "preferred_path",
+    "fallback_path",
+    "project_agents_md_override",
+    "require_human_acceptance_before_creating_new_state_directory"
+  ],
+  "branch_state_update_triggers": [
+    "before_context_compaction",
+    "after_user_decision",
+    "after_scope_change",
+    "after_acceptance_change",
+    "after_major_milestone",
+    "after_verification",
+    "before_handoff"
+  ],
   "delivery_mode_values": [
     "create",
     "improve",
@@ -64,5 +93,21 @@
     "side_panel",
     "linked_doc",
     "not_applicable"
+  ],
+  "delegation_mode_values": [
+    "afk_ready",
+    "hitl_checkpoint_required",
+    "blocked"
+  ],
+  "slice_strategy_values": [
+    "vertical_slice",
+    "tracer_bullet",
+    "horizontal_layer",
+    "investigation_only"
+  ],
+  "verification_policy_required": [
+    "minimum_checks",
+    "observable_evidence",
+    "cannot_claim_done_without"
   ]
 }

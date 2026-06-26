@@ -14,11 +14,54 @@
     "builder-review",
     "builder-decision"
   ],
+  "skill_load_policy": {
+    "builder-router": {
+      "invocation_mode": "user_invoked",
+      "context_load_class": "always_visible",
+      "references_loaded_by_default": false
+    },
+    "builder-plan-goal": {
+      "invocation_mode": "user_invoked",
+      "context_load_class": "router_visible",
+      "references_loaded_by_default": false
+    },
+    "builder-frame": {
+      "invocation_mode": "router_invoked",
+      "context_load_class": "on_demand",
+      "references_loaded_by_default": false
+    },
+    "builder-spec": {
+      "invocation_mode": "router_invoked",
+      "context_load_class": "on_demand",
+      "references_loaded_by_default": false
+    },
+    "builder-prototype": {
+      "invocation_mode": "router_invoked",
+      "context_load_class": "on_demand",
+      "references_loaded_by_default": false
+    },
+    "builder-agent-task": {
+      "invocation_mode": "router_invoked",
+      "context_load_class": "on_demand",
+      "references_loaded_by_default": false
+    },
+    "builder-review": {
+      "invocation_mode": "router_invoked",
+      "context_load_class": "on_demand",
+      "references_loaded_by_default": false
+    },
+    "builder-decision": {
+      "invocation_mode": "model_invoked",
+      "context_load_class": "on_demand",
+      "references_loaded_by_default": false
+    }
+  },
   "references": [
     "kernel/",
     "harness/",
     "memory/",
     "loops/",
+    "docs/",
     "references/",
     "templates/"
   ],

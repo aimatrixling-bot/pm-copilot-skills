@@ -14,6 +14,9 @@
 - 是否有真实输入风格的 trigger/routing/eval case。
 - 是否检查安装态相对资源可用。
 - 是否中文优先，且没有把 `SKILL.md` 写成巨型论文。
+- 是否消除了 `no_op`、`sediment`、`sprawl`，并明确新增规则如何改变 agent 行为。
+- 是否控制 `context_load`，使用 progressive disclosure 而不是默认加载全部 references/examples。
+- 是否定义 completion criterion、source-of-truth boundary 和 temporary artifact lifecycle。
 
 ## 降级为 PARTIAL
 
@@ -21,6 +24,8 @@
 - 有模板但没有 validator/eval 覆盖。
 - 有触发条件但缺少不触发条件。
 - 有产物字段但没有 handoff 说明。
+- 新增 skill 文案有价值但尚未接入 schema/eval/validator。
+- 小任务仍会加载过多上下文或输出 full audit。
 
 ## 标记 BLOCKED
 
@@ -28,3 +33,5 @@
 - 需要删除或重命名旧 `pm-*` skill。
 - 需要新增依赖、runtime 或发布配置，但未获确认。
 - 输出会伪装成已验证，但没有证据。
+- skill patch 只是 no-op 文案膨胀，没有行为、契约或验证变化。
+- 同一长期规则散落在多个 source of truth，造成 sprawl。

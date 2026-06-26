@@ -1,24 +1,24 @@
-# Generic Agent Adapter
+# Generic Agent Adapter（通用 Agent 适配器）
 
-This adapter describes how to use AI Builder OS with agent runtimes that do not support native skills.
+本适配器说明如何在不支持 native skills 的 agent runtime 中使用 AI Builder OS。
 
-## Use
+## 使用方式（Use）
 
-1. Copy the relevant `builder-*` skill instructions.
-2. Provide required kernel packet schemas.
-3. Ask the runtime to produce an Output Packet and Evidence Packet.
-4. Preserve risky actions as human approval gates.
+1. 复制相关 `builder-*` skill 指令。
+2. 提供必需的 kernel packet schemas。
+3. 要求 runtime 产出 Output Packet 和 Evidence Packet。
+4. 将高风险动作保留为人工确认门禁。
 
 ## M3.2 Package Surface
 
-Use `skill-pack.json` as the machine-readable manifest and `agents/openai.yaml` as OpenAI/Codex-oriented metadata. `_archived/` and `research/` are not part of the package surface.
+使用 `skill-pack.json` 作为机器可读 manifest，使用 `agents/openai.yaml` 作为面向 OpenAI/Codex 的 metadata。`_archived/` 和 `research/` 不属于 package surface。
 
-## M3.3 Export
+## M3.3 导出（Export）
 
-Adapter manifest: `adapters/generic-agent/adapter.json`
+适配器 manifest：`adapters/generic-agent/adapter.json`
 
 ```bash
 npm run export:runtime -- --target generic-agent --out ".\dist\ai-builder-os\generic-agent" --clean
 ```
 
-Layout: `package-root`. Builder skills are under `skills/`, and shared resources stay at the package root.
+布局：`package-root`。Builder skills 位于 `skills/` 下，共享资源保留在 package root。

@@ -2,6 +2,8 @@
   "name": "builder-prototype-output-contract",
   "required": [
     "prototype_mode",
+    "prototype_intent",
+    "intent_lifecycle",
     "delivery_mode",
     "visual_target",
     "artifact_path",
@@ -22,6 +24,18 @@
     "wireframe",
     "prototype_brief",
     "degraded_prototype"
+  ],
+  "prototype_intent_values": [
+    "throwaway_question_probe",
+    "durable_product_demo",
+    "visual_variation_experiment",
+    "coded_reference"
+  ],
+  "intent_lifecycle_required": [
+    "retain_until",
+    "absorb_into",
+    "deletion_or_archive_rule",
+    "review_required"
   ],
   "visual_target_type_values": [
     "none",

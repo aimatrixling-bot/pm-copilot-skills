@@ -23,6 +23,7 @@
   },
   "files": [
     "skill-pack.json",
+    "AGENTS.md",
     "agents/",
     "kernel/",
     "harness/",

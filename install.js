@@ -71,7 +71,7 @@ if (mode === "claude-project") {
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
 const markerName = ".pm-copilot-skills-source.json";
 const allowedMarkerPackages = new Set(["ai-builder-os", "pm-copilot-skills", pkg.name]);
-const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "references", "templates"];
+const builderSharedResourceNames = ["adapters", "kernel", "harness", "memory", "loops", "docs", "references", "templates"];
 const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
 const excludedLocalResourcePrefixes = ["references/source-blueprints"];
 

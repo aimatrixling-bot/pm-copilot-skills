@@ -386,6 +386,43 @@
       ]
     },
     {
+      "id": "complexity-lite-sidebar-icon-understanding",
+      "input": "你能理解这个需求吗：手术、收银模块一级菜单 icon 参考就诊工作台里的手术、收费操作 icon；菜单展开时一级菜单 icon 也要在菜单名左侧正常展示。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec"
+      ],
+      "expected_mode": "improve",
+      "expected_task_complexity": "lite",
+      "expected_response_profile": "terse",
+      "expected_contract_profile": "lite_change_contract",
+      "expected_context_strategy": "direct_contract",
+      "expected_delivery_decision": {
+        "primary_mode": "improve",
+        "secondary_mode": "none",
+        "confidence": "high",
+        "required_first_artifacts": [
+          "change_contract"
+        ],
+        "required_first_artifact": "change_contract",
+        "reframe_risk": "low"
+      },
+      "must_include": [
+        "task_complexity: lite",
+        "response_profile: terse",
+        "contract_profile: lite_change_contract",
+        "context_strategy: direct_contract",
+        "branch_state_required: false",
+        "secondary_mode: none"
+      ],
+      "must_not_include": [
+        "full delivery_decision by default",
+        "usage_metrics by default",
+        "memory/evidence references by default",
+        "secondary_mode: reframe"
+      ]
+    },
+    {
       "id": "delivery-reframe-asset-digestion-path",
       "input": "我们有旧 React 原型、Axure 和竞品截图，但目标 IA 和流程要重定，请先消化资产、定目标形态，再生成执行包。",
       "expected_path": [
@@ -421,6 +458,48 @@
         "Spec Gap",
         "Requirement Change",
         "Conflict / Contradiction"
+      ]
+    },
+    {
+      "id": "delivery-hybrid-improve-reframe-risk-path",
+      "input": "基于已有 Visit Workbench 做二次迭代，但可能调整 IA、字段优先级和 VOID 行为。",
+      "expected_path": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "expected_mode": "improve",
+      "expected_delivery_decision": {
+        "primary_mode": "improve",
+        "secondary_mode": "reframe",
+        "confidence": "medium",
+        "required_first_artifacts": [
+          "change_contract",
+          "branch_state"
+        ],
+        "required_first_artifact": "change_contract",
+        "mode_switch_conditions": [
+          "if IA changes",
+          "if state model changes",
+          "if page type changes",
+          "if field priority model changes"
+        ],
+        "stop_conditions": [
+          "source-of-truth conflict",
+          "missing baseline evidence",
+          "requirement change without human decision"
+        ]
+      },
+      "must_include": [
+        "delivery_decision",
+        "primary_mode: improve",
+        "secondary_mode: reframe",
+        "required_first_artifacts",
+        "change_contract",
+        "branch_state",
+        "mode_switch_conditions",
+        "stop_conditions"
       ]
     }
   ]

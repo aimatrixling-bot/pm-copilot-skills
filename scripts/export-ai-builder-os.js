@@ -128,7 +128,7 @@ function copyMetadata(targetDir, targetName, adapter, skillPack, activeSkills) {
 }
 
 function copySharedResources(dest) {
-  for (const resourceName of ['adapters', 'kernel', 'harness', 'memory', 'loops', 'references', 'templates']) {
+  for (const resourceName of ['adapters', 'kernel', 'harness', 'memory', 'loops', 'docs', 'references', 'templates']) {
     copyRecursive(path.join(root, resourceName), path.join(dest, resourceName));
   }
 }
@@ -152,7 +152,7 @@ function exportPackageRoot(targetDir, targetName, activeSkills) {
     copyRecursive(path.join(root, 'skills', skillName), path.join(targetDir, 'skills', skillName));
   }
 
-  for (const resourceName of ['adapters', 'kernel', 'harness', 'memory', 'loops', 'references', 'templates', 'evals']) {
+  for (const resourceName of ['adapters', 'kernel', 'harness', 'memory', 'loops', 'docs', 'references', 'templates', 'evals']) {
     copyRecursive(path.join(root, resourceName), path.join(targetDir, resourceName));
   }
 

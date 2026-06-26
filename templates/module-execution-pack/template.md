@@ -1,10 +1,24 @@
 # 模块执行契约（Module Execution Pack）
 
+## Human Decision Summary
+
+- Goal:
+- Recommended mode: create | reframe
+- Current baseline:
+- Key decisions:
+- Non-goals:
+- Open blockers:
+- Ready for implementation: yes | no
+- Human decision needed:
+
+## Agent Execution Contract
+
 ```yaml
 artifact_type: module_execution_pack
 title:
 delivery_mode: create | reframe
 status: draft | accepted | superseded
+spec_output_profile: minimal_execution_pack | full_execution_pack
 source_context:
   project:
   upstream_artifacts:
@@ -19,6 +33,17 @@ decision_summary:
   rejected_options:
     - option:
       reason:
+
+profile_selection:
+  default_profile: minimal_execution_pack
+  use_full_profile_when:
+    - reframe
+    - cross_module_or_cross_repo
+    - permission_data_api_audit_or_security_sensitive
+    - release_readiness
+    - high_fidelity_new_module_with_unclear_target_shape
+    - runtime_demo_with_production_boundary_risk
+  allowed_degradation: minimal_execution_pack_with_open_questions
 
 objective:
   business_goal:
@@ -127,6 +152,7 @@ handoff_targets:
 
 - 新建模式 `create` 和重塑模式 `reframe` 使用本模板。
 - 本模板是 agent 可执行契约，不是长 PRD。
+- 默认使用 `minimal_execution_pack`，只在重塑、发布就绪、跨模块/跨仓库、权限/数据/API/审计/安全敏感、目标形态不清的新高保真模块，或有生产边界风险的 runtime demo 使用 `full_execution_pack`。
 - 如果目标、用户、non-goals、验收或验证方式缺失，不应进入实现。
 - 如果旧资产之间冲突，先在 `source_assets.pending_judgment` 和 `open_questions` 中标出，不要伪造确定性。
 - 修改实现后必须用 Definition Drift Check 判断定义是否需要同步。

@@ -1,20 +1,20 @@
-# Summarization Policy
+# 摘要策略（Summarization Policy）
 
-When compressing a run into memory, preserve:
+将一次运行压缩为 memory 时，应保留：
 
-- objective;
-- facts;
-- assumptions;
-- decisions;
-- risks;
-- artifacts;
-- evidence;
-- next step.
+- 目标；
+- 事实；
+- 假设；
+- 决策；
+- 风险；
+- 资产；
+- 证据；
+- 下一步。
 
-Drop:
+应丢弃：
 
-- greetings;
-- repeated discussion;
-- unneeded logs;
-- dead-end wording;
-- obsolete drafts.
+- 寒暄；
+- 重复讨论；
+- 不必要日志；
+- 已放弃方向的措辞；
+- 过期草稿。

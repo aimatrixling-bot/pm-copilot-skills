@@ -1,8 +1,8 @@
-# Brownfield Intake Policy
+# 既有项目接入策略（Brownfield Intake Policy）
 
 本策略定义用户在已有本地项目资产的情况下，中途引入 AI Builder OS 时的最小 intake 行为。目标是先理解和保护已有资产，再决定是否初始化 AI Builder OS runtime 或 artifact index。
 
-## Trigger
+## 触发信号（Trigger）
 
 使用 `brownfield` 的典型信号：
 
@@ -11,7 +11,7 @@
 - 存在多个历史文档、旧 PRD、设计稿、脚本或输出物。
 - Artifact Hygiene Loop 发现 artifact index 不存在，但项目已有可复用资产。
 
-## Minimum Inputs
+## 最小输入（Minimum Inputs）
 
 Brownfield intake 至少需要：
 
@@ -22,7 +22,7 @@ Brownfield intake 至少需要：
 
 如果缺少项目根目录或授权范围，必须使用 `unknown` 或停止提问。
 
-## Minimum Output
+## 最小输出（Minimum Output）
 
 Brownfield intake 至少输出：
 
@@ -79,7 +79,7 @@ brownfield_intake:
   next_action:
 ```
 
-## Intake Rules
+## 接入规则（Intake Rules）
 
 - 默认只读取用户指定范围和低风险入口文件，不做全仓库深扫。
 - 先区分事实、推断和未知项，再提出行动建议。
@@ -89,7 +89,7 @@ brownfield_intake:
 - 删除目录、批量删除、删除代码/脚本/HTML/测试/配置必须停止并请求人工确认。
 - 对不确定用途但可能影响业务判断的文件，默认进入 `needs_human_decision` 或 `do_not_touch`。
 
-## Source-of-truth Intake Order
+## 事实源接入顺序（Source-of-truth Intake Order）
 
 Brownfield 中建议按以下顺序寻找候选真相源：
 
@@ -105,7 +105,7 @@ Brownfield 中建议按以下顺序寻找候选真相源：
 
 这个顺序是 intake 起点，不是绝对规则。发现冲突时必须显式列出，不得擅自合并。
 
-## Cleanup Proposal Rules
+## 清理提案规则（Cleanup Proposal Rules）
 
 Brownfield intake 不能直接清理文件。cleanup proposal 必须引用 `memory/policies/artifact-cleanup-policy.zh.md`，并说明：
 
@@ -116,7 +116,7 @@ Brownfield intake 不能直接清理文件。cleanup proposal 必须引用 `memo
 
 证据不足时，结论必须是 `needs_human_decision`。
 
-## Stop Conditions
+## 停止条件（Stop Conditions）
 
 遇到以下情况必须停止：
 
@@ -126,7 +126,7 @@ Brownfield intake 不能直接清理文件。cleanup proposal 必须引用 `memo
 - 涉及生产配置、真实数据、权限、认证、合规、安全或发布风险。
 - 项目规模过大，需要先制定 intake Plan。
 
-## Handoff
+## 交接（Handoff）
 
 Brownfield intake 的 handoff 必须保留：
 

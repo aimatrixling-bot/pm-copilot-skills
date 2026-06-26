@@ -1,4 +1,4 @@
-# Evolution Note Schema
+# 演进记录 Schema（Evolution Note Schema）
 
 ```yaml
 date:
@@ -11,4 +11,4 @@ related_eval_case:
 related_skill:
 ```
 
-Evolution notes should feed future skill updates or regression evals.
+Evolution notes 应输入未来的 skill 更新或 regression evals。

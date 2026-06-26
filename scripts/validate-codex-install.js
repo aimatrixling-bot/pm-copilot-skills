@@ -37,6 +37,9 @@ const builderSharedResources = [
   'loops/README.md',
   'loops/recipes/artifact-hygiene.loop.md',
   'loops/recipes/design-plan-to-prototype.loop.md',
+  'loops/recipes/definition-sync.loop.md',
+  'docs/delivery-kernel.md',
+  'docs/source-of-truth-map.md',
   'references/README.md',
   'references/skill-design/README.md',
   'references/skill-design/skill-design-playbook.zh.md',
@@ -51,6 +54,10 @@ const builderSharedResources = [
   'templates/review-report/template.md',
   'templates/skill-hardening-brief/template.md',
   'templates/design-brief/template.md',
+  'templates/module-execution-pack/template.md',
+  'templates/change-contract/template.md',
+  'templates/branch-state/template.md',
+  'templates/definition-drift-check/template.md',
 ];
 
 function assert(condition, message) {

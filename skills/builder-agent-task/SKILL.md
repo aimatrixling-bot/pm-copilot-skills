@@ -61,6 +61,66 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 - `ask_first`：缺少业务、安全、权限、生产、数据或发布批准。
 - `not_ready_for_agent_task`：缺少 frame/spec、验收标准、验证方式、目标 runtime 或 stop conditions，必须回退上游。
 
+## Branch State Policy
+
+Agent Task Packet 必须把 Branch State 运行纪律显式传给下游 agent。
+
+```yaml
+branch_state_policy:
+  required: true | false
+  path_policy:
+    preferred_path: .ai-builder/branch-state.md
+    fallback_path: docs/branch-state/<branch-or-worktree>.md
+    project_agents_md_override: true
+    require_human_acceptance_before_creating_new_state_directory: true
+  file_path:
+  create_before_implementation: true | false
+  update_triggers:
+    - before_context_compaction
+    - after_user_decision
+    - after_scope_change
+    - after_acceptance_change
+    - after_major_milestone
+    - after_verification
+    - before_handoff
+  recovery_instruction:
+  merge_disposition:
+    - migrate_stable_decisions_to_source_of_truth
+    - archive_branch_state
+    - list_unresolved_gaps
+```
+
+必须设置 `required: true` 的场景：高保真原型、多轮 Goal、跨仓库、跨资产、上下文压缩风险、复杂业务系统任务。上下文恢复或 compaction 后，任务包必须要求执行 agent 先读 Branch State，再继续实现。
+
+Path policy：优先使用项目 `AGENTS.md` 指定的 Branch State 路径；没有覆盖时，preferred path 为 `.ai-builder/branch-state.md`，fallback path 为 `docs/branch-state/<branch-or-worktree>.md`。如果 fallback 需要创建新的 state directory，必须先要求人工接受；任务包不得授权执行 agent 自动创建新状态目录。
+
+## Execution Discipline
+
+Agent Task Packet 必须说明这件事能否交给 agent 自主完成，还是需要人类检查点或直接阻塞。
+
+```yaml
+delegation_mode: afk_ready | hitl_checkpoint_required | blocked
+slice_plan:
+  strategy: vertical_slice | tracer_bullet | horizontal_layer | investigation_only
+  first_slice:
+  preserves:
+  stop_after:
+hitl_checkpoints:
+  - checkpoint:
+    required_before:
+    owner:
+verification_policy:
+  minimum_checks:
+  observable_evidence:
+  cannot_claim_done_without:
+```
+
+- 优先 `vertical_slice` 或 `tracer_bullet`：先交付一条可观察、可验证的窄端到端路径，再扩展。
+- 不默认按水平层拆分前端、后端、测试、文档；只有技术依赖明确要求时才用 `horizontal_layer`。
+- `afk_ready` 要求 scope、non-goals、验收、验证、禁止动作、停止条件和回滚/恢复策略都清楚。
+- `hitl_checkpoint_required` 用于设计、业务、安全、权限、生产、范围升级或关键视觉判断需要人类确认的场景。
+- `blocked` 用于缺少契约、无法验证、需要未授权生产动作，或 agent 继续会制造错误确定性。
+
 ## 执行流程
 
 1. 捕获任务目标和目标 runtime。
@@ -69,11 +129,14 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 4. 判断推荐模式：Prompt、Plan、Goal 或 Plan -> Goal。
 5. 创建范围、non-goals、上下文来源和验证方式。
 6. 如果输入包含 Module Execution Pack、Change Contract 或 Branch State，把其中的 non-goals、verification、definition_sync 和 stop conditions 传给下游 agent。
-7. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态、Product Logic Containment Gate 和 Design Consistency Gate 期望。
-8. 如果涉及高保真原型或可运行 demo，附上 `design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `prototype_evidence_requirements`。
-9. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
-10. 补充 human approval gates 和停止条件。
-11. 需要时产出可复制的 Plan/Goal 提示词。
+7. 生成 `branch_state_policy` 和 `path_policy`；高保真原型、多轮 Goal、跨仓库、跨资产、上下文压缩风险、复杂业务系统任务必须要求先建 Branch State。
+8. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态、Product Logic Containment Gate 和 Design Consistency Gate 期望。
+9. 如果涉及高保真原型或可运行 demo，附上 `design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `prototype_evidence_requirements`。
+10. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
+11. 选择 `delegation_mode`，并把任务拆成 `slice_plan`；默认 vertical slice / tracer bullet，不默认水平拆层。
+12. 补充 `hitl_checkpoints`、human approval gates 和停止条件。
+13. 写明 `verification_policy`，明确不能声称完成所需的最小命令、截图、浏览器检查或人工证据。
+14. 需要时产出可复制的 Plan/Goal 提示词。
 
 ## 输出契约
 
@@ -88,6 +151,10 @@ non_goals:
 context_sources:
 target_runtime:
 recommended_mode:
+delegation_mode: afk_ready | hitl_checkpoint_required | blocked
+slice_plan:
+hitl_checkpoints:
+verification_policy:
 delivery_mode: create | improve | reframe | unknown
 runtime_constraints:
 plan_prompt:
@@ -97,6 +164,7 @@ verification:
 module_execution_pack:
 change_contract:
 branch_state:
+branch_state_policy:
 definition_drift_check:
 definition_sync:
 artifact_index_update_proposal:
@@ -133,8 +201,14 @@ handoff_packet:
 - 高保真原型或可运行 demo 任务必须包含 `design_plan`、`runnable_prototype` 或要求执行 agent 先补 Design Plan。
 - Agent 指令必须区分真实实现、mock 数据、demo-only 交互和 review-only 产物。
 - 任何 Goal 指令必须包含 Done when、Verification 和 blocked stop condition。
+- Agent Task Packet 必须包含 `delegation_mode`、`slice_plan`、`hitl_checkpoints` 和 `verification_policy`，不得只给大段执行愿望。
+- 默认优先 vertical slice / tracer bullet；除非依赖关系明确要求，不要把任务拆成纯水平层。
+- `delegation_mode: afk_ready` 只有在执行 agent 可以不等待人类输入且验证闭环清楚时使用；否则使用 `hitl_checkpoint_required` 或 `blocked`。
 - 来自 Module Execution Pack / Change Contract 的任务必须保留 delivery_mode、non-goals、verification、definition_sync 和 forbidden actions。
-- 多轮 Goal、高保真原型、跨仓库或上下文压缩风险任务必须要求维护 Branch State。
+- 多轮 Goal、高保真原型、跨仓库、跨资产、上下文压缩风险或复杂业务系统任务必须要求维护 Branch State。
+- `branch_state_policy.required: true` 时，必须包含 path_policy、file_path、create_before_implementation、update_triggers、recovery_instruction 和 merge_disposition。
+- `branch_state_policy.path_policy` 必须包含 preferred_path、fallback_path、project_agents_md_override 和 require_human_acceptance_before_creating_new_state_directory。
+- Branch State 必须记录 rejected directions / do-not-retry，避免压缩后重复走错路。
 - 完成前如存在定义变更，必须要求 Definition Drift Check；不得把实现结果自动升级为已确认需求。
 - 涉及项目资产写入时，必须要求执行 agent 在 Output Packet 中提交 `artifact_index_update_proposal`；该字段可以是 `none`，但不得缺失。
 - `artifact_index_update_proposal` 只能是建议，不能授权自动删除、自动迁移或自动提升为 `current`。
@@ -142,7 +216,7 @@ handoff_packet:
 
 ## 交接
 
-输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、context_sources、non_goals、acceptance_criteria、verification、artifact_index_update_proposal、design_plan、ui_content_boundary、business_rule_notes、rule_notes_placement、prototype_evidence_requirements、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
+输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、context_sources、non_goals、acceptance_criteria、verification、delegation_mode、slice_plan、hitl_checkpoints、verification_policy、branch_state_policy、artifact_index_update_proposal、design_plan、ui_content_boundary、business_rule_notes、rule_notes_placement、prototype_evidence_requirements、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
 
 ## 参考
 

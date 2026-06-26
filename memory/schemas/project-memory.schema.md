@@ -1,4 +1,4 @@
-# Project Memory Schema
+# 项目记忆 Schema（Project Memory Schema）
 
 ```yaml
 project_name:
@@ -15,4 +15,4 @@ next_step:
 last_updated:
 ```
 
-Project memory should allow a future session to continue without raw chat history.
+Project memory 应让未来 session 不依赖原始聊天记录也能继续工作。

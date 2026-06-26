@@ -46,6 +46,16 @@ if (failures.length === 0) {
     'eval',
     '安装态',
     'Skill Hardening Brief',
+    'Matt-Inspired Skill Engineering Discipline',
+    'process_invariant',
+    'no_op',
+    'sediment',
+    'sprawl',
+    'context_load',
+    'progressive_disclosure',
+    'completion_criterion',
+    'source_of_truth_boundary',
+    'Temporary artifact policy',
   ]) {
     assert(playbook.includes(term), `Skill Design Playbook 缺少术语: ${term}`);
   }

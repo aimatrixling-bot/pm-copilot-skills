@@ -1,14 +1,14 @@
-# Guides
+# 执行指南（Guides）
 
-Before execution, establish:
+执行前先明确：
 
-- task objective;
-- target asset;
-- context sources;
-- recommended mode;
-- scope and non-goals;
-- verification method;
-- human approval gates;
-- minimum handoff.
+- 任务目标；
+- 目标资产；
+- 上下文来源；
+- 推荐模式；
+- scope 和 non-goals；
+- 验证方法；
+- 人工确认门禁；
+- 最小交接信息。
 
-If these are not clear, use Plan or `builder-router` before execution.
+如果这些信息不清楚，先使用 Plan 或 `builder-router`，不要直接进入执行。

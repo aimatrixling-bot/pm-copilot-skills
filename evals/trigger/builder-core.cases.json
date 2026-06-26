@@ -501,6 +501,33 @@
       "quality_rubric": "agent task packet is executable and bounded"
     },
     {
+      "id": "trigger-agent-task-vertical-slice-discipline",
+      "name": "Agent Task Packet should choose delegation mode and vertical slice",
+      "input": "把这份 Change Contract 交给 Codex 执行。范围是局部页面交互修复，可以自己做，但遇到 IA、权限、API 或超过 5 个文件要停下来问我。",
+      "context": "A bounded Change Contract exists; user wants Codex handoff with stop conditions.",
+      "expected_skill": "builder-agent-task",
+      "expected_mode": "agent_task_packet",
+      "expected_outputs": [
+        "delegation_mode",
+        "slice_plan",
+        "hitl_checkpoints",
+        "verification_policy"
+      ],
+      "must_include": [
+        "delegation_mode: hitl_checkpoint_required",
+        "vertical_slice",
+        "tracer_bullet",
+        "hitl_checkpoints",
+        "verification_policy"
+      ],
+      "must_not_include": [
+        "horizontal layers by default",
+        "AFK without stop conditions",
+        "claim done without observable evidence"
+      ],
+      "quality_rubric": "agent task handoff is bounded, slice-based and explicit about HITL checkpoints"
+    },
+    {
       "id": "trigger-agent-task-reroute-to-spec",
       "name": "Premature Agent Task Packet should reroute upstream",
       "input": "我只有 Feature Frame，没有验收标准、验证方式和 stop conditions。请直接生成 Codex 可执行任务包。",
@@ -574,6 +601,33 @@
         "approve without screenshot"
       ],
       "quality_rubric": "high-fidelity visual work preserves source visual and runnable evidence"
+    },
+    {
+      "id": "trigger-prototype-throwaway-intent",
+      "name": "Question probe prototype should be marked throwaway",
+      "input": "先做一个很小的交互探针，验证这个筛选栏展开方式能不能理解。只是回答问题，不要沉淀成正式 demo。",
+      "context": "The prototype is explicitly temporary and should not become source of truth.",
+      "expected_skill": "builder-prototype",
+      "expected_mode": "prototype_first",
+      "expected_outputs": [
+        "prototype_intent",
+        "intent_lifecycle",
+        "artifact_path",
+        "verification",
+        "next"
+      ],
+      "must_include": [
+        "prototype_intent: throwaway_question_probe",
+        "intent_lifecycle",
+        "deletion_or_archive_rule",
+        "review_required: false"
+      ],
+      "must_not_include": [
+        "durable_product_demo",
+        "source of truth",
+        "promote to spec without review"
+      ],
+      "quality_rubric": "temporary question probe has explicit lifecycle and cannot be treated as durable product demo"
     },
     {
       "id": "trigger-prototype-missing-visual-target-degrade",
@@ -689,6 +743,36 @@
       "quality_rubric": "local iteration captures baseline and regression boundary"
     },
     {
+      "id": "trigger-lite-sidebar-icon-contract",
+      "name": "Lite local UI request should stay terse and bounded",
+      "input": "你能理解这个需求吗：手术、收银模块一级菜单 icon 参考就诊工作台里的手术、收费操作 icon；菜单展开时一级菜单 icon 也要在菜单名左侧正常展示。",
+      "context": "Stable sidebar/menu baseline exists; this is a local UI/navigation icon alignment request.",
+      "expected_skill": "builder-router",
+      "expected_mode": "improve",
+      "expected_outputs": [
+        "task_complexity",
+        "response_profile",
+        "contract_profile",
+        "context_strategy",
+        "delivery_decision"
+      ],
+      "must_include": [
+        "task_complexity: lite",
+        "response_profile: terse",
+        "contract_profile: lite_change_contract",
+        "context_strategy: direct_contract",
+        "secondary_mode: none",
+        "branch_state_required: false"
+      ],
+      "must_not_include": [
+        "full delivery_decision by default",
+        "usage_metrics by default",
+        "memory/evidence dump by default",
+        "secondary_mode: reframe"
+      ],
+      "quality_rubric": "small local UI request avoids full audit output and stays in lite contract scope"
+    },
+    {
       "id": "trigger-delivery-reframe-mode",
       "name": "Old assets with changed target shape should reframe first",
       "input": "有旧页面、供应商截图和 Axure，但这次目标 IA 和流程都要重定，请先判断哪些资产可吸收，再给执行契约。",
@@ -741,6 +825,157 @@
         "approve without evidence"
       ],
       "quality_rubric": "definition drift is classified before review or merge"
+    },
+    {
+      "id": "trigger-branch-state-required-for-long-codex-goal",
+      "name": "Long Codex goal should require Branch State policy",
+      "input": "请生成一个交给 Codex 的多轮 Goal，用于跨仓库实现高保真原型，过程中可能发生上下文压缩。",
+      "context": "High-fidelity, multi-turn, cross-repo agent task with compaction risk.",
+      "expected_skill": "builder-agent-task",
+      "expected_mode": "agent_task_packet",
+      "expected_outputs": [
+        "branch_state_policy",
+        "update_triggers",
+        "recovery_instruction",
+        "merge_disposition"
+      ],
+      "must_include": [
+        "branch_state_policy",
+        "create_before_implementation",
+        "before_context_compaction",
+        "after_user_decision",
+        "before_handoff"
+      ],
+      "must_not_include": [
+        "continue without Branch State"
+      ],
+      "quality_rubric": "agent task packet makes Branch State runtime discipline explicit"
+    },
+    {
+      "id": "trigger-spec-minimal-profile-default",
+      "name": "Local improve request should default to minimal Change Contract",
+      "input": "已有稳定页面，只改按钮顺序和空态文案，不改路由、状态模型或数据结构。请给变更契约。",
+      "context": "Stable baseline and local low-risk iteration.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "change_contract",
+      "expected_outputs": [
+        "spec_output_profile",
+        "change_contract",
+        "open_questions"
+      ],
+      "must_include": [
+        "minimal_change_contract",
+        "current_baseline",
+        "do_not_touch",
+        "verification"
+      ],
+      "must_not_include": [
+        "full_change_contract by default",
+        "full redesign"
+      ],
+      "quality_rubric": "simple brownfield iteration stays minimal unless risk justifies full profile"
+    },
+    {
+      "id": "trigger-full-profile-tightened-risk",
+      "name": "High fidelity or runtime demo alone should not force full profile",
+      "input": "已有清楚目标形态的高保真原型只要做一次本地 demo 文案和排序微调，没有权限、数据、API、审计、安全或生产边界风险。",
+      "context": "Stable baseline, no release readiness and no production-boundary risk.",
+      "expected_skill": "builder-spec",
+      "expected_mode": "change_contract",
+      "expected_outputs": [
+        "spec_output_profile",
+        "profile_selection_rule",
+        "change_contract"
+      ],
+      "must_include": [
+        "minimal_change_contract",
+        "high_fidelity_new_module_with_unclear_target_shape",
+        "runtime_demo_with_production_boundary_risk"
+      ],
+      "must_not_include": [
+        "full profile by default",
+        "high_fidelity_prototype_or_runtime_demo",
+        "full_change_contract by default"
+      ],
+      "quality_rubric": "full profile requires specific risk triggers, not generic fidelity or demo labels"
+    },
+    {
+      "id": "trigger-review-profile-output-shaping",
+      "name": "Quick review should not emit full audit framework",
+      "input": "请快速评审这个小 diff：只改了按钮文案和排序，有测试输出，没有原型、发布或 definition drift 诉求。",
+      "context": "Low-risk quick review.",
+      "expected_skill": "builder-review",
+      "expected_mode": "quick_change_review",
+      "expected_outputs": [
+        "review_profile",
+        "profile_required_sections",
+        "findings",
+        "evidence_audit",
+        "decision"
+      ],
+      "must_include": [
+        "quick_change_review",
+        "profile_required_sections",
+        "evidence_audit",
+        "risk_assessment"
+      ],
+      "must_not_include": [
+        "prototype_design_evidence_audit by default",
+        "definition_sync_audit by default",
+        "artifact_hygiene_audit by default",
+        "release_readiness by default"
+      ],
+      "quality_rubric": "review profile controls required sections and prevents output bloat"
+    },
+    {
+      "id": "trigger-mode-switch-assessment-review",
+      "name": "Definition drift review should block mode switch without decision",
+      "input": "这次原本只是 improve，但实现后改了 IA、状态模型和字段优先级。请评审是否还能 approve。",
+      "context": "Implementation drift may have changed improve into reframe.",
+      "expected_skill": "builder-review",
+      "expected_mode": "definition_drift_review",
+      "expected_outputs": [
+        "mode_switch_assessment",
+        "definition_sync_audit",
+        "decision"
+      ],
+      "must_include": [
+        "mode_switch_assessment",
+        "should_switch_mode",
+        "reframe",
+        "REQUEST_CHANGES"
+      ],
+      "must_not_include": [
+        "APPROVE without mode switch decision"
+      ],
+      "quality_rubric": "review cannot approve when local iteration becomes reframe"
+    },
+    {
+      "id": "trigger-skill-quality-review-no-op-sprawl",
+      "name": "Skill quality review should flag no-op and sprawl",
+      "input": "请评审这次 builder-router skill patch：我担心它只是加了很多说明，但没有改变 output schema、eval、validator，也让小任务加载太多上下文。",
+      "context": "A skill patch exists and should be reviewed against Skill Design Playbook discipline.",
+      "expected_skill": "builder-review",
+      "expected_mode": "skill_quality_review",
+      "expected_outputs": [
+        "skill_quality_audit",
+        "usage_metrics_v2",
+        "findings",
+        "decision"
+      ],
+      "must_include": [
+        "skill_quality_review",
+        "no_op",
+        "sprawl",
+        "context_load",
+        "progressive_disclosure",
+        "REQUEST_CHANGES"
+      ],
+      "must_not_include": [
+        "approve without eval/schema/validator evidence",
+        "usage_metrics_v2 in quick_change_review"
+      ],
+      "quality_rubric": "skill review checks behavior-changing evidence and context-load hygiene"
     }
   ]
 }

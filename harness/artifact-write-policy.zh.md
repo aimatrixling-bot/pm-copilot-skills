@@ -1,8 +1,8 @@
-# Artifact Write Policy
+# 资产写入策略（Artifact Write Policy）
 
 本策略定义 AI Builder OS 在创建、修改、提升或交接资产时的写入纪律。它适用于所有 `builder-*` skills、agent task、人工整理和未来 runtime projection；它不是新的核心 skill。
 
-## Before Write
+## 写入前（Before Write）
 
 写入任何可复用资产前，必须先明确：
 
@@ -17,7 +17,7 @@
 
 如果这些信息缺失，先输出问题、假设或 Plan，不要直接创建长期资产。
 
-## During Write
+## 写入中（During Write）
 
 写入过程中必须遵守：
 
@@ -28,7 +28,7 @@
 - 不把过程日志、失败实验或一次性分析默认写入长期 memory。
 - 涉及生产配置、权限、数据、发布或删除动作时，必须触发人工确认。
 
-## After Write
+## 写入后（After Write）
 
 完成写入后，必须至少给出：
 
@@ -49,7 +49,7 @@ artifact_write_report:
 
 如果当前任务不能直接修改 `artifact-index.yaml`，必须在 Output Packet 或 final report 中给出 index update proposal。
 
-## Promotion Rule
+## 提升规则（Promotion Rule）
 
 资产提升为 `current` 前必须满足：
 
@@ -59,11 +59,11 @@ artifact_write_report:
 - scope、non-goals、acceptance criteria 或 completion claim 可追溯。
 - 已通过必要 review、Evidence Gate 或用户确认。
 
-## Cleanup Rule
+## 清理规则（Cleanup Rule）
 
 写入任务不能顺手删除资产。发现可清理材料时，只能生成 cleanup proposal，并遵守 `memory/policies/artifact-cleanup-policy.zh.md`。
 
-## Handoff Checklist
+## 交接检查清单（Handoff Checklist）
 
 交接给下游 skill 或 agent 前，检查：
 

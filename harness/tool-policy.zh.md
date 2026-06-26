@@ -1,26 +1,26 @@
-# Tool Policy
+# 工具策略（Tool Policy）
 
-## Allowed By Default
+## 默认允许（Allowed By Default）
 
-- read files;
-- inspect git status and diffs;
-- create draft artifacts;
-- run local validation commands;
-- generate task packets and plans.
+- 读取文件；
+- 检查 git status 和 diff；
+- 创建草稿资产；
+- 运行本地验证命令；
+- 生成 task packet 和 Plan。
 
-## Cautious
+## 谨慎使用（Cautious）
 
-- modify existing code;
-- install dependencies;
-- change config;
-- run long or external commands.
+- 修改既有代码；
+- 安装依赖；
+- 修改配置；
+- 运行耗时或外部命令。
 
-## Requires Human Approval
+## 需要人工确认（Requires Human Approval）
 
-- delete files or data;
-- commit or push;
-- deploy;
-- send messages or emails;
-- modify production data;
-- change permissions;
-- call external write APIs.
+- 删除文件或数据；
+- commit 或 push；
+- deploy；
+- 发送消息或邮件；
+- 修改生产数据；
+- 修改权限；
+- 调用外部写入 API。

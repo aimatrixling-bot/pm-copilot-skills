@@ -19,6 +19,20 @@ non_goals:
 context_sources:
 target_runtime:
 recommended_mode: prompt | plan | goal | plan_to_goal
+delegation_mode: afk_ready | hitl_checkpoint_required | blocked
+slice_plan:
+  strategy: vertical_slice | tracer_bullet | horizontal_layer | investigation_only
+  first_slice:
+  preserves:
+  stop_after:
+hitl_checkpoints:
+  - checkpoint:
+    required_before:
+    owner:
+verification_policy:
+  minimum_checks:
+  observable_evidence:
+  cannot_claim_done_without:
 runtime_constraints:
 plan_prompt:
 goal_prompt:
@@ -36,6 +50,28 @@ non_ui_explanations:
 prototype_evidence_requirements:
 product_logic_containment_gate:
 design_consistency_gate:
+branch_state_policy:
+  required: true | false
+  path_policy:
+    preferred_path: .ai-builder/branch-state.md
+    fallback_path: docs/branch-state/<branch-or-worktree>.md
+    project_agents_md_override: true
+    require_human_acceptance_before_creating_new_state_directory: true
+  file_path:
+  create_before_implementation: true | false
+  update_triggers:
+    - before_context_compaction
+    - after_user_decision
+    - after_scope_change
+    - after_acceptance_change
+    - after_major_milestone
+    - after_verification
+    - before_handoff
+  recovery_instruction:
+  merge_disposition:
+    - migrate_stable_decisions_to_source_of_truth
+    - archive_branch_state
+    - list_unresolved_gaps
 allowed_tools:
 forbidden_actions:
 human_approval_gates:

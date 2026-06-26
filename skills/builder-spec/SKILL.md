@@ -32,7 +32,7 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 
 - 用户要求 PRD、spec、验收标准或工程请求。
 - 已有 Feature Frame，需要转成交付细节。
-- 已有 prototype artifact、Prototype Brief、visual target、preview URL、screenshot path、状态覆盖、gaps 或 verification，需要反向沉淀成 Mini Spec、PRD 或 agent-readable spec。
+- 已有 prototype artifact、Prototype Brief、visual_target、runnable_evidence、design_evidence、covered flows、states covered、gaps 或 verification，需要反向沉淀成 Mini Spec、PRD 或 agent-readable spec。
 - 下游 agent 工作需要明确范围和验证方式。
 - 用户要求把业务需求整理成 prototype、implementation 或 agent task 可消费的契约。
 
@@ -64,13 +64,46 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 - `prototype_to_spec`：从 prototype artifact、visual target、运行/截图证据、状态覆盖、gaps 和 verification 中提取可构建规格，明确 prototype facts、visual evidence、推断、缺口和下一步验证。
 - `not_ready_for_spec`：Feature Frame 不成熟，退回 `builder-frame` 或先提问。
 
+## Profile Selection
+
+默认使用最轻可验收 profile，只有确实能降低风险时才升级为 full profile。小任务不应因为进入 Builder OS 就自动展开完整 PRD、完整变更契约或 reframe。
+
+```yaml
+spec_output_profile: micro_note | lite_change_contract | minimal_change_contract | standard_change_contract | full_change_contract | minimal_execution_pack | full_execution_pack | prototype_to_spec | engineering_request
+profile_selection_rule:
+  default: lite_or_minimal
+  use_full_when:
+    - reframe
+    - release_readiness
+    - cross_module_or_cross_repo
+    - permission_data_api_audit_or_security_sensitive
+    - high_fidelity_new_module_with_unclear_target_shape
+    - runtime_demo_with_production_boundary_risk
+  upgrade_lite_to_standard_when:
+    - cross_component_state_or_flow
+    - domain_semantic_change
+    - route_or_navigation_classification_change
+    - target_shape_unclear
+  fallback: minimal_with_open_questions
+```
+
+- `micro_note`：1-2 个文件、文案/样式/小 UI、无领域语义或状态模型变化；只输出理解、范围、验收、验证和停止条件。
+- `lite_change_contract`：2-5 个文件、局部 UI/交互/组件对齐，有轻微回归风险；必须包含允许触碰范围、预期文件数量、验收和人工升级条件。
+- `minimal_change_contract`：默认迭代输出，只保留当前基线、变更目标、必须保留、不触碰范围、验收、验证、definition_sync。
+- `standard_change_contract`：跨组件、局部状态/流程、导航分类或领域语义可能受影响，但仍不需要 full governance 的迭代输出。
+- `full_change_contract`：当迭代存在跨模块、跨仓库、权限/数据/API/审计/安全敏感、发布就绪或明确重塑风险时使用。
+- `minimal_execution_pack`：默认新建输出，冻结目标、非目标、目标形态、关键契约、验收和验证。
+- `full_execution_pack`：重塑、跨资产、目标形态不清的新高保真模块或有生产边界风险的 runtime demo 使用。
+- `micro_note` / `lite_change_contract` 默认 `secondary_mode: none`；只有 IA、状态模型、页面类型、领域语义、导航分类或 target shape 风险才升级 `reframe_risk`。
+- 输入不足时，允许输出 minimal + open questions，不得伪造完整 full contract。
+
 ## 执行流程
 
 1. 读取 spec 模板、spec rules 和 acceptance-criteria guide。
 2. 判断输入来源：frame/spec-first、prototype-to-spec、legacy migration 或 not-ready。
 3. 验证输入是否已经 spec-ready；来自 prototype 的输入也必须检查高风险权限、数据、API、生产和治理边界。
 4. 如果输入不成熟，输出 `readiness_gate`、`reroute_recommendation` 和 `next_skill_input`，优先回退到 `builder-frame` 的 `grill_frame`，不要写伪完整 spec。
-5. 如用户需要交付契约，先判断 `delivery_mode`：`create` 产出 Module Execution Pack，`improve` 产出 Change Contract，`reframe` 先做 source assets / target shape 后产出 Execution Pack。
+5. 如用户需要交付契约，先判断 `delivery_mode`：`create` 产出 Module Execution Pack，`improve` 产出 Change Contract，`reframe` 先做 source assets / target shape 后产出 Execution Pack，并按 Profile Selection 选择 minimal 或 full。
 6. 对 `prototype_to_spec`：把 prototype 的 `artifact_path`、`visual_target`、`runnable_evidence`、`design_evidence`、`covered_flows`、`states_covered`、`gaps` 和 `verification` 映射为 source provenance、requirements、flows、states、acceptance criteria、open questions、risks 和 verification plan。
 7. 定义目标、范围、non-goals、角色、流程、状态和边界情况。
 8. 区分产品需求、prototype facts、实现猜测和未验证缺口。
@@ -85,7 +118,12 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 readiness_gate:
 reroute_recommendation:
 spec_type:
+spec_output_profile:
 delivery_mode: create | improve | reframe | unknown
+allowed_files_or_areas:
+max_expected_files_touched:
+requires_human_approval_if:
+reframe_risk: none | low | medium | high
 module_execution_pack:
 change_contract:
 source_prototype:
@@ -130,6 +168,10 @@ next_skill_input:
 - 如果 prototype 包含 spec_first 或高风险工程/数据/API/权限缺口，必须保持 spec-first 保护，不得因为已有页面原型就跳过验收和验证计划。
 - 必须包含 non-goals 和 acceptance criteria。
 - 交付契约必须包含 `delivery_mode`，并明确使用 Module Execution Pack、Change Contract 或重塑路径。
+- 必须输出 `spec_output_profile`；默认使用 micro/lite/minimal 中最轻可验收档位，只有满足 Profile Selection 条件才输出 full。
+- `micro_note` / `lite_change_contract` 必须输出 `allowed_files_or_areas`、`max_expected_files_touched`、`requires_human_approval_if` 和 `reframe_risk`，用于防止小任务范围膨胀。
+- `micro_note` / `lite_change_contract` 默认不得设置 `secondary_mode: reframe`；只有 IA、状态模型、页面类型、领域语义、导航分类或 target shape 发生风险时才升级，并说明 `reframe_risk`。
+- Definition Sync 默认不建议更新 `AGENTS.md`；只有反复 agent boundary failure、跨 agent 协作纪律失效或仓库级规则缺口时才建议更新，否则优先更新 UI/UX standard、组件约定、模块 spec 或 Change Contract。
 - Module Execution Pack / Change Contract 必须包含 verification 和 definition_sync，不得只写叙述性目标。
 - 必须标记 assumptions 和 open questions。
 - 必须能被 `builder-prototype` 或 `builder-agent-task` 消费。
@@ -146,7 +188,7 @@ next_skill_input:
 
 ## 交接
 
-交给 `builder-prototype`、`builder-agent-task`、`builder-review`，或 legacy architecture/implementation skills。交接时保留 readiness_gate、reroute_recommendation、spec_type、source_prototype、visual_target、runnable_evidence、design_evidence、extracted_from_prototype、prototype_gaps、scope、non_goals、acceptance_criteria、verification_plan、assumptions、open_questions、risks、next_skill_hint 和 next_skill_input。
+交给 `builder-prototype`、`builder-agent-task`、`builder-review`，或 legacy architecture/implementation skills。交接时保留 readiness_gate、reroute_recommendation、spec_type、spec_output_profile、source_prototype、visual_target、runnable_evidence、design_evidence、extracted_from_prototype、prototype_gaps、scope、non_goals、acceptance_criteria、verification_plan、assumptions、open_questions、risks、next_skill_hint 和 next_skill_input。
 
 ## 参考
 

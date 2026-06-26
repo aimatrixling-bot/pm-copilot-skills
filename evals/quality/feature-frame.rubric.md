@@ -1,13 +1,13 @@
-# Feature Frame Quality Rubric
+# Feature Frame 质量评分规则（Quality Rubric）
 
-Score 1-5 on each dimension:
+每个维度按 1-5 分评分：
 
-- problem clarity;
-- target user clarity;
-- scenario specificity;
-- desired outcome;
-- non-goals;
-- success criteria;
-- downstream usability.
+- 问题清晰度；
+- 目标用户清晰度；
+- 场景具体度；
+- 期望结果；
+- non-goals；
+- success criteria；
+- 下游可用性。
 
-Outputs below 3 on problem clarity or success criteria should not proceed to spec.
+如果问题清晰度或 success criteria 低于 3 分，不应继续进入 spec。

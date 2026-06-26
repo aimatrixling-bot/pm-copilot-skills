@@ -70,11 +70,29 @@ argument-hint: "[frame/spec/PRD/path/description] [--fidelity=low|medium|high]"
 - `prototype_brief`：当前环境不适合直接生成代码，但可以给 agent、设计工具或后续实现使用的原型 brief。
 - `degraded_prototype`：信息不足或风险过高时的降级交付，包含最小可行版本、缺口清单和最多 3 个高价值问题。
 
+## Prototype Intent
+
+每个原型必须声明 `prototype_intent`，说明它是一次问题探针、长期 demo、视觉变量实验，还是工程参考。
+
+```yaml
+prototype_intent: throwaway_question_probe | durable_product_demo | visual_variation_experiment | coded_reference
+intent_lifecycle:
+  retain_until:
+  absorb_into:
+  deletion_or_archive_rule:
+  review_required: true | false
+```
+
+- `throwaway_question_probe`：用于快速回答交互、布局或术语问题；完成后必须删除、归档或明确不吸收。
+- `durable_product_demo`：面向 PM/业务评审的持续 demo；必须进入 review、spec 或 agent-task 生命周期。
+- `visual_variation_experiment`：用于比较视觉方向；只保留被选中方案，未选方案不得变成 source of truth。
+- `coded_reference`：作为工程实现参考；必须标明哪些代码/结构可吸收，哪些只是 demo/mock。
+
 ## 执行流程
 
 1. 先判断路径：`prototype_first`、`boundary_first` 或 `spec_first`；说明选择依据。
 2. 判断 visual target：`none`、`brief_only`、`source_image`、`source_url`、`existing_code`、`generated_option` 或 `not_required`。
-3. 确认原型目的、保真度、核心流程、状态覆盖、数据来源、运行方式和截图验证方式。
+3. 确认 `prototype_intent`、保真度、核心流程、状态覆盖、数据来源、运行方式和截图验证方式。
 4. 如果已有 Module Execution Pack、Change Contract 或 Branch State，优先继承其中的 non-goals、字段/操作/状态契约、verification 和 definition_sync 要求。
 5. 信息不足时降级交付：先给低保真结构或最小可行原型计划，再列 `gaps` 和最多 3 个高价值问题。
 6. `prototype_first`：优先产出可看的 artifact；低风险时可以直接生成单文件或小型可运行原型。
@@ -88,6 +106,8 @@ argument-hint: "[frame/spec/PRD/path/description] [--fidelity=low|medium|high]"
 
 ```yaml
 prototype_mode: prototype_first | boundary_first | spec_first | runnable_prototype | wireframe | prototype_brief | degraded_prototype
+prototype_intent: throwaway_question_probe | durable_product_demo | visual_variation_experiment | coded_reference
+intent_lifecycle:
 delivery_mode: create | improve | reframe | unknown
 visual_target:
   type: none | brief_only | source_image | source_url | existing_code | generated_option | not_required
@@ -123,10 +143,11 @@ next: builder-review | builder-agent-task | builder-spec | builder-frame | itera
 - 有 Design Brief 时必须使用；没有时写明设计假设，不伪造已确认的设计系统。
 - 有 Module Execution Pack、Change Contract 或 Branch State 时必须尊重其中的 non-goals、verification 和 definition_sync；不得在原型阶段扩大范围。
 - 需要 release、promotion、artifact governance 或严格 Evidence Packet 时，交给 `builder-review` 或 release workflow 执行重门禁。
+- `prototype_intent` 必须与生命周期一致；`throwaway_question_probe` 不得被当成 durable source of truth，`durable_product_demo` 必须可 review，`coded_reference` 必须区分可吸收实现和 demo/mock。
 
 ## 交接
 
-带着 artifact path、三路径判断、visual target、保真度、覆盖流程、状态覆盖、缺口、runnable evidence、验证方式和下一步建议，交给 `builder-review`、`builder-agent-task`、`builder-spec` 或继续迭代。日常交接保持简短；只有进入评审、发布、promotion 或治理场景时再展开 Evidence Packet、artifact governance 和 handoff packet。
+带着 artifact path、三路径判断、prototype_intent、intent_lifecycle、visual target、保真度、覆盖流程、状态覆盖、缺口、runnable evidence、验证方式和下一步建议，交给 `builder-review`、`builder-agent-task`、`builder-spec` 或继续迭代。日常交接保持简短；只有进入评审、发布、promotion 或治理场景时再展开 Evidence Packet、artifact governance 和 handoff packet。
 
 ## 参考
 

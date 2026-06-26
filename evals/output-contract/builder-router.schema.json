@@ -6,6 +6,11 @@
     "recommended_skill",
     "project_mode",
     "delivery_mode",
+    "task_complexity",
+    "response_profile",
+    "contract_profile",
+    "context_strategy",
+    "delivery_decision",
     "project_profile_proposal",
     "recommended_next_skill",
     "reasoning_summary",
@@ -39,11 +44,109 @@
     "unknown",
     "not_applicable"
   ],
+  "task_complexity_values": [
+    "micro",
+    "lite",
+    "standard",
+    "full"
+  ],
+  "response_profile_values": [
+    "terse",
+    "normal",
+    "audit"
+  ],
+  "contract_profile_values": [
+    "none",
+    "micro_note",
+    "lite_change_contract",
+    "standard_change_contract",
+    "full_change_contract"
+  ],
+  "context_strategy_values": [
+    "direct_answer",
+    "direct_contract",
+    "grill_first",
+    "prototype_question_first",
+    "handoff_required",
+    "branch_state_required",
+    "review_first"
+  ],
+  "display_policy": {
+    "terse": [
+      "requirement_understanding",
+      "delivery_mode",
+      "task_complexity",
+      "contract_profile",
+      "next_step"
+    ],
+    "normal": [
+      "compact_rationale",
+      "key_contract_fields",
+      "verification"
+    ],
+    "audit": [
+      "delivery_decision",
+      "why_not_other_modes",
+      "usage_metrics",
+      "memory_or_evidence_references"
+    ]
+  },
+  "delivery_decision_required": [
+    "primary_mode",
+    "secondary_mode",
+    "confidence",
+    "required_first_artifacts",
+    "why_not_other_modes",
+    "mode_switch_conditions",
+    "stop_conditions"
+  ],
+  "delivery_decision_compatibility_fields": [
+    "required_first_artifact"
+  ],
+  "delivery_decision_primary_mode_values": [
+    "create",
+    "improve",
+    "reframe",
+    "unknown"
+  ],
+  "delivery_decision_secondary_mode_values": [
+    "create",
+    "improve",
+    "reframe",
+    "none"
+  ],
+  "delivery_decision_confidence_values": [
+    "high",
+    "medium",
+    "low"
+  ],
+  "required_first_artifact_values": [
+    "module_execution_pack",
+    "change_contract",
+    "asset_digestion",
+    "target_shape",
+    "branch_state",
+    "none"
+  ],
+  "required_first_artifacts_values": [
+    "module_execution_pack",
+    "change_contract",
+    "asset_digestion",
+    "target_shape",
+    "branch_state",
+    "none"
+  ],
+  "hybrid_patterns": [
+    "improve_with_reframe_risk",
+    "create_with_brownfield_references",
+    "reframe_blocked_until_target_shape"
+  ],
   "required_reference_files": [
     "kernel/routing/builder-router.zh.md",
     "kernel/routing/skill-selection-rules.zh.md",
     "loops/recipes/grill-decision.loop.md",
     "docs/delivery-kernel.md",
+    "docs/source-of-truth-map.md",
     "harness/project-onboarding-policy.zh.md",
     "memory/schemas/project-profile.schema.md"
   ],

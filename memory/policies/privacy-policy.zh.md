@@ -1,11 +1,11 @@
-# Memory Privacy Policy
+# 记忆隐私策略（Memory Privacy Policy）
 
-Memory should be minimal and work-relevant.
+Memory 应保持最小化，并且只记录与工作相关的内容。
 
-## Rules
+## 规则（Rules）
 
-- Do not store secrets.
-- Do not store unnecessary personal data.
-- Prefer references to files over copying sensitive content.
-- Mark user-confirmed facts separately from inferred facts.
-- Allow memory to be corrected or retired.
+- 不存储 secrets。
+- 不存储不必要的个人数据。
+- 优先记录文件引用，不复制敏感内容。
+- 将用户确认的事实与推断事实分开标记。
+- 允许 memory 被修正或废弃。

@@ -1,7 +1,7 @@
 {
   "suite": "delivery-kernel",
-  "status": "m8",
-  "purpose": "覆盖 Delivery Kernel v0.1 的三种交付模式和 Definition Sync 分类，确保复杂构建任务先冻结定义、再执行、完成前检查漂移。",
+  "status": "v0.2",
+  "purpose": "覆盖 Delivery Kernel v0.2 的三种交付模式、混合路由、Branch State 运行纪律、minimal/full profile 和 mode switch assessment。",
   "cases": [
     {
       "id": "delivery-create-module-execution-pack",
@@ -102,6 +102,278 @@
         "auto promote implementation to requirement",
         "approve without evidence",
         "auto delete artifacts"
+      ]
+    },
+    {
+      "id": "delivery-hybrid-improve-with-reframe-risk",
+      "delivery_mode": "improve",
+      "input": "基于已有 Visit Workbench 做二次迭代，但可能调整 IA、字段优先级和 VOID 行为。",
+      "expected_artifact": "change_contract",
+      "expected_template": "templates/change-contract/template.md",
+      "expected_next_skills": [
+        "builder-router",
+        "builder-spec",
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "delivery_decision",
+        "primary_mode: improve",
+        "secondary_mode: reframe",
+        "confidence: medium",
+        "required_first_artifacts",
+        "change_contract",
+        "branch_state",
+        "mode_switch_conditions",
+        "stop_conditions"
+      ],
+      "must_not_include": [
+        "direct implementation before baseline evidence",
+        "treat IA change as local tweak",
+        "approve requirement change without human decision"
+      ]
+    },
+    {
+      "id": "branch-state-runtime-protocol",
+      "delivery_mode": "improve",
+      "input": "一个高保真原型多轮 Goal 会跨仓库执行，并且长线程可能自动压缩。",
+      "expected_artifact": "branch_state",
+      "expected_template": "templates/branch-state/template.md",
+      "expected_next_skills": [
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "branch_state_policy",
+        "create_before_implementation",
+        "before_context_compaction",
+        "after_user_decision",
+        "after_verification",
+        "rejected_directions_do_not_retry",
+        "migrate_stable_decisions_to_source_of_truth"
+      ],
+      "must_not_include": [
+        "Branch State as source of truth",
+        "continue after compaction without reading Branch State",
+        "drop rejected directions"
+      ]
+    },
+    {
+      "id": "minimal-full-profile-selection",
+      "delivery_mode": "improve",
+      "input": "已有稳定页面只做局部文案和排序调整，除非涉及权限、数据、API、审计、发布或重塑风险，否则不要输出冗长 PRD。",
+      "expected_artifact": "change_contract",
+      "expected_template": "templates/change-contract/template.md",
+      "expected_next_skills": [
+        "builder-spec"
+      ],
+      "must_include": [
+        "spec_output_profile",
+        "minimal_change_contract",
+        "full_change_contract",
+        "allowed_degradation",
+        "open_questions"
+      ],
+      "must_not_include": [
+        "full profile by default",
+        "long PRD for small change",
+        "invent missing decisions"
+      ]
+    },
+    {
+      "id": "mode-switch-assessment-drift",
+      "delivery_mode": "improve",
+      "input": "完成前发现原本的局部 improve 实际改变了页面类型、状态模型和字段优先级。",
+      "expected_artifact": "definition_drift_check",
+      "expected_template": "templates/definition-drift-check/template.md",
+      "expected_next_skills": [
+        "builder-review",
+        "builder-spec",
+        "builder-decision"
+      ],
+      "must_include": [
+        "mode_switch_assessment",
+        "original_mode",
+        "actual_mode",
+        "should_switch_mode",
+        "recommended_next_artifact",
+        "cannot approve directly"
+      ],
+      "must_not_include": [
+        "APPROVE without reframe decision",
+        "treat global reshape as implementation adjustment",
+        "skip human decision"
+      ]
+    },
+    {
+      "id": "runtime-surface-availability",
+      "delivery_mode": "unknown",
+      "input": "skill 引用了 Delivery Kernel、source-of-truth map、交付模板和 definition sync loop，merge 前必须确认 package/runtime surface 都能访问这些文件。",
+      "expected_artifact": "runtime_surface_check",
+      "expected_template": "docs/source-of-truth-map.md",
+      "expected_next_skills": [
+        "builder-review"
+      ],
+      "must_include": [
+        "docs/source-of-truth-map.md",
+        "docs/delivery-kernel.md",
+        "templates/module-execution-pack/template.md",
+        "templates/change-contract/template.md",
+        "templates/branch-state/template.md",
+        "templates/definition-drift-check/template.md",
+        "loops/recipes/definition-sync.loop.md",
+        "runtime available"
+      ],
+      "must_not_include": [
+        "missing from runtime surface",
+        "降级为 remaining risk",
+        "fallback only"
+      ]
+    },
+    {
+      "id": "review-profile-output-shaping",
+      "delivery_mode": "improve",
+      "input": "已有小变更只需要 quick review，不应输出 release readiness、definition drift 和 prototype evidence 的全量审计框架。",
+      "expected_artifact": "review_report",
+      "expected_template": "templates/review-report/template.md",
+      "expected_next_skills": [
+        "builder-review"
+      ],
+      "must_include": [
+        "review_profile",
+        "quick_change_review",
+        "profile_required_sections",
+        "evidence_audit",
+        "risk_assessment",
+        "decision"
+      ],
+      "must_not_include": [
+        "full audit framework by default",
+        "prototype_design_evidence_audit by default",
+        "definition_sync_audit by default",
+        "artifact_hygiene_audit by default"
+      ]
+    },
+    {
+      "id": "complexity-aware-lite-contract",
+      "delivery_mode": "improve",
+      "input": "已有稳定侧栏，只做一级菜单 icon 对齐，预计 2-5 个文件，不改 IA、状态模型、页面类型、领域语义或导航分类。",
+      "expected_artifact": "change_contract",
+      "expected_template": "templates/change-contract/template.md",
+      "expected_next_skills": [
+        "builder-router",
+        "builder-spec"
+      ],
+      "must_include": [
+        "task_complexity: lite",
+        "response_profile: terse",
+        "contract_profile: lite_change_contract",
+        "allowed_files_or_areas",
+        "max_expected_files_touched",
+        "requires_human_approval_if",
+        "reframe_risk: low",
+        "secondary_mode: none"
+      ],
+      "must_not_include": [
+        "full delivery_decision by default",
+        "usage_metrics by default",
+        "Branch State required by default",
+        "secondary_mode: reframe"
+      ]
+    },
+    {
+      "id": "agent-task-execution-discipline",
+      "delivery_mode": "improve",
+      "input": "把已接受的 Change Contract 交给 Codex 执行，要求先做可验证的窄 slice，超出允许文件范围或碰到权限/API 就停。",
+      "expected_artifact": "agent_task_packet",
+      "expected_template": "templates/agent-task-packet/template.md",
+      "expected_next_skills": [
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "delegation_mode",
+        "hitl_checkpoint_required",
+        "slice_plan",
+        "vertical_slice",
+        "tracer_bullet",
+        "verification_policy"
+      ],
+      "must_not_include": [
+        "horizontal_layer by default",
+        "afk_ready without stop conditions",
+        "claim done without observable evidence"
+      ]
+    },
+    {
+      "id": "prototype-intent-lifecycle",
+      "delivery_mode": "create",
+      "input": "做一个临时交互探针验证筛选栏理解，不要把它当正式 demo 或 source of truth。",
+      "expected_artifact": "prototype_brief",
+      "expected_template": "templates/prototype-brief/template.md",
+      "expected_next_skills": [
+        "builder-prototype",
+        "builder-review"
+      ],
+      "must_include": [
+        "prototype_intent",
+        "throwaway_question_probe",
+        "intent_lifecycle",
+        "deletion_or_archive_rule",
+        "review_required: false"
+      ],
+      "must_not_include": [
+        "durable_product_demo by default",
+        "source of truth",
+        "promote to spec without review"
+      ]
+    },
+    {
+      "id": "skill-load-policy-runtime-neutral",
+      "delivery_mode": "unknown",
+      "input": "8 个 builder skills 的 load policy 必须覆盖 manifest 和 skill-pack，但不能写入 runtime-specific disable-model-invocation 语义。",
+      "expected_artifact": "skill_load_policy",
+      "expected_template": "docs/source-of-truth-map.md",
+      "expected_next_skills": [
+        "builder-review"
+      ],
+      "must_include": [
+        "skill_load_policy",
+        "invocation_mode",
+        "context_load_class",
+        "references_loaded_by_default",
+        "runtime-neutral",
+        "8 个"
+      ],
+      "must_not_include": [
+        "disable-model-invocation",
+        "第 9 个 core skill",
+        "runtime-specific routing semantics"
+      ]
+    },
+    {
+      "id": "skill-quality-review-profile",
+      "delivery_mode": "unknown",
+      "input": "评审一次 skill hardening patch 是否只是堆文案，是否造成 no-op、sediment、sprawl 或 context load 过重。",
+      "expected_artifact": "review_report",
+      "expected_template": "templates/review-report/template.md",
+      "expected_next_skills": [
+        "builder-review"
+      ],
+      "must_include": [
+        "skill_quality_review",
+        "agent_navigability_review",
+        "no_op",
+        "sediment",
+        "sprawl",
+        "context_load",
+        "progressive_disclosure",
+        "usage_metrics_v2"
+      ],
+      "must_not_include": [
+        "approve no-op skill text",
+        "metrics in quick_change_review by default",
+        "source-of-truth sprawl"
       ]
     }
   ]

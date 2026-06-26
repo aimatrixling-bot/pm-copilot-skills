@@ -40,6 +40,9 @@
 8. 这是否是 AI Builder OS 首次进入或恢复某个项目？
 9. 如果是，项目是 greenfield、brownfield、resume 还是 unknown？
 10. 是否缺少会阻塞下游 skill 的关键决策树，需要先执行 `loops/recipes/grill-decision.loop.md`？
+11. 任务复杂度是 `micro`、`lite`、`standard` 还是 `full`？
+12. 当前应使用 `terse`、`normal` 还是 `audit` 响应档位？
+13. 当前需要 `none`、`micro_note`、`lite_change_contract`、`standard_change_contract` 还是 `full_change_contract`？
 
 ## Project Onboarding 规则
 
@@ -49,6 +52,27 @@
 - `unknown`：缺少项目根、授权范围或可观察证据时，先提问，不要假装已完成 intake。
 - Router 不自动创建 `.ai-builder/`，不自动扫描全盘，不自动迁移、删除、重命名或归档文件。
 
+## Complexity-Aware 输出规则
+
+Router 的默认职责是帮人选择下一步，不是默认输出审计报告。先判定 `task_complexity`，再决定 `response_profile` 和 `contract_profile`：
+
+- `micro`：1-2 个文件、文案/样式/小 UI、无业务语义变化；默认 `response_profile: terse`、`contract_profile: none | micro_note`。
+- `lite`：2-5 个文件、局部 UI/交互、有轻微回归风险；默认 `response_profile: terse | normal`、`contract_profile: lite_change_contract`。
+- `standard`：跨组件、状态、流程或局部业务语义；默认 `response_profile: normal`、`contract_profile: standard_change_contract`。
+- `full`：跨模块、权限、API、数据、审计、发布、重塑或长线程；默认 `response_profile: audit`、`contract_profile: full_change_contract`。
+
+`context_strategy` 用于说明下一步上下文策略：
+
+- `direct_answer`：直接回答，不进入 builder workflow。
+- `direct_contract`：上下文足够，直接进入 Contract / Execution Pack。
+- `grill_first`：关键决策树、non-goals、成功标准或领域语义不清。
+- `prototype_question_first`：需要用原型回答设计、状态或交互问题。
+- `handoff_required`：需要跨 session / runtime 交接，但不需要持久状态。
+- `branch_state_required`：多轮 Goal、高保真、跨仓库、上下文压缩或复杂业务系统。
+- `review_first`：已有资产、实现或证据需要先评审。
+
+Display policy：`terse` 只展示理解、模式、复杂度和下一步；`normal` 展示紧凑理由和关键 Contract 字段；`audit` 才展开完整 route decision、metrics、memory/evidence 和 source references。
+
 ## 输出契约
 
 ```yaml
@@ -56,6 +80,10 @@ route_type: answer | prompt | plan | goal | plan_to_goal | skill_route | ask_fir
 recommended_mode: prompt | plan | goal | plan_to_goal | skill
 recommended_skill:
 project_mode: greenfield | brownfield | resume | unknown | not_applicable
+task_complexity: micro | lite | standard | full
+response_profile: terse | normal | audit
+contract_profile: none | micro_note | lite_change_contract | standard_change_contract | full_change_contract
+context_strategy: direct_answer | direct_contract | grill_first | prototype_question_first | handoff_required | branch_state_required | review_first
 project_profile_proposal:
 recommended_next_skill:
 reasoning_summary:
@@ -74,3 +102,5 @@ handoff_packet:
 路由结果必须说明为什么不是相邻路径，尤其是 `builder-frame` vs `builder-spec`、`builder-prototype` vs `builder-agent-task`、`builder-review` vs `builder-decision`。
 
 Router 可以输出 `suggested_chain`，但这只是交接建议，不等于 runtime 已经自动连续调用多个 skill。除非目标 runtime 明确支持调度，否则必须同时给出用户或 agent 可以复制使用的 `next_skill_input`。
+
+micro/lite 任务默认不得展开完整 `delivery_decision`、usage metrics、memory/evidence；只有审查、复盘、冲突、release、definition drift 或用户明确要求时才使用 `audit`。

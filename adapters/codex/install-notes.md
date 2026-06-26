@@ -1,20 +1,20 @@
-# Codex Install Notes
+# Codex 安装说明（Codex Install Notes）
 
-Current command:
+当前命令：
 
 ```bash
 npx pm-copilot-skills codex
 ```
 
-Current target:
+当前目标目录：
 
 ```text
 ~/.agents/skills
 ```
 
-Codex installation and export now include only the AI Builder OS active builder core. Legacy `pm-*`, `pdf`, `pptx`, `download-anything`, and old `skills/references` are not installed by default.
+Codex 安装和导出现在只包含 AI Builder OS active builder core。Legacy `pm-*`、`pdf`、`pptx`、`download-anything` 和旧 `skills/references` 默认不会安装。
 
-Export command:
+导出命令：
 
 ```bash
 npm run export:runtime -- --target codex --out ".\dist\ai-builder-os\codex" --clean

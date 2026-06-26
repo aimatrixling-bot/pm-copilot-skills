@@ -4,6 +4,7 @@
     "readiness_gate",
     "reroute_recommendation",
     "spec_type",
+    "spec_output_profile",
     "delivery_mode",
     "objective",
     "users",
@@ -41,7 +42,11 @@
     "runnable_evidence",
     "design_evidence",
     "module_execution_pack",
-    "change_contract"
+    "change_contract",
+    "allowed_files_or_areas",
+    "max_expected_files_touched",
+    "requires_human_approval_if",
+    "reframe_risk"
   ],
   "spec_type_values": [
     "mini_spec",
@@ -51,6 +56,17 @@
     "prototype_to_spec",
     "module_execution_pack",
     "change_contract"
+  ],
+  "spec_output_profile_values": [
+    "micro_note",
+    "lite_change_contract",
+    "minimal_change_contract",
+    "standard_change_contract",
+    "full_change_contract",
+    "minimal_execution_pack",
+    "full_execution_pack",
+    "prototype_to_spec",
+    "engineering_request"
   ],
   "delivery_mode_values": [
     "create",
@@ -68,5 +84,11 @@
     "side_panel",
     "linked_doc",
     "not_applicable"
+  ],
+  "reframe_risk_values": [
+    "none",
+    "low",
+    "medium",
+    "high"
   ]
 }
