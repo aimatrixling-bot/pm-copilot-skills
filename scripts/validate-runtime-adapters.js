@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
 
 const root = path.resolve(__dirname, '..');
 const exportScript = path.join(root, 'scripts', 'export-ai-builder-os.js');
@@ -191,6 +192,11 @@ try {
     } else {
       validateGenericTarget(targetDir);
     }
+
+    failures.push(...validateMarkdownReferenceClosure({
+      rootDir: targetDir,
+      label: `${targetName} export markdown reference closure`,
+    }));
   }
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });

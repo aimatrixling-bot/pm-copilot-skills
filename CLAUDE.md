@@ -1,22 +1,15 @@
 # Claude Code Project Shim
 
-本文件是 Claude Code 进入本仓库时的项目级入口。它不是新的长期 source of truth；如有冲突，按 `AGENTS.md` 和 `docs/source-of-truth-map.md` 为准。
+@AGENTS.md
+
+本文件只补充 Claude Code source checkout 的入口差异。它不是新的长期 source of truth；如有冲突，按 `AGENTS.md` 和 `docs/source-of-truth-map.md` 为准。
 
 ## First Read
 
-1. 先读 `AGENTS.md`，确认仓库职责、8 个 active core skills、禁止事项和 Done 定义。
-2. 再读 `docs/source-of-truth-map.md`，确认规则应该写在哪里，避免把 release seal、聊天记录或 Review Packet 当长期事实源。
-3. 需要理解交付模式时读 `docs/delivery-kernel.md`；需要理解 package/runtime 边界时读 `docs/architecture.md`。
-4. 修改 skill、template、loop、schema、eval、adapter 或 validator 前，先搜索现有实现和验证脚本。
-
-## Operating Rules
-
-- 默认中文交付；代码标识符、schema key、命令、runtime 名称可保留英文。
-- active core skills 必须保持 8 个：`builder-router`、`builder-plan-goal`、`builder-frame`、`builder-spec`、`builder-prototype`、`builder-agent-task`、`builder-review`、`builder-decision`。
-- 优先补强既有 skill、template、loop、schema、eval、validator 或 adapter；不要新增第 9 个 core skill。
-- 不把 PMS 等业务领域规则写入 AI Builder OS 通用层。
-- 不自动发布 npm、不创建 tag、不删除历史 release seal。
-- `docs/release-*` 和 `docs/*hardening-brief.md` 是 source-only 证据或阶段材料，不进入 runtime export。
+1. `AGENTS.md` 是本仓库 agent contract。
+2. `docs/source-of-truth-map.md` 说明长期规则应该写在哪里。
+3. `docs/delivery-kernel.md` 说明交付模式。
+4. `docs/architecture.md` 说明 package/runtime 边界。
 
 ## Claude Code Usage
 

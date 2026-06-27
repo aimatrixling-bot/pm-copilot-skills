@@ -88,6 +88,7 @@ const required = [
   'scripts/validate-package-surface.js',
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
+  'scripts/lib/markdown-reference-closure.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-artifact-evals.js',
   'scripts/validate-onboarding-evals.js',

@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
+const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
 
 const root = path.resolve(__dirname, '..');
 
@@ -70,6 +71,7 @@ const requiredFiles = [
   'scripts/validate-package-surface.js',
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
+  'scripts/lib/markdown-reference-closure.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-artifact-evals.js',
   'scripts/validate-onboarding-evals.js',
@@ -879,13 +881,11 @@ const deliveryKernelV02Expectations = {
   ],
   'CLAUDE.md': [
     'Claude Code Project Shim',
+    '@AGENTS.md',
+    '只补充 Claude Code source checkout 的入口差异',
     '不是新的长期 source of truth',
     'AGENTS.md',
     'docs/source-of-truth-map.md',
-    'active core skills 必须保持 8 个',
-    '不要新增第 9 个 core skill',
-    '不自动发布 npm',
-    'docs/release-*',
     'npm run validate:builder-os',
   ],
   'docs/source-of-truth-map.md': [
@@ -1577,6 +1577,11 @@ if (fs.existsSync(path.join(root, '.git'))) {
 }
 
 validateActiveSkillRuntimeReferences(failures);
+failures.push(...validateMarkdownReferenceClosure({
+  rootDir: root,
+  label: 'source markdown reference closure',
+  excludeDirs: ['_archived'],
+}));
 
 for (const [relativePath, expectedTerms] of Object.entries(legacyArchiveExpectations)) {
   const fullPath = path.join(root, relativePath);

@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { TextDecoder } = require('util');
+const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
 
 const root = path.resolve(__dirname, '..');
 const home = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH;
@@ -213,6 +214,11 @@ for (const skillName of builderSkills) {
     sameSet(docs, allowedRuntimeDocs),
     `${skillName} docs runtime surface 必须只包含 ${allowedRuntimeDocs.join(', ')}，实际: ${docs.join(', ')}`,
   );
+
+  failures.push(...validateMarkdownReferenceClosure({
+    rootDir: skillDir,
+    label: `codex install/${skillName} markdown reference closure`,
+  }));
 }
 
 if (failures.length > 0) {
