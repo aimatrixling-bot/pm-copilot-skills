@@ -18,6 +18,7 @@
 | What does Release Seal prove? | `docs/release-seal-*.md` | git diff、命令输出、版本/tag/npm preflight 证据 | README、skills、templates、loops | Release Seal 只证明某次版本验证结果，不能新增长期规则。 |
 | Where do PMS domain rules live? | PMS source repo / governance repo | AI Builder OS 里的 PMS eval fixtures 只做样例 | AI Builder OS docs、skills、templates、loops | 通用 Delivery Kernel 不能吸收 PMS 领域规则。 |
 | Where do schema / eval expectations live? | `evals/output-contract/*.schema.json`、`evals/**/*.cases.json` | `scripts/validate-builder-os.js` | README、release seal、Branch State | schema/eval 只验证可机器检查的输出纪律，不替代模板正文。 |
+| How is Direct / Guided / Governed output weight tested? | `evals/runtime/lite-runtime-conformance.cases.json` | `scripts/validate-builder-os.js`、`skills/builder-router/SKILL.md` | README、release seal、Branch State | 该 eval 只固定默认可见块、trace-only 字段和三档升级边界；实时判断仍由 Router skill 负责。 |
 | How are templates added or changed? | 对应 `templates/*/template.md` | `docs/source-of-truth-map.md`、`scripts/validate-builder-os.js` | release seal、README | 优先修改既有模板；新增模板需要明确降低摩擦，且更新 validator。 |
 | How are loops added or changed? | `loops/recipes/*.loop.md` | `loops/README.md`、相关 skill、eval | release seal、README | 新增 loop 是高摩擦动作，默认优先补强既有 loop。 |
 | How are active core skills governed? | `skill-pack.json` | `bundles/core/manifest.json`、`README.md`、`scripts/validate-builder-os.js` | release seal、Review Packet | active builder core skills 必须保持 8 个，除非另有明确 milestone 决策。 |

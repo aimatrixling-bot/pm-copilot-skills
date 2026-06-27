@@ -102,6 +102,7 @@ const requiredFiles = [
   'evals/output-contract/design-brief.schema.json',
   'evals/output-contract/skill-hardening-brief.schema.json',
   'evals/delivery-kernel/delivery-kernel.cases.json',
+  'evals/runtime/lite-runtime-conformance.cases.json',
   'evals/quality/skill-design-playbook.rubric.md',
   'references/skill-design/README.md',
   'references/skill-design/skill-design-playbook.zh.md',
@@ -1873,16 +1874,29 @@ if (Array.isArray(builderRouterContract.context_strategy_values)) {
 }
 assert(builderRouterContract.display_policy && typeof builderRouterContract.display_policy === 'object', 'builder-router schema 必须包含 display_policy 对象', failures);
 if (builderRouterContract.display_policy && typeof builderRouterContract.display_policy === 'object') {
+  const routerVisibleBlocks = ['理解', '下一步', '需要决定', '验收'];
+  assert(Array.isArray(builderRouterContract.display_policy.visible_response_blocks), 'builder-router display_policy 必须声明 visible_response_blocks', failures);
+  if (Array.isArray(builderRouterContract.display_policy.visible_response_blocks)) {
+    for (const block of routerVisibleBlocks) {
+      assert(builderRouterContract.display_policy.visible_response_blocks.includes(block), `builder-router visible_response_blocks 缺少 ${block}`, failures);
+    }
+    assert(builderRouterContract.display_policy.visible_response_blocks.length === routerVisibleBlocks.length, 'builder-router visible_response_blocks 不应新增默认用户可见块', failures);
+  }
   for (const profile of ['terse', 'normal', 'audit']) {
     assert(Array.isArray(builderRouterContract.display_policy[profile]), `builder-router display_policy 缺少 ${profile}`, failures);
+    const profileBlocks = Array.isArray(builderRouterContract.display_policy[profile]) ? builderRouterContract.display_policy[profile] : [];
+    for (const block of routerVisibleBlocks) {
+      assert(profileBlocks.includes(block), `builder-router ${profile} display_policy 缺少用户可见块 ${block}`, failures);
+    }
+    assert(profileBlocks.length === routerVisibleBlocks.length, `builder-router ${profile} display_policy 不应新增默认用户可见块`, failures);
   }
-  const terseDisplay = Array.isArray(builderRouterContract.display_policy.terse) ? builderRouterContract.display_policy.terse : [];
-  for (const field of ['requirement_understanding', 'delivery_mode', 'task_complexity', 'contract_profile', 'next_step']) {
-    assert(terseDisplay.includes(field), `builder-router terse display_policy 缺少 ${field}`, failures);
+  const traceOnlyFields = Array.isArray(builderRouterContract.display_policy.trace_only_fields) ? builderRouterContract.display_policy.trace_only_fields : [];
+  for (const field of ['task_complexity', 'response_profile', 'contract_profile', 'context_strategy', 'delivery_decision', 'usage_metrics', 'memory_or_evidence_references']) {
+    assert(traceOnlyFields.includes(field), `builder-router trace_only_fields 缺少 ${field}`, failures);
   }
-  const auditDisplay = Array.isArray(builderRouterContract.display_policy.audit) ? builderRouterContract.display_policy.audit : [];
+  const auditDisplay = Array.isArray(builderRouterContract.display_policy.audit_appendix_fields) ? builderRouterContract.display_policy.audit_appendix_fields : [];
   for (const field of ['delivery_decision', 'usage_metrics', 'memory_or_evidence_references']) {
-    assert(auditDisplay.includes(field), `builder-router audit display_policy 缺少 ${field}`, failures);
+    assert(auditDisplay.includes(field), `builder-router audit_appendix_fields 缺少 ${field}`, failures);
   }
 }
 assert(Array.isArray(builderRouterContract.delivery_decision_required), 'builder-router schema 必须包含 delivery_decision_required 数组', failures);
@@ -2488,6 +2502,97 @@ if (Array.isArray(deliveryKernelCases.cases)) {
   if (driftCase && Array.isArray(driftCase.must_include)) {
     for (const driftType of ['Implementation Adjustment', 'Spec Gap', 'Requirement Change', 'Conflict / Contradiction']) {
       assert(driftCase.must_include.includes(driftType), `definition-sync-drift-classes 缺少漂移类型: ${driftType}`, failures);
+    }
+  }
+}
+
+const liteRuntimeCases = readJson('evals/runtime/lite-runtime-conformance.cases.json');
+const liteRuntimeRequiredBlocks = ['理解', '下一步', '需要决定', '验收'];
+const liteRuntimeRequiredTiers = ['direct', 'guided', 'governed'];
+assert(liteRuntimeCases.suite === 'lite-runtime-conformance', 'lite-runtime conformance eval suite 必须是 lite-runtime-conformance', failures);
+assert(liteRuntimeCases.status === 'm2-seed', 'lite-runtime conformance eval status 必须是 m2-seed', failures);
+assert(liteRuntimeCases.visible_response_contract && Array.isArray(liteRuntimeCases.visible_response_contract.required_blocks), 'lite-runtime conformance eval 必须声明 visible_response_contract.required_blocks', failures);
+if (liteRuntimeCases.visible_response_contract && Array.isArray(liteRuntimeCases.visible_response_contract.required_blocks)) {
+  for (const block of liteRuntimeRequiredBlocks) {
+    assert(liteRuntimeCases.visible_response_contract.required_blocks.includes(block), `lite-runtime visible_response_contract 缺少用户可见块: ${block}`, failures);
+  }
+  assert(liteRuntimeCases.visible_response_contract.required_blocks.length === liteRuntimeRequiredBlocks.length, 'lite-runtime visible_response_contract 不应新增默认用户可见块', failures);
+}
+assert(Array.isArray(liteRuntimeCases.visible_response_contract?.trace_only_fields), 'lite-runtime conformance eval 必须声明 trace_only_fields', failures);
+if (Array.isArray(liteRuntimeCases.visible_response_contract?.trace_only_fields)) {
+  for (const field of ['task_complexity', 'response_profile', 'contract_profile', 'context_strategy', 'delivery_decision', 'usage_metrics']) {
+    assert(liteRuntimeCases.visible_response_contract.trace_only_fields.includes(field), `lite-runtime trace_only_fields 缺少: ${field}`, failures);
+  }
+}
+assert(Array.isArray(liteRuntimeCases.visible_response_contract?.default_must_not_expose), 'lite-runtime conformance eval 必须声明 default_must_not_expose', failures);
+if (Array.isArray(liteRuntimeCases.visible_response_contract?.default_must_not_expose)) {
+  for (const term of ['full delivery_decision', 'raw usage_metrics', 'Review Packet by default']) {
+    assert(liteRuntimeCases.visible_response_contract.default_must_not_expose.includes(term), `lite-runtime default_must_not_expose 缺少: ${term}`, failures);
+  }
+}
+assert(Array.isArray(liteRuntimeCases.runtime_tiers), 'lite-runtime conformance eval 必须包含 runtime_tiers 数组', failures);
+if (Array.isArray(liteRuntimeCases.runtime_tiers)) {
+  const tierIds = liteRuntimeCases.runtime_tiers.map(item => item.id);
+  for (const tier of liteRuntimeRequiredTiers) {
+    assert(tierIds.includes(tier), `lite-runtime runtime_tiers 缺少: ${tier}`, failures);
+  }
+  assert(tierIds.length === liteRuntimeRequiredTiers.length, 'lite-runtime runtime_tiers 不应超过 direct/guided/governed 三档', failures);
+}
+assert(Array.isArray(liteRuntimeCases.cases), 'lite-runtime conformance eval 必须包含 cases 数组', failures);
+if (Array.isArray(liteRuntimeCases.cases)) {
+  for (const tier of liteRuntimeRequiredTiers) {
+    assert(liteRuntimeCases.cases.some(item => item.runtime_tier === tier), `lite-runtime conformance eval 缺少 ${tier} case`, failures);
+  }
+  for (const testCase of liteRuntimeCases.cases) {
+    const label = `lite-runtime/${testCase.id || '<missing-id>'}`;
+    assert(typeof testCase.id === 'string' && testCase.id.trim().length > 0, `${label} 必须包含 id`, failures);
+    assert(typeof testCase.input === 'string' && testCase.input.trim().length > 0, `${label} 必须包含 input`, failures);
+    assert(liteRuntimeRequiredTiers.includes(testCase.runtime_tier), `${label} runtime_tier 不合法: ${testCase.runtime_tier}`, failures);
+    assert(Array.isArray(testCase.expected_visible_blocks), `${label} 必须声明 expected_visible_blocks`, failures);
+    if (Array.isArray(testCase.expected_visible_blocks)) {
+      for (const block of liteRuntimeRequiredBlocks) {
+        assert(testCase.expected_visible_blocks.includes(block), `${label} expected_visible_blocks 缺少: ${block}`, failures);
+      }
+      assert(testCase.expected_visible_blocks.length === liteRuntimeRequiredBlocks.length, `${label} 不应新增默认用户可见块`, failures);
+    }
+    assert(testCase.expected_internal_trace && typeof testCase.expected_internal_trace === 'object', `${label} 必须声明 expected_internal_trace`, failures);
+    if (testCase.expected_internal_trace && typeof testCase.expected_internal_trace === 'object') {
+      for (const field of ['task_complexity', 'response_profile', 'contract_profile', 'context_strategy']) {
+        assert(typeof testCase.expected_internal_trace[field] === 'string' && testCase.expected_internal_trace[field].trim().length > 0, `${label} expected_internal_trace 缺少 ${field}`, failures);
+      }
+    }
+    assert(Array.isArray(testCase.must_not_visible) && testCase.must_not_visible.length > 0, `${label} must_not_visible 不能为空`, failures);
+    assert(Array.isArray(testCase.acceptance_focus) && testCase.acceptance_focus.length > 0, `${label} acceptance_focus 不能为空`, failures);
+  }
+
+  const directCase = liteRuntimeCases.cases.find(item => item.runtime_tier === 'direct');
+  if (directCase) {
+    assert(directCase.expected_internal_trace?.response_profile === 'terse', 'direct lite-runtime case 必须默认 response_profile=terse', failures);
+    assert(directCase.expected_internal_trace?.contract_profile === 'none', 'direct lite-runtime case 必须默认 contract_profile=none', failures);
+    for (const artifact of ['change_contract', 'branch_state', 'module_execution_pack', 'definition_drift_check', 'review_packet']) {
+      assert(Array.isArray(directCase.forbidden_default_artifacts) && directCase.forbidden_default_artifacts.includes(artifact), `direct lite-runtime case 必须禁止默认 artifact: ${artifact}`, failures);
+    }
+  }
+
+  const guidedCase = liteRuntimeCases.cases.find(item => item.runtime_tier === 'guided');
+  if (guidedCase) {
+    for (const skillName of ['builder-frame', 'builder-spec', 'builder-prototype', 'builder-agent-task']) {
+      assert(Array.isArray(guidedCase.expected_path) && guidedCase.expected_path.includes(skillName), `guided lite-runtime case expected_path 缺少: ${skillName}`, failures);
+    }
+    for (const artifact of ['feature_frame', 'builder_spec', 'prototype_brief', 'agent_task_packet']) {
+      assert(Array.isArray(guidedCase.expected_artifact_candidates) && guidedCase.expected_artifact_candidates.includes(artifact), `guided lite-runtime case expected_artifact_candidates 缺少: ${artifact}`, failures);
+    }
+    assert(Array.isArray(guidedCase.forbidden_default_artifacts) && guidedCase.forbidden_default_artifacts.includes('branch_state'), 'guided lite-runtime case 默认不得要求 branch_state', failures);
+  }
+
+  const governedCase = liteRuntimeCases.cases.find(item => item.runtime_tier === 'governed');
+  if (governedCase) {
+    assert(governedCase.expected_internal_trace?.response_profile === 'audit', 'governed lite-runtime case 必须默认 response_profile=audit', failures);
+    for (const artifact of ['branch_state', 'definition_sync', 'review_gate']) {
+      assert(Array.isArray(governedCase.required_governance_artifacts) && governedCase.required_governance_artifacts.includes(artifact), `governed lite-runtime case required_governance_artifacts 缺少: ${artifact}`, failures);
+    }
+    for (const signal of ['Branch State', 'Definition Sync', 'Review Gate']) {
+      assert(Array.isArray(governedCase.required_visible_signals) && governedCase.required_visible_signals.includes(signal), `governed lite-runtime case required_visible_signals 缺少: ${signal}`, failures);
     }
   }
 }

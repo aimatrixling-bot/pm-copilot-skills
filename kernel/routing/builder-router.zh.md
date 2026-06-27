@@ -71,9 +71,23 @@ Router 的默认职责是帮人选择下一步，不是默认输出审计报告�
 - `branch_state_required`：多轮 Goal、高保真、跨仓库、上下文压缩或复杂业务系统。
 - `review_first`：已有资产、实现或证据需要先评审。
 
-Display policy：`terse` 只展示理解、模式、复杂度和下一步；`normal` 展示紧凑理由和关键 Contract 字段；`audit` 才展开完整 route decision、metrics、memory/evidence 和 source references。
+Display policy：默认用户可见正文只使用 `理解`、`下一步`、`需要决定`、`验收` 四个块；`terse` 不展示内部字段名，`normal` 只在四个块内补充紧凑理由和关键边界，`audit` 也先保持四个块，只有审查、复盘、冲突、release、definition drift 或用户明确要求时才追加审计附录。`task_complexity`、`response_profile`、`contract_profile`、`context_strategy`、`delivery_decision`、metrics、memory/evidence 默认进入内部 trace 或 handoff artifact。
 
 ## 输出契约
+
+默认用户可见正文：
+
+```markdown
+**理解**
+
+**下一步**
+
+**需要决定**
+
+**验收**
+```
+
+内部 trace / handoff artifact：
 
 ```yaml
 route_type: answer | prompt | plan | goal | plan_to_goal | skill_route | ask_first

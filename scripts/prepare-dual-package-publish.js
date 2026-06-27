@@ -56,6 +56,7 @@ const requiredPackFiles = [
   'evals/artifact/artifact-cleanup-proposal.cases.json',
   'evals/artifact/artifact-consistency-audit.cases.json',
   'evals/onboarding/project-onboarding.cases.json',
+  'evals/runtime/lite-runtime-conformance.cases.json',
   'references/README.md',
   'references/prototype-to-spec.zh.md',
   'references/legacy-pm-methods/README.md',

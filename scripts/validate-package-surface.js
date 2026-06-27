@@ -202,6 +202,7 @@ assert(syncScript.includes('scripts/validate-trigger-descriptions.js'), 'sync-an
 assert(syncScript.includes('validate:trigger-descriptions'), 'sync-and-publish.sh 必须运行 validate:trigger-descriptions');
 assert(syncScript.includes('scripts/validate-onboarding-evals.js'), 'sync-and-publish.sh pack gate 必须检查 onboarding eval validator');
 assert(syncScript.includes('validate:onboarding-evals'), 'sync-and-publish.sh 必须运行 validate:onboarding-evals');
+assert(syncScript.includes('evals/runtime/lite-runtime-conformance.cases.json'), 'sync-and-publish.sh pack gate 必须检查 lite runtime conformance eval');
 assert(syncScript.includes('scripts/validate-dual-package-dry-run.js'), 'sync-and-publish.sh pack gate 必须检查 dual package dry-run validator');
 assert(syncScript.includes('validate:dual-package-dry-run'), 'sync-and-publish.sh 必须运行 validate:dual-package-dry-run');
 assert(syncScript.includes('scripts/prepare-dual-package-publish.js'), 'sync-and-publish.sh pack gate 必须检查 dual package publish prep script');
@@ -227,6 +228,10 @@ try {
   assert(
     packFiles.includes('scripts/lib/markdown-reference-closure.js'),
     'npm pack 必须包含 markdown reference closure helper',
+  );
+  assert(
+    packFiles.includes('evals/runtime/lite-runtime-conformance.cases.json'),
+    'npm pack 必须包含 lite runtime conformance eval',
   );
 } catch (error) {
   failures.push(`npm pack --dry-run --json 执行失败: ${error.message}`);

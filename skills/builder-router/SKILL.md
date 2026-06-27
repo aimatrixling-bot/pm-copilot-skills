@@ -63,7 +63,7 @@ argument-hint: "[用户请求或项目上下文]"
 
 ## Complexity-Aware 输出纪律
 
-Router 必须先判断任务复杂度，再决定展示多重的理解、规格、证据和审查信息。内部可以保留完整 `delivery_decision`，但用户可见输出按 `response_profile` 降噪。
+Router 必须先判断任务复杂度，再决定四块用户可见正文和内部 trace 的边界。内部可以保留完整 `delivery_decision`，但用户可见输出按 `response_profile` 降噪。
 
 ```yaml
 task_complexity: micro | lite | standard | full
@@ -79,14 +79,16 @@ context_strategy: direct_answer | direct_contract | grill_first | prototype_ques
 
 Display policy：
 
-- `terse` 只展示需求理解、`delivery_mode`、`task_complexity`、`contract_profile`、Branch State 是否需要和下一步。
-- `normal` 展示紧凑理由、关键 Contract 字段和验证建议。
-- `audit` 才展开完整 `delivery_decision`、`why_not_other_modes`、usage metrics、memory/evidence 和 source references。
+- 默认用户可见正文只使用四个块：`理解`、`下一步`、`需要决定`、`验收`；没有待决事项时，在 `需要决定` 写“无”。
+- `terse` 只在四个块内给最小判断，不展示 `delivery_mode`、`task_complexity`、`contract_profile` 等字段名。
+- `normal` 仍只使用四个块，可在块内补充紧凑理由、关键边界和验证建议。
+- `audit` 也先保持四个块；只有审查、复盘、冲突、release、definition drift 或用户明确要求时，才在正文后追加审计附录。
+- `task_complexity`、`response_profile`、`contract_profile`、`context_strategy`、`delivery_decision`、usage metrics、memory/evidence 默认进入内部 trace 或 handoff artifact，不直接作为用户正文展开。
 - 用户只问“你能理解吗”时，默认不要展示完整 Router 决策；只有审查、复盘、冲突、release、definition drift 或用户明确要求时才使用 `audit`。
 
 ## Delivery Decision 判断
 
-当请求已经进入具体交付任务时，输出结构化 `delivery_decision`，不要只给一个单值。
+当请求已经进入具体交付任务时，必须形成结构化 `delivery_decision`，但默认放入内部 trace 或 handoff artifact，不直接在用户正文展开 YAML/JSON 字段。
 
 - `create`（新建模式）：没有稳定基线，从 0 做新项目、新模块、新页面、新 Agent 或新工作流；通常推荐 `builder-spec` 产出 Module Execution Pack。
 - `improve`（迭代模式）：有稳定基线，只做局部优化、修复、删减或调整；通常推荐 `builder-spec` 产出 Change Contract。
@@ -135,12 +137,26 @@ Router 只能输出 `project_profile_proposal`，不得自动创建 `.ai-builder
 1. 捕获 Intent Packet。
 2. 如果是项目首次进入或恢复场景，判断 `project_mode`，并生成轻量 `project_profile_proposal`。
 3. 判断请求应走 Prompt、Plan、Goal、Plan -> Goal，还是某个 builder skill。
-4. 对具体交付任务输出 `delivery_decision`，包括 primary / secondary mode、confidence、首个产物、切换条件和停止条件。
+4. 对具体交付任务生成内部 `delivery_decision`，包括 primary / secondary mode、confidence、首个产物、切换条件和停止条件。
 5. 识别缺失上下文和风险标记。
 6. 推荐一条路径，并说明原因。
 7. 提供可复制的下一步提示词或 handoff packet。
 
 ## 输出契约
+
+默认用户可见正文：
+
+```markdown
+**理解**
+
+**下一步**
+
+**需要决定**
+
+**验收**
+```
+
+内部 trace / handoff artifact：
 
 ```yaml
 route_type: answer | prompt | plan | goal | plan_to_goal | skill_route | ask_first
@@ -178,8 +194,8 @@ handoff_packet:
 - 不要把大型模糊任务直接路由到 Goal。
 - 不要为日常建议强行触发 builder workflow。
 - 如果风险影响业务、安全、权限、生产或数据行为，先询问或路由到 Plan。
-- 首次进入项目时必须显式输出 `project_mode`；非 onboarding 场景使用 `not_applicable`。
-- 具体交付任务必须输出 `delivery_decision`；非交付场景使用 `delivery_mode: not_applicable` 或说明原因。
+- 首次进入项目时必须在内部 trace 标记 `project_mode`；非 onboarding 场景使用 `not_applicable`，用户可见正文只解释判断结果。
+- 具体交付任务必须生成内部 `delivery_decision`；非交付场景使用 `delivery_mode: not_applicable` 或说明原因。
 - `improve` 任务只要出现 IA、状态模型、页面类型、字段优先级或领域语义变化风险，就必须标记 `secondary_mode: reframe` 和 `mode_switch_conditions`。
 - `reframe` 且 target shape 未冻结时，必须把实现列入 `stop_conditions`。
 - `project_profile_proposal` 只能是 proposal，不得声称已创建 `.ai-builder/` 或已写入 artifact index。

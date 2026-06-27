@@ -1,0 +1,173 @@
+{
+  "suite": "lite-runtime-conformance",
+  "status": "m2-seed",
+  "purpose": "约束 Lite Runtime 的 Direct / Guided / Governed 三档默认输出重量：用户可见输出保持轻量，完整 trace、schema 字段和治理产物只在需要时进入内部记录或指定 artifact。",
+  "visible_response_contract": {
+    "required_blocks": [
+      "理解",
+      "下一步",
+      "需要决定",
+      "验收"
+    ],
+    "trace_only_fields": [
+      "task_complexity",
+      "response_profile",
+      "contract_profile",
+      "context_strategy",
+      "delivery_decision",
+      "usage_metrics",
+      "memory_or_evidence_references"
+    ],
+    "default_must_not_expose": [
+      "full delivery_decision",
+      "raw usage_metrics",
+      "memory_or_evidence_references by default",
+      "full JSON trace by default",
+      "Review Packet by default"
+    ]
+  },
+  "runtime_tiers": [
+    {
+      "id": "direct",
+      "default_response_profile": "terse",
+      "default_artifact_policy": "no contract unless risk changes",
+      "description": "明确的小修、回答、局部复制或单点调整，默认不生成 Change Contract、Branch State 或 Review Packet。"
+    },
+    {
+      "id": "guided",
+      "default_response_profile": "normal",
+      "default_artifact_policy": "route to the next builder artifact",
+      "description": "需要 frame/spec/prototype/agent-task 的构建请求，默认给出下一步路径，不展开完整治理审计。"
+    },
+    {
+      "id": "governed",
+      "default_response_profile": "audit",
+      "default_artifact_policy": "require governance artifacts before execution",
+      "description": "跨模块、长线程、发布、安全、权限、数据或上下文压缩风险任务，必须要求 Branch State、Definition Sync 和 Review Gate。"
+    }
+  ],
+  "cases": [
+    {
+      "id": "direct-copy-only-no-contract",
+      "runtime_tier": "direct",
+      "input": "把这个按钮文案从“提交”改成“保存”，不要改其它地方。",
+      "expected_visible_blocks": [
+        "理解",
+        "下一步",
+        "需要决定",
+        "验收"
+      ],
+      "expected_internal_trace": {
+        "task_complexity": "micro",
+        "response_profile": "terse",
+        "contract_profile": "none",
+        "context_strategy": "direct_answer"
+      },
+      "forbidden_default_artifacts": [
+        "change_contract",
+        "branch_state",
+        "module_execution_pack",
+        "definition_drift_check",
+        "review_packet"
+      ],
+      "must_not_visible": [
+        "delivery_decision",
+        "usage_metrics",
+        "memory_or_evidence_references",
+        "Branch State required by default",
+        "Review Packet",
+        "Module Execution Pack",
+        "Change Contract"
+      ],
+      "acceptance_focus": [
+        "只触碰指定文案或单点文件",
+        "没有新增治理 artifact",
+        "风险变化时再升级到 Guided 或 Governed"
+      ]
+    },
+    {
+      "id": "guided-feature-to-builder-path",
+      "runtime_tier": "guided",
+      "input": "我想做一个客户回访工作台，有列表、筛选、详情和跟进记录，但还没定字段和流程。",
+      "expected_visible_blocks": [
+        "理解",
+        "下一步",
+        "需要决定",
+        "验收"
+      ],
+      "expected_internal_trace": {
+        "task_complexity": "standard",
+        "response_profile": "normal",
+        "contract_profile": "standard_change_contract",
+        "context_strategy": "guided_builder_path"
+      },
+      "expected_path": [
+        "builder-frame",
+        "builder-spec",
+        "builder-prototype",
+        "builder-agent-task"
+      ],
+      "expected_artifact_candidates": [
+        "feature_frame",
+        "builder_spec",
+        "prototype_brief",
+        "agent_task_packet"
+      ],
+      "forbidden_default_artifacts": [
+        "branch_state",
+        "definition_drift_check",
+        "review_packet"
+      ],
+      "must_not_visible": [
+        "full delivery_decision",
+        "raw usage_metrics",
+        "memory_or_evidence_references by default",
+        "Branch State required by default",
+        "release readiness audit by default"
+      ],
+      "acceptance_focus": [
+        "先收敛 Feature Frame 或 Spec",
+        "只暴露用户需要决定的产品问题",
+        "不把内部 route trace 当默认正文输出"
+      ]
+    },
+    {
+      "id": "governed-long-thread-release-risk",
+      "runtime_tier": "governed",
+      "input": "继续这个多轮 Goal，涉及权限、数据迁移、发布前检查和跨仓库联动，可能会经历上下文压缩。",
+      "expected_visible_blocks": [
+        "理解",
+        "下一步",
+        "需要决定",
+        "验收"
+      ],
+      "expected_internal_trace": {
+        "task_complexity": "full",
+        "response_profile": "audit",
+        "contract_profile": "full_change_contract",
+        "context_strategy": "governed_delivery"
+      },
+      "required_governance_artifacts": [
+        "branch_state",
+        "definition_sync",
+        "review_gate"
+      ],
+      "required_visible_signals": [
+        "Branch State",
+        "Definition Sync",
+        "Review Gate"
+      ],
+      "must_not_visible": [
+        "skip Branch State",
+        "skip human decision",
+        "continue after compaction without reading Branch State",
+        "raw usage_metrics without audit need"
+      ],
+      "acceptance_focus": [
+        "执行前冻结 Branch State",
+        "实现后跑 Definition Sync",
+        "交付前经过 Review Gate"
+      ]
+    }
+  ]
+}

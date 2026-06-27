@@ -50,6 +50,7 @@ const requiredPackFiles = [
   'evals/artifact/artifact-index-sync.cases.json',
   'evals/artifact/artifact-cleanup-proposal.cases.json',
   'evals/artifact/artifact-consistency-audit.cases.json',
+  'evals/runtime/lite-runtime-conformance.cases.json',
   'harness/artifact-write-policy.zh.md',
   'loops/README.md',
   'loops/recipes/artifact-hygiene.loop.md',

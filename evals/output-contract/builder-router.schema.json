@@ -72,19 +72,40 @@
     "review_first"
   ],
   "display_policy": {
+    "visible_response_blocks": [
+      "理解",
+      "下一步",
+      "需要决定",
+      "验收"
+    ],
     "terse": [
-      "requirement_understanding",
-      "delivery_mode",
-      "task_complexity",
-      "contract_profile",
-      "next_step"
+      "理解",
+      "下一步",
+      "需要决定",
+      "验收"
     ],
     "normal": [
-      "compact_rationale",
-      "key_contract_fields",
-      "verification"
+      "理解",
+      "下一步",
+      "需要决定",
+      "验收"
     ],
     "audit": [
+      "理解",
+      "下一步",
+      "需要决定",
+      "验收"
+    ],
+    "trace_only_fields": [
+      "task_complexity",
+      "response_profile",
+      "contract_profile",
+      "context_strategy",
+      "delivery_decision",
+      "usage_metrics",
+      "memory_or_evidence_references"
+    ],
+    "audit_appendix_fields": [
       "delivery_decision",
       "why_not_other_modes",
       "usage_metrics",

@@ -101,6 +101,7 @@ const required = [
   'evals/artifact/artifact-index-sync.cases.json',
   'evals/artifact/artifact-cleanup-proposal.cases.json',
   'evals/artifact/artifact-consistency-audit.cases.json',
+  'evals/runtime/lite-runtime-conformance.cases.json',
   'evals/doctor-preference-e2e/README.md',
   'evals/doctor-preference-e2e/reference-implementation/doctorRecommendationEngine.js',
   'skills/skill-template.md',
