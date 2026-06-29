@@ -113,6 +113,8 @@ assert(skillPack.name === 'ai-builder-os', 'skill-pack name 必须是 ai-builder
 assert(skillPack.display_name === 'AI Builder OS', 'skill-pack display_name 必须是 AI Builder OS');
 assert(skillPack.version === packageJson.version, 'skill-pack version 必须与 package.json version 一致');
 assert(skillPack.status === 'm3.9-publish-prep-dry-run', 'skill-pack status 必须声明 m3.9-publish-prep-dry-run');
+assert(coreManifest.version === packageJson.version, 'core bundle manifest version 必须与 package.json version 一致');
+assert(coreManifest.status === skillPack.status, 'core bundle manifest status 必须与 skill-pack status 一致');
 assert(skillPack.package.npm_name === packageJson.name, 'skill-pack package.npm_name 必须与 package.json name 一致');
 assert(sameSet(skillPack.package.bins, Object.keys(packageJson.bin).sort()), 'skill-pack package.bins 必须与 package.json bin 一致');
 assert(skillPack.active_surface.type === 'pure-builder-core', 'skill-pack active_surface.type 必须是 pure-builder-core');
@@ -130,6 +132,9 @@ for (const docPath of ['docs/delivery-kernel.md', 'docs/source-of-truth-map.md']
 assert(!/builderSharedResourceNames\s*=\s*\[[^\]]*"docs"/.test(installScript), 'install.js 不得把整个 docs/ 复制到 runtime shared resources');
 assert(installScript.includes('parseArgs'), 'install.js 必须使用显式参数解析');
 assert(installScript.includes('--help') && installScript.includes('--version'), 'install.js 必须支持无写入 help/version 参数');
+for (const option of ['--dry-run', '--doctor', '--uninstall']) {
+  assert(installScript.includes(option), `install.js 必须支持 ${option}`);
+}
 assert(installScript.includes('path.resolve(process.cwd(), ".agents", "skills")'), 'install.js codex-project 必须安装到项目 .agents/skills');
 assert(!installScript.includes('path.resolve(process.cwd(), ".codex", "skills")'), 'install.js codex-project 不得安装到旧 .codex/skills');
 
@@ -199,6 +204,7 @@ assert(syncScript.includes('scripts/export-ai-builder-os.js'), 'sync-and-publish
 assert(syncScript.includes('validate:runtime-adapters'), 'sync-and-publish.sh 必须运行 validate:runtime-adapters');
 assert(syncScript.includes('scripts/lib/markdown-reference-closure.js'), 'sync-and-publish.sh pack gate 必须检查 markdown reference closure helper');
 assert(syncScript.includes('scripts/lib/runtime-behavior-fixtures.js'), 'sync-and-publish.sh pack gate 必须检查 runtime behavior fixture helper');
+assert(syncScript.includes('scripts/lib/runtime-invocation-metadata.js'), 'sync-and-publish.sh pack gate 必须检查 runtime invocation metadata helper');
 assert(syncScript.includes('scripts/validate-trigger-descriptions.js'), 'sync-and-publish.sh pack gate 必须检查 trigger description validator');
 assert(syncScript.includes('validate:trigger-descriptions'), 'sync-and-publish.sh 必须运行 validate:trigger-descriptions');
 assert(syncScript.includes('scripts/validate-onboarding-evals.js'), 'sync-and-publish.sh pack gate 必须检查 onboarding eval validator');
@@ -234,6 +240,10 @@ try {
   assert(
     packFiles.includes('scripts/lib/runtime-behavior-fixtures.js'),
     'npm pack 必须包含 runtime behavior fixture helper',
+  );
+  assert(
+    packFiles.includes('scripts/lib/runtime-invocation-metadata.js'),
+    'npm pack 必须包含 runtime invocation metadata helper',
   );
   assert(
     packFiles.includes('evals/runtime/lite-runtime-conformance.cases.json'),

@@ -6,12 +6,16 @@ const crypto = require('crypto');
 const { TextDecoder } = require('util');
 const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
 const { validateRuntimeBehaviorFixtures } = require('./lib/runtime-behavior-fixtures');
+const { validateInvocationMetadata } = require('./lib/runtime-invocation-metadata');
 
 const root = path.resolve(__dirname, '..');
 const home = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH;
 const targetDir = path.join(home, '.agents', 'skills');
 const markerName = '.pm-copilot-skills-source.json';
 const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
+const skillPack = JSON.parse(fs.readFileSync(path.join(root, 'skill-pack.json'), 'utf8'));
+const coreManifest = JSON.parse(fs.readFileSync(path.join(root, 'bundles', 'core', 'manifest.json'), 'utf8'));
+const codexAdapter = JSON.parse(fs.readFileSync(path.join(root, 'adapters', 'codex', 'adapter.json'), 'utf8'));
 const allowedMarkerPackages = new Set(['ai-builder-os', 'pm-copilot-skills', packageJson.name]);
 
 const sourceEntries = fs.readdirSync(path.join(root, 'skills')).filter((entry) => {
@@ -220,6 +224,17 @@ for (const skillName of builderSkills) {
     rootDir: skillDir,
     label: `codex install/${skillName} markdown reference closure`,
   }));
+
+  validateInvocationMetadata({
+    failures,
+    skillDir,
+    skillName,
+    targetName: 'codex',
+    adapter: codexAdapter,
+    skillPack,
+    coreManifest,
+    label: 'codex install',
+  });
 }
 
 validateRuntimeBehaviorFixtures({

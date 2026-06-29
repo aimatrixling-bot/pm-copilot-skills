@@ -3,6 +3,7 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const { writeInvocationMetadata } = require('./lib/runtime-invocation-metadata');
 
 const root = path.resolve(__dirname, '..');
 const markerName = '.ai-builder-os-export-target';
@@ -146,11 +147,19 @@ function copySharedResources(dest) {
   }
 }
 
-function exportFlatSkillRoot(targetDir, targetName, activeSkills) {
+function exportFlatSkillRoot(targetDir, targetName, activeSkills, adapter, skillPack, coreManifest) {
   for (const skillName of activeSkills) {
     const skillDest = path.join(targetDir, skillName);
     copyRecursive(path.join(root, 'skills', skillName), skillDest);
     copySharedResources(skillDest);
+    writeInvocationMetadata({
+      skillDir: skillDest,
+      skillName,
+      targetName,
+      adapter,
+      skillPack,
+      coreManifest,
+    });
     writeJson(path.join(skillDest, metadataDirName, 'runtime.json'), {
       target: targetName,
       skill: skillName,
@@ -160,9 +169,18 @@ function exportFlatSkillRoot(targetDir, targetName, activeSkills) {
   }
 }
 
-function exportPackageRoot(targetDir, targetName, activeSkills) {
+function exportPackageRoot(targetDir, targetName, activeSkills, adapter, skillPack, coreManifest) {
   for (const skillName of activeSkills) {
-    copyRecursive(path.join(root, 'skills', skillName), path.join(targetDir, 'skills', skillName));
+    const skillDest = path.join(targetDir, 'skills', skillName);
+    copyRecursive(path.join(root, 'skills', skillName), skillDest);
+    writeInvocationMetadata({
+      skillDir: skillDest,
+      skillName,
+      targetName,
+      adapter,
+      skillPack,
+      coreManifest,
+    });
   }
 
   for (const resourceName of [...sharedResourceNames, 'evals']) {
@@ -227,6 +245,7 @@ function main() {
   const adapter = adapters[args.target];
   const targetDir = path.resolve(args.out);
   const skillPack = readJson('skill-pack.json');
+  const coreManifest = readJson('bundles/core/manifest.json');
   const activeSkills = skillPack.active_surface.skills;
 
   if (args.clean) {
@@ -236,9 +255,9 @@ function main() {
   }
 
   if (adapter.export_layout === 'flat-skill-root') {
-    exportFlatSkillRoot(targetDir, args.target, activeSkills);
+    exportFlatSkillRoot(targetDir, args.target, activeSkills, adapter, skillPack, coreManifest);
   } else if (adapter.export_layout === 'package-root') {
-    exportPackageRoot(targetDir, args.target, activeSkills);
+    exportPackageRoot(targetDir, args.target, activeSkills, adapter, skillPack, coreManifest);
   } else {
     throw new Error(`Unsupported export layout for ${args.target}: ${adapter.export_layout}`);
   }

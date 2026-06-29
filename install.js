@@ -16,9 +16,12 @@
 
 const fs = require("fs");
 const path = require("path");
+const { writeInvocationMetadata } = require("./scripts/lib/runtime-invocation-metadata");
 
 const args = process.argv.slice(2);
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf-8"));
+const skillPack = JSON.parse(fs.readFileSync(path.join(__dirname, "skill-pack.json"), "utf-8"));
+const coreManifest = JSON.parse(fs.readFileSync(path.join(__dirname, "bundles", "core", "manifest.json"), "utf-8"));
 
 function printUsage() {
   console.log(`AI Builder OS Installer v${pkg.version}
@@ -37,6 +40,9 @@ Targets:
 
 Options:
   --overwrite                           overwrite package-owned or external existing skills
+  --dry-run                             print planned changes without writing
+  --doctor                              inspect target without writing
+  --uninstall                           remove package-owned AI Builder OS skills only
   --help, -h                            show this help without installing
   --version, -v                         print version without installing
 `);
@@ -45,6 +51,9 @@ Options:
 function parseArgs(argv) {
   const parsed = {
     overwrite: false,
+    dryRun: false,
+    doctor: false,
+    uninstall: false,
     help: false,
     version: false,
     target: "global",
@@ -54,6 +63,12 @@ function parseArgs(argv) {
   for (const arg of argv) {
     if (arg === "--overwrite") {
       parsed.overwrite = true;
+    } else if (arg === "--dry-run") {
+      parsed.dryRun = true;
+    } else if (arg === "--doctor") {
+      parsed.doctor = true;
+    } else if (arg === "--uninstall") {
+      parsed.uninstall = true;
     } else if (arg === "--help" || arg === "-h") {
       parsed.help = true;
     } else if (arg === "--version" || arg === "-v") {
@@ -95,6 +110,9 @@ if (parsedArgs.version) {
 }
 
 const overwrite = parsedArgs.overwrite;
+const dryRun = parsedArgs.dryRun;
+const doctor = parsedArgs.doctor;
+const uninstall = parsedArgs.uninstall;
 const targetArg = parsedArgs.target;
 
 function normalizeMode(value) {
@@ -121,6 +139,8 @@ function normalizeMode(value) {
 }
 
 const mode = normalizeMode(targetArg);
+const runtimeTarget = mode.startsWith("codex") ? "codex" : "claude-code";
+const adapter = JSON.parse(fs.readFileSync(path.join(__dirname, "adapters", runtimeTarget, "adapter.json"), "utf-8"));
 
 const pkgDir = path.resolve(__dirname, "skills");
 
@@ -153,6 +173,9 @@ const runtimeDocResourcePaths = [
 ];
 const legacyUtilityNames = new Set(["download-anything", "pdf", "pptx", "references"]);
 const excludedLocalResourcePrefixes = ["references/source-blueprints"];
+const entries = fs.readdirSync(pkgDir).filter((e) => {
+  return fs.statSync(path.join(pkgDir, e)).isDirectory();
+}).filter((e) => e.startsWith("builder-"));
 
 console.log(`\n  AI Builder OS Installer v${pkg.version}`);
 console.log(`  兼容 npm package id: ${pkg.name}`);
@@ -160,6 +183,26 @@ console.log("  命令别名: pm-copilot-skills, ai-builder-os");
 console.log(`  模式: ${mode}`);
 console.log(`  目标目录: ${targetDir}`);
 console.log(`  覆盖外部已有 skill: ${overwrite ? "是" : "否"}\n`);
+
+if (doctor) {
+  const plan = planInstallActions();
+  console.log("  Doctor:");
+  console.log(`    target exists: ${fs.existsSync(targetDir) ? "yes" : "no"}`);
+  printPlan(plan, "current target status");
+  process.exit(0);
+}
+
+if (dryRun) {
+  const plan = planInstallActions();
+  printPlan(plan, uninstall ? "dry-run uninstall/install plan" : "dry-run install plan");
+  process.exit(0);
+}
+
+if (uninstall) {
+  const removedNames = uninstallPackageOwnedEntries();
+  console.log(`  Uninstalled package-owned entries: ${removedNames.length ? removedNames.join(", ") : "none"}\n`);
+  process.exit(0);
+}
 
 // Ensure target directory exists
 fs.mkdirSync(targetDir, { recursive: true });
@@ -198,6 +241,17 @@ function writeMarker(dest, skillName) {
   );
 }
 
+function writeSkillRuntimeMetadata(dest, skillName) {
+  writeInvocationMetadata({
+    skillDir: dest,
+    skillName,
+    targetName: runtimeTarget,
+    adapter,
+    skillPack,
+    coreManifest,
+  });
+}
+
 function markerPackageIsAllowed(packageName) {
   return allowedMarkerPackages.has(packageName);
 }
@@ -221,6 +275,7 @@ function isLegacyInstalledEntry(entryName) {
 function cleanupPackageOwnedLegacyEntries() {
   let removed = 0;
   const removedNames = [];
+  if (!fs.existsSync(targetDir)) return { removed, removedNames };
 
   for (const entry of fs.readdirSync(targetDir)) {
     const dest = path.join(targetDir, entry);
@@ -234,6 +289,63 @@ function cleanupPackageOwnedLegacyEntries() {
   }
 
   return { removed, removedNames };
+}
+
+function planInstallActions() {
+  const plan = {
+    install: [],
+    update: [],
+    skipExternal: [],
+    removeLegacy: [],
+  };
+
+  for (const entry of entries) {
+    const dest = path.join(targetDir, entry);
+    if (!fs.existsSync(dest)) {
+      plan.install.push(entry);
+    } else if (!overwrite && !isPackageOwned(dest)) {
+      plan.skipExternal.push(entry);
+    } else {
+      plan.update.push(entry);
+    }
+  }
+
+  if (fs.existsSync(targetDir)) {
+    for (const entry of fs.readdirSync(targetDir)) {
+      const dest = path.join(targetDir, entry);
+      if (!fs.statSync(dest).isDirectory()) continue;
+      if (!isLegacyInstalledEntry(entry)) continue;
+      if (!isPackageOwned(dest)) continue;
+      plan.removeLegacy.push(entry);
+    }
+  }
+
+  return plan;
+}
+
+function printPlan(plan, actionLabel) {
+  console.log(`  ${actionLabel}:`);
+  console.log(`    install: ${plan.install.length ? plan.install.sort().join(", ") : "none"}`);
+  console.log(`    update: ${plan.update.length ? plan.update.sort().join(", ") : "none"}`);
+  console.log(`    skip external: ${plan.skipExternal.length ? plan.skipExternal.sort().join(", ") : "none"}`);
+  console.log(`    remove package-owned legacy: ${plan.removeLegacy.length ? plan.removeLegacy.sort().join(", ") : "none"}`);
+  console.log("");
+}
+
+function uninstallPackageOwnedEntries() {
+  const removedNames = [];
+  if (!fs.existsSync(targetDir)) return removedNames;
+
+  for (const entry of fs.readdirSync(targetDir)) {
+    const dest = path.join(targetDir, entry);
+    if (!fs.statSync(dest).isDirectory()) continue;
+    if (!entry.startsWith("builder-") && !isLegacyInstalledEntry(entry)) continue;
+    if (!isPackageOwned(dest)) continue;
+    fs.rmSync(dest, { recursive: true, force: true });
+    removedNames.push(entry);
+  }
+
+  return removedNames.sort();
 }
 
 function copyBuilderSharedResources(dest) {
@@ -255,10 +367,6 @@ function copyBuilderSharedResources(dest) {
 const legacyCleanup = cleanupPackageOwnedLegacyEntries();
 
 // Install active AI Builder OS skills only.
-const entries = fs.readdirSync(pkgDir).filter((e) => {
-  return fs.statSync(path.join(pkgDir, e)).isDirectory();
-}).filter((e) => e.startsWith("builder-"));
-
 let installed = 0;
 let updated = 0;
 let skipped = 0;
@@ -277,11 +385,13 @@ for (const entry of entries) {
     fs.rmSync(dest, { recursive: true, force: true });
     copyRecursive(src, dest);
     if (entry.startsWith("builder-")) copyBuilderSharedResources(dest);
+    if (entry.startsWith("builder-")) writeSkillRuntimeMetadata(dest, entry);
     writeMarker(dest, entry);
     updated++;
   } else {
     copyRecursive(src, dest);
     if (entry.startsWith("builder-")) copyBuilderSharedResources(dest);
+    if (entry.startsWith("builder-")) writeSkillRuntimeMetadata(dest, entry);
     writeMarker(dest, entry);
     installed++;
   }

@@ -43,6 +43,7 @@ const requiredPackFiles = [
   'scripts/validate-runtime-adapters.js',
   'scripts/lib/markdown-reference-closure.js',
   'scripts/lib/runtime-behavior-fixtures.js',
+  'scripts/lib/runtime-invocation-metadata.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-artifact-evals.js',
   'scripts/validate-onboarding-evals.js',

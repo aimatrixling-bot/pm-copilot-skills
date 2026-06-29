@@ -16,6 +16,12 @@ argument-hint: "[任务或 agentic coding 请求]"
 
 这个 skill 是 AI Builder OS 内部的 Plan Goal Coach：它不直接实现代码，也不替用户做业务决策；它负责把模糊、复杂或高风险的构建意图，转化为可审查、可验证、可交接的 agentic 工作方式。
 
+## 调用边界
+
+Plan Goal Coach 是 manual-only / user-invoked skill。Router 可以推荐进入 Plan-Goal，也可以把 Plan/Goal 作为下一步建议，但在默认 Direct 或小任务路径中不得隐式展开 Plan-Goal、不得生成 `/plan` 或 `/goal` 文本。
+
+除非用户明确要求判断 Plan/Goal、生成 agentic coding prompt、或当前请求缺少可执行边界，Plan-Goal 不应介入。简单 Direct 小任务继续由普通回答或对应执行 skill 处理。
+
 ## 技能定位
 
 核心目标：

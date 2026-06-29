@@ -74,6 +74,7 @@ const requiredFiles = [
   'scripts/validate-runtime-adapters.js',
   'scripts/lib/markdown-reference-closure.js',
   'scripts/lib/runtime-behavior-fixtures.js',
+  'scripts/lib/runtime-invocation-metadata.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-artifact-evals.js',
   'scripts/validate-onboarding-evals.js',
@@ -288,6 +289,10 @@ const builderCoreExpectations = {
   ],
   'skills/builder-plan-goal/SKILL.md': [
     '## 技能定位',
+    '## 调用边界',
+    'manual-only / user-invoked',
+    '不得隐式展开 Plan-Goal',
+    '不得生成 `/plan` 或 `/goal` 文本',
     '## 资源读取',
     '显式触发',
     '隐式触发',
@@ -348,6 +353,10 @@ const builderCoreExpectations = {
   'skills/builder-spec/SKILL.md': [
     '## 资源读取',
     '## 模式判断',
+    'Dispatcher-first 规则',
+    '只读取对应模板和 reference',
+    '默认输出 micro/lite/minimal 所需字段',
+    '只有 Profile Selection 命中升级条件时才展开 full profile',
     'templates/builder-spec.template.md',
     'templates/design-brief/template.md',
     'templates/module-execution-pack/template.md',
@@ -513,6 +522,10 @@ const builderCoreExpectations = {
   'skills/builder-review/SKILL.md': [
     '## 资源读取',
     '## 模式判断',
+    'Dispatcher-first 规则',
+    '只加载对应 gate、template 和 reference',
+    '默认 quick_change_review 只展示 required sections',
+    '不能在普通 review 中默认展开',
     'templates/review-report/template.md',
     'templates/definition-drift-check/template.md',
     'docs/delivery-kernel.md',
@@ -932,6 +945,8 @@ const deliveryKernelV02Expectations = {
   ],
   'skills/builder-spec/SKILL.md': [
     'Profile Selection',
+    'Dispatcher-first 规则',
+    '只读取对应模板和 reference',
     'spec_output_profile',
     'minimal_change_contract',
     'full_change_contract',
@@ -970,6 +985,8 @@ const deliveryKernelV02Expectations = {
   ],
   'skills/builder-review/SKILL.md': [
     'Review Profile',
+    'Dispatcher-first 规则',
+    '只加载对应 gate、template 和 reference',
     'review_profile',
     'profile_required_sections',
     'quick_change_review',
@@ -1547,6 +1564,27 @@ function validateInstallerSafeArgs(failures) {
     });
     assertNoInstallArtifacts('install.js --version');
 
+    execFileSync(process.execPath, [installScriptPath, 'codex', '--dry-run'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    assertNoInstallArtifacts('install.js --dry-run');
+
+    execFileSync(process.execPath, [installScriptPath, 'codex', '--doctor'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    assertNoInstallArtifacts('install.js --doctor');
+
+    execFileSync(process.execPath, [installScriptPath, 'codex', '--uninstall'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    assertNoInstallArtifacts('install.js --uninstall on empty target');
+
     let unknownArgFailed = false;
     try {
       execFileSync(process.execPath, [installScriptPath, '--not-a-real-option'], {
@@ -1559,6 +1597,24 @@ function validateInstallerSafeArgs(failures) {
     }
     assert(unknownArgFailed, 'install.js unknown args 必须失败退出', failures);
     assertNoInstallArtifacts('install.js unknown args');
+
+    execFileSync(process.execPath, [installScriptPath, 'codex', '--overwrite'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    const codexSkills = path.join(tempHome, '.agents', 'skills');
+    const externalSkill = path.join(codexSkills, 'builder-external');
+    fs.mkdirSync(externalSkill, { recursive: true });
+    fs.writeFileSync(path.join(externalSkill, 'SKILL.md'), 'external\n', 'utf8');
+
+    execFileSync(process.execPath, [installScriptPath, 'codex', '--uninstall'], {
+      cwd: tempProject,
+      env,
+      stdio: 'pipe',
+    });
+    assert(!fs.existsSync(path.join(codexSkills, 'builder-router')), 'install.js --uninstall 必须移除 package-owned builder skills', failures);
+    assert(fs.existsSync(externalSkill), 'install.js --uninstall 不得移除无本包 marker 的外部 skill', failures);
   } finally {
     fs.rmSync(tempRoot, { recursive: true, force: true });
   }
@@ -2195,6 +2251,9 @@ assert(installScript.includes('codex-user'), 'install.js 必须支持 Codex 用�
 assert(installScript.includes('parseArgs'), 'install.js 必须使用显式参数解析，避免 flag-only 调用落回安装', failures);
 assert(installScript.includes('--help') && installScript.includes('--version'), 'install.js 必须支持无写入的 --help 和 --version', failures);
 assert(installScript.includes('--overwrite'), 'install.js 必须提供显式覆盖外部 skill 的开关', failures);
+for (const option of ['--dry-run', '--doctor', '--uninstall']) {
+  assert(installScript.includes(option), `install.js 必须支持 ${option}`, failures);
+}
 assert(installScript.includes('path.resolve(process.cwd(), ".agents", "skills")'), 'install.js codex-project 必须安装到项目 .agents/skills', failures);
 assert(!installScript.includes('path.resolve(process.cwd(), ".codex", "skills")'), 'install.js codex-project 不得安装到旧 .codex/skills', failures);
 assert(gitignore.includes('references/source-blueprints/'), '.gitignore 必须排除本地 source blueprints 研究资料', failures);
@@ -2687,13 +2746,16 @@ for (const [relativePath, expectedTerms] of Object.entries({
   }
 }
 
+const packageJson = JSON.parse(read('package.json'));
+const skillPack = JSON.parse(read('skill-pack.json'));
 const coreManifest = JSON.parse(read('bundles/core/manifest.json'));
 assert(coreManifest.name === 'ai-builder-os-core', 'core bundle manifest name 必须是 ai-builder-os-core', failures);
+assert(coreManifest.version === packageJson.version, 'core bundle manifest version 必须与 package.json version 一致', failures);
+assert(coreManifest.status === skillPack.status, 'core bundle manifest status 必须与 skill-pack status 一致', failures);
 for (const skillName of builderSkills) {
   assert(coreManifest.skills.includes(skillName), `core bundle manifest 缺少 ${skillName}`, failures);
 }
 
-const skillPack = JSON.parse(read('skill-pack.json'));
 for (const [policyName, policy] of Object.entries({
   'bundles/core/manifest.json skill_load_policy': coreManifest.skill_load_policy,
   'skill-pack.json skill_load_policy': skillPack.skill_load_policy,
@@ -2710,6 +2772,12 @@ for (const [policyName, policy] of Object.entries({
     assert(['always_visible', 'router_visible', 'on_demand'].includes(entry.context_load_class), `${policyName}/${skillName} context_load_class 不合法: ${entry.context_load_class}`, failures);
     assert(entry.references_loaded_by_default === false, `${policyName}/${skillName} references_loaded_by_default 必须是 false`, failures);
   }
+  const planGoalPolicy = policy['builder-plan-goal'] || {};
+  const routerPolicy = policy['builder-router'] || {};
+  assert(planGoalPolicy.invocation_mode === 'user_invoked', `${policyName}/builder-plan-goal 必须保持 user_invoked，不能默认隐式调用`, failures);
+  assert(planGoalPolicy.context_load_class === 'router_visible', `${policyName}/builder-plan-goal 必须保持 router_visible，仅由 router 推荐或用户显式调用`, failures);
+  assert(routerPolicy.invocation_mode === 'user_invoked', `${policyName}/builder-router 必须保持 user_invoked`, failures);
+  assert(routerPolicy.context_load_class === 'always_visible', `${policyName}/builder-router 必须保持 always_visible`, failures);
 }
 assert(!read('skill-pack.json').includes('disable-model-invocation'), 'skill-pack.json 不得写入 runtime-specific disable-model-invocation 语义', failures);
 assert(!read('bundles/core/manifest.json').includes('disable-model-invocation'), 'core manifest 不得写入 runtime-specific disable-model-invocation 语义', failures);

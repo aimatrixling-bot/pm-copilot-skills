@@ -174,6 +174,8 @@ profile_required_sections:
 
 Usage metrics v2 只在 `skill_quality_review`、`agent_navigability_review`、`release_readiness` 或用户明确要求审计输出时展示；quick review 不默认展示。
 
+Dispatcher-first 规则：本入口先判断 `review_mode` 和 `review_profile`，再只加载对应 gate、template 和 reference。默认 quick_change_review 只展示 required sections；profile_specific_sections、usage_metrics_v2 和全量 audit 字段保持按需输出，不能在普通 review 中默认展开。
+
 ## 执行流程
 
 1. 识别 review target 和原始契约。

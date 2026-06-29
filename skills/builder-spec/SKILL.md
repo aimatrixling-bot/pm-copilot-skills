@@ -68,6 +68,8 @@ argument-hint: "[Feature Frame、需求、上下文或产物路径]"
 
 默认使用最轻可验收 profile，只有确实能降低风险时才升级为 full profile。小任务不应因为进入 Builder OS 就自动展开完整 PRD、完整变更契约或 reframe。
 
+Dispatcher-first 规则：本入口先判断 `spec_type`、`delivery_mode` 和 `spec_output_profile`，再只读取对应模板和 reference。默认输出 micro/lite/minimal 所需字段；不要把 full profile、完整 PRD、完整 Change Contract 或所有参考文件作为默认可见输出。只有 Profile Selection 命中升级条件时才展开 full profile。
+
 ```yaml
 spec_output_profile: micro_note | lite_change_contract | minimal_change_contract | standard_change_contract | full_change_contract | minimal_execution_pack | full_execution_pack | prototype_to_spec | engineering_request
 profile_selection_rule:

@@ -6,6 +6,7 @@ const path = require('path');
 const { execFileSync } = require('child_process');
 const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
 const { validateRuntimeBehaviorFixtures } = require('./lib/runtime-behavior-fixtures');
+const { validateInvocationMetadata } = require('./lib/runtime-invocation-metadata');
 
 const root = path.resolve(__dirname, '..');
 const exportScript = path.join(root, 'scripts', 'export-ai-builder-os.js');
@@ -58,6 +59,7 @@ function sameSet(actual, expected) {
 }
 
 const skillPack = readJson(path.join(root, 'skill-pack.json'));
+const coreManifest = readJson(path.join(root, 'bundles', 'core', 'manifest.json'));
 const expectedSkills = skillPack.active_surface.skills;
 const targets = ['codex', 'claude-code', 'generic-agent'];
 const runtimeRouterSkillFiles = [];
@@ -101,7 +103,7 @@ function validateNoLegacy(targetName, targetDir) {
   );
 }
 
-function validateFlatTarget(targetName, targetDir) {
+function validateFlatTarget(targetName, targetDir, adapter) {
   const skillDirs = listDirs(targetDir).filter((entry) => entry.startsWith('builder-'));
   assert(sameSet(skillDirs, expectedSkills), `${targetName} flat export 的 skill dirs 不匹配: ${skillDirs.join(', ')}`);
 
@@ -129,16 +131,37 @@ function validateFlatTarget(targetName, targetDir) {
     assert(fs.existsSync(path.join(skillDir, 'templates', 'definition-drift-check', 'template.md')), `${targetName}/${skillName} 缺少 embedded definition drift template`);
     assert(fs.existsSync(path.join(skillDir, 'adapters', targetName, 'README.md')), `${targetName}/${skillName} 缺少 target adapter docs`);
     assert(fs.existsSync(path.join(skillDir, '.ai-builder-os', 'runtime.json')), `${targetName}/${skillName} 缺少 runtime metadata`);
+    validateInvocationMetadata({
+      failures,
+      skillDir,
+      skillName,
+      targetName,
+      adapter,
+      skillPack,
+      coreManifest,
+      label: `${targetName} export`,
+    });
   }
 }
 
-function validateGenericTarget(targetDir) {
+function validateGenericTarget(targetName, targetDir, adapter) {
   const skillRoot = path.join(targetDir, 'skills');
   const skillDirs = listDirs(skillRoot).filter((entry) => entry.startsWith('builder-'));
   assert(sameSet(skillDirs, expectedSkills), `generic-agent package export 的 skill dirs 不匹配: ${skillDirs.join(', ')}`);
 
   for (const skillName of expectedSkills) {
-    assert(fs.existsSync(path.join(skillRoot, skillName, 'SKILL.md')), `generic-agent/${skillName} 缺少 SKILL.md`);
+    const skillDir = path.join(skillRoot, skillName);
+    assert(fs.existsSync(path.join(skillDir, 'SKILL.md')), `generic-agent/${skillName} 缺少 SKILL.md`);
+    validateInvocationMetadata({
+      failures,
+      skillDir,
+      skillName,
+      targetName,
+      adapter,
+      skillPack,
+      coreManifest,
+      label: `${targetName} export`,
+    });
   }
 
   for (const resourcePath of [
@@ -190,13 +213,13 @@ try {
     validateNoLegacy(targetName, targetDir);
 
     if (adapter.export_layout === 'flat-skill-root') {
-      validateFlatTarget(targetName, targetDir);
+      validateFlatTarget(targetName, targetDir, adapter);
       runtimeRouterSkillFiles.push({
         label: `${targetName} export/builder-router`,
         path: path.join(targetDir, 'builder-router', 'SKILL.md'),
       });
     } else {
-      validateGenericTarget(targetDir);
+      validateGenericTarget(targetName, targetDir, adapter);
       runtimeRouterSkillFiles.push({
         label: `${targetName} export/builder-router`,
         path: path.join(targetDir, 'skills', 'builder-router', 'SKILL.md'),
