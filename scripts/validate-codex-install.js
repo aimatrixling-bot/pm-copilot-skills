@@ -5,6 +5,7 @@ const path = require('path');
 const crypto = require('crypto');
 const { TextDecoder } = require('util');
 const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
+const { validateRuntimeBehaviorFixtures } = require('./lib/runtime-behavior-fixtures');
 
 const root = path.resolve(__dirname, '..');
 const home = process.env.HOME || process.env.USERPROFILE || process.env.HOMEPATH;
@@ -220,6 +221,18 @@ for (const skillName of builderSkills) {
     label: `codex install/${skillName} markdown reference closure`,
   }));
 }
+
+validateRuntimeBehaviorFixtures({
+  root,
+  failures,
+  label: 'codex installed runtime behavior fixture',
+  routerSkillFiles: [
+    {
+      label: 'codex install/builder-router',
+      path: path.join(targetDir, 'builder-router', 'SKILL.md'),
+    },
+  ],
+});
 
 if (failures.length > 0) {
   console.error('Codex 安装验证失败:');

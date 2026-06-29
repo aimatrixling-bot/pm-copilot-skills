@@ -198,11 +198,13 @@ assert(syncScript.includes('agents/openai.yaml'), 'sync-and-publish.sh pack gate
 assert(syncScript.includes('scripts/export-ai-builder-os.js'), 'sync-and-publish.sh pack gate 必须检查 export script');
 assert(syncScript.includes('validate:runtime-adapters'), 'sync-and-publish.sh 必须运行 validate:runtime-adapters');
 assert(syncScript.includes('scripts/lib/markdown-reference-closure.js'), 'sync-and-publish.sh pack gate 必须检查 markdown reference closure helper');
+assert(syncScript.includes('scripts/lib/runtime-behavior-fixtures.js'), 'sync-and-publish.sh pack gate 必须检查 runtime behavior fixture helper');
 assert(syncScript.includes('scripts/validate-trigger-descriptions.js'), 'sync-and-publish.sh pack gate 必须检查 trigger description validator');
 assert(syncScript.includes('validate:trigger-descriptions'), 'sync-and-publish.sh 必须运行 validate:trigger-descriptions');
 assert(syncScript.includes('scripts/validate-onboarding-evals.js'), 'sync-and-publish.sh pack gate 必须检查 onboarding eval validator');
 assert(syncScript.includes('validate:onboarding-evals'), 'sync-and-publish.sh 必须运行 validate:onboarding-evals');
 assert(syncScript.includes('evals/runtime/lite-runtime-conformance.cases.json'), 'sync-and-publish.sh pack gate 必须检查 lite runtime conformance eval');
+assert(syncScript.includes('evals/runtime/direct-small-task-behavior.cases.json'), 'sync-and-publish.sh pack gate 必须检查 direct small task runtime behavior fixture');
 assert(syncScript.includes('scripts/validate-dual-package-dry-run.js'), 'sync-and-publish.sh pack gate 必须检查 dual package dry-run validator');
 assert(syncScript.includes('validate:dual-package-dry-run'), 'sync-and-publish.sh 必须运行 validate:dual-package-dry-run');
 assert(syncScript.includes('scripts/prepare-dual-package-publish.js'), 'sync-and-publish.sh pack gate 必须检查 dual package publish prep script');
@@ -230,8 +232,16 @@ try {
     'npm pack 必须包含 markdown reference closure helper',
   );
   assert(
+    packFiles.includes('scripts/lib/runtime-behavior-fixtures.js'),
+    'npm pack 必须包含 runtime behavior fixture helper',
+  );
+  assert(
     packFiles.includes('evals/runtime/lite-runtime-conformance.cases.json'),
     'npm pack 必须包含 lite runtime conformance eval',
+  );
+  assert(
+    packFiles.includes('evals/runtime/direct-small-task-behavior.cases.json'),
+    'npm pack 必须包含 direct small task runtime behavior fixture',
   );
 } catch (error) {
   failures.push(`npm pack --dry-run --json 执行失败: ${error.message}`);

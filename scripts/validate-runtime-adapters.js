@@ -5,6 +5,7 @@ const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
+const { validateRuntimeBehaviorFixtures } = require('./lib/runtime-behavior-fixtures');
 
 const root = path.resolve(__dirname, '..');
 const exportScript = path.join(root, 'scripts', 'export-ai-builder-os.js');
@@ -59,6 +60,7 @@ function sameSet(actual, expected) {
 const skillPack = readJson(path.join(root, 'skill-pack.json'));
 const expectedSkills = skillPack.active_surface.skills;
 const targets = ['codex', 'claude-code', 'generic-agent'];
+const runtimeRouterSkillFiles = [];
 
 function validateMetadata(targetName, targetDir, expectedLayout) {
   const metadataDir = path.join(targetDir, '.ai-builder-os');
@@ -189,8 +191,16 @@ try {
 
     if (adapter.export_layout === 'flat-skill-root') {
       validateFlatTarget(targetName, targetDir);
+      runtimeRouterSkillFiles.push({
+        label: `${targetName} export/builder-router`,
+        path: path.join(targetDir, 'builder-router', 'SKILL.md'),
+      });
     } else {
       validateGenericTarget(targetDir);
+      runtimeRouterSkillFiles.push({
+        label: `${targetName} export/builder-router`,
+        path: path.join(targetDir, 'skills', 'builder-router', 'SKILL.md'),
+      });
     }
 
     failures.push(...validateMarkdownReferenceClosure({
@@ -198,6 +208,13 @@ try {
       label: `${targetName} export markdown reference closure`,
     }));
   }
+
+  validateRuntimeBehaviorFixtures({
+    root,
+    failures,
+    label: 'runtime adapter/export behavior fixture',
+    routerSkillFiles: runtimeRouterSkillFiles,
+  });
 } finally {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 }

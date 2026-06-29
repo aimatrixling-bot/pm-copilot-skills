@@ -5,6 +5,7 @@ const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const { validateMarkdownReferenceClosure } = require('./lib/markdown-reference-closure');
+const { validateRuntimeBehaviorFixtures } = require('./lib/runtime-behavior-fixtures');
 
 const root = path.resolve(__dirname, '..');
 
@@ -72,6 +73,7 @@ const requiredFiles = [
   'scripts/export-ai-builder-os.js',
   'scripts/validate-runtime-adapters.js',
   'scripts/lib/markdown-reference-closure.js',
+  'scripts/lib/runtime-behavior-fixtures.js',
   'scripts/validate-trigger-descriptions.js',
   'scripts/validate-artifact-evals.js',
   'scripts/validate-onboarding-evals.js',
@@ -103,6 +105,7 @@ const requiredFiles = [
   'evals/output-contract/skill-hardening-brief.schema.json',
   'evals/delivery-kernel/delivery-kernel.cases.json',
   'evals/runtime/lite-runtime-conformance.cases.json',
+  'evals/runtime/direct-small-task-behavior.cases.json',
   'evals/quality/skill-design-playbook.rubric.md',
   'references/skill-design/README.md',
   'references/skill-design/skill-design-playbook.zh.md',
@@ -2596,6 +2599,18 @@ if (Array.isArray(liteRuntimeCases.cases)) {
     }
   }
 }
+
+validateRuntimeBehaviorFixtures({
+  root,
+  failures,
+  label: 'source runtime behavior fixture',
+  routerSkillFiles: [
+    {
+      label: 'source/builder-router',
+      path: path.join(root, 'skills', 'builder-router', 'SKILL.md'),
+    },
+  ],
+});
 
 const prototypeToSpecCases = readJson('evals/prototype-to-spec/prototype-to-spec.cases.json');
 assert(Array.isArray(prototypeToSpecCases.cases), 'prototype-to-spec eval 必须包含 cases 数组', failures);

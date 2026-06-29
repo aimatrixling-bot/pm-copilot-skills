@@ -1,0 +1,112 @@
+{
+  "suite": "direct-small-task-runtime-behavior",
+  "status": "m2-installed-runtime-fixture",
+  "purpose": "验证 Direct 小任务默认只给轻量用户正文，不生成 Change Contract、Memory 更新、Agent Task Packet、Review Packet 或其它治理产物；同一规则必须存在于 installed/runtime surface。",
+  "installed_surface_contract": {
+    "runtime_targets": [
+      "source",
+      "codex-user-install",
+      "codex-export",
+      "claude-code-export",
+      "generic-agent-export"
+    ],
+    "required_router_terms": [
+      "默认用户可见正文只使用四个块",
+      "`terse` 只在四个块内给最小判断",
+      "不展示 `delivery_mode`、`task_complexity`、`contract_profile` 等字段名",
+      "默认进入内部 trace 或 handoff artifact",
+      "不直接作为用户正文展开"
+    ],
+    "forbidden_legacy_router_terms": [
+      "`terse` 只展示需求理解、`delivery_mode`、`task_complexity`、`contract_profile`"
+    ]
+  },
+  "visible_response_blocks": [
+    "理解",
+    "下一步",
+    "需要决定",
+    "验收"
+  ],
+  "cases": [
+    {
+      "id": "direct-copy-text-no-artifact",
+      "runtime_tier": "direct",
+      "input": "把按钮文案从“提交”改成“保存”，不要改其它地方。",
+      "expected_trace": {
+        "task_complexity": "micro",
+        "response_profile": "terse",
+        "contract_profile": "none",
+        "context_strategy": "direct_answer"
+      },
+      "expected_visible_response_blocks": {
+        "理解": "这是一个明确的单点文案修改请求，范围只限指定按钮文案。",
+        "下一步": "直接修改指定文案，并运行最小可用检查。",
+        "需要决定": "无。",
+        "验收": "按钮显示为“保存”；没有新增契约、记忆更新或交接包。"
+      },
+      "must_not_generate_artifacts": [
+        "change_contract",
+        "memory_update",
+        "handoff_packet",
+        "agent_task_packet",
+        "review_packet",
+        "module_execution_pack",
+        "branch_state"
+      ],
+      "must_not_visible_terms": [
+        "Change Contract",
+        "Memory",
+        "Packet",
+        "delivery_decision",
+        "task_complexity",
+        "contract_profile",
+        "usage_metrics",
+        "memory_or_evidence_references",
+        "Agent Task Packet",
+        "Review Packet",
+        "Module Execution Pack",
+        "Branch State"
+      ]
+    },
+    {
+      "id": "direct-simple-answer-no-artifact",
+      "runtime_tier": "direct",
+      "input": "这个小改动需要先写 Spec 吗？只是把一个标题改短一点。",
+      "expected_trace": {
+        "task_complexity": "micro",
+        "response_profile": "terse",
+        "contract_profile": "none",
+        "context_strategy": "direct_answer"
+      },
+      "expected_visible_response_blocks": {
+        "理解": "这是一个低风险标题文案调整，不改变业务语义、流程、权限或数据。",
+        "下一步": "可以直接改；只保留最小验收说明即可。",
+        "需要决定": "无，除非标题含义会改变。",
+        "验收": "标题变短后仍表达同一含义；没有新增契约、记忆更新或交接包。"
+      },
+      "must_not_generate_artifacts": [
+        "change_contract",
+        "memory_update",
+        "handoff_packet",
+        "agent_task_packet",
+        "review_packet",
+        "module_execution_pack",
+        "branch_state"
+      ],
+      "must_not_visible_terms": [
+        "Change Contract",
+        "Memory",
+        "Packet",
+        "delivery_decision",
+        "task_complexity",
+        "contract_profile",
+        "usage_metrics",
+        "memory_or_evidence_references",
+        "Agent Task Packet",
+        "Review Packet",
+        "Module Execution Pack",
+        "Branch State"
+      ]
+    }
+  ]
+}
