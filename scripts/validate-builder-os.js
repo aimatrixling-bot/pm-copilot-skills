@@ -2476,6 +2476,7 @@ if (Array.isArray(planGoalContract.handoff_targets)) {
 
 const syncScript = read('sync-and-publish.sh');
 const installScript = read('install.js');
+const codexInstallValidator = read('scripts/validate-codex-install.js');
 const gitignore = read('.gitignore');
 assert(syncScript.includes('canonical source'), 'sync-and-publish.sh 必须声明 canonical source 发布边界', failures);
 assert(!syncScript.includes('sync: v$NEW_VERSION'), 'sync-and-publish.sh 不得使用旧的 agent sync commit message', failures);
@@ -2489,6 +2490,8 @@ for (const option of ['--dry-run', '--doctor', '--uninstall']) {
 }
 assert(installScript.includes('path.resolve(process.cwd(), ".agents", "skills")'), 'install.js codex-project 必须安装到项目 .agents/skills', failures);
 assert(!installScript.includes('path.resolve(process.cwd(), ".codex", "skills")'), 'install.js codex-project 不得安装到旧 .codex/skills', failures);
+assert(codexInstallValidator.includes('installedPackageVersionsBySkill'), 'validate-codex-install 必须按安装标记 version 校验 projection package_version', failures);
+assert(codexInstallValidator.includes('marker.version'), 'validate-codex-install 必须读取安装标记 version', failures);
 assert(gitignore.includes('references/source-blueprints/'), '.gitignore 必须排除本地 source blueprints 研究资料', failures);
 validateInstallerSafeArgs(failures);
 

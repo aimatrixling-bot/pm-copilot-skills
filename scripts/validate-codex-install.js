@@ -17,6 +17,7 @@ const skillPack = JSON.parse(fs.readFileSync(path.join(root, 'skill-pack.json'),
 const coreManifest = JSON.parse(fs.readFileSync(path.join(root, 'bundles', 'core', 'manifest.json'), 'utf8'));
 const codexAdapter = JSON.parse(fs.readFileSync(path.join(root, 'adapters', 'codex', 'adapter.json'), 'utf8'));
 const allowedMarkerPackages = new Set(['ai-builder-os', 'pm-copilot-skills', packageJson.name]);
+const installedPackageVersionsBySkill = new Map();
 
 const sourceEntries = fs.readdirSync(path.join(root, 'skills')).filter((entry) => {
   return fs.statSync(path.join(root, 'skills', entry)).isDirectory();
@@ -162,7 +163,9 @@ for (const entry of expectedEntries) {
         markerPackageIsAllowed(marker.package),
         `${entry} 的安装标记 package 不匹配: ${marker.package || '<missing>'}；允许 ${allowedMarkerPackageLabel()}`,
       );
+      assert(typeof marker.version === 'string' && marker.version.length > 0, `${entry} 的安装标记 version 缺失`);
       assert(marker.skill === entry, `${entry} 的安装标记 skill 不匹配`);
+      installedPackageVersionsBySkill.set(entry, marker.version);
     } catch (error) {
       failures.push(`${entry} 的安装标记不是合法 JSON: ${error.message}`);
     }
@@ -229,13 +232,18 @@ for (const skillName of builderSkills) {
     label: `codex install/${skillName} markdown reference closure`,
   }));
 
+  const installedSkillPack = {
+    ...skillPack,
+    version: installedPackageVersionsBySkill.get(skillName) || skillPack.version,
+  };
+
   validateInvocationMetadata({
     failures,
     skillDir,
     skillName,
     targetName: 'codex',
     adapter: codexAdapter,
-    skillPack,
+    skillPack: installedSkillPack,
     coreManifest,
     label: 'codex install',
   });
