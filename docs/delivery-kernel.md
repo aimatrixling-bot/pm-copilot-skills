@@ -30,6 +30,27 @@ M6 解决复杂构建任务中的几个反复问题：
 | 迭代模式 | `improve` | 在旧上改 | 已有页面、原型或代码上的优化、修复、删减、调整 | Change Contract |
 | 重塑模式 | `reframe` | 先重定再做 | 有旧资产，但目标形态、IA、流程或技术栈明显变化 | Asset Digestion + Target Shape + Execution Pack |
 
+## M10 Builder Delivery Harness
+
+M10 在 Delivery Kernel 上叠加 3P 交付轨道。3P 表示交付深度，不替代 `create`、`improve`、`reframe`。
+
+| delivery_track | 用户可见名称 | 解决的问题 | 典型产物 |
+| --- | --- | --- | --- |
+| `prd_spec` | PRD / Spec 轨道 | 定义、边界、验收和验证是否清楚 | Product Brief、Execution Spec、Acceptance Criteria |
+| `prototype` | Prototype 轨道 | 体验、状态、交互和视觉目标是否正确 | Prototype Brief、Runnable Prototype、Design Evidence |
+| `product` | Product 轨道 | 是否能运行、测试、部署和交接 | Agent Task Packet、Evidence Packet、Review Report |
+
+3P 与交付模式组合使用：
+
+- `create + prd_spec`：从 0 冻结目标、非目标、角色、流程、验收和验证。
+- `create + prototype`：新体验需要先用 prototype 回答交互或视觉问题。
+- `improve + product`：已有稳定代码或原型，只做局部实现、测试和证据闭环。
+- `reframe + prd_spec/prototype`：有旧资产但目标形态改变，先做 source asset digestion 和 target shape。
+
+Human View 与 Agent View 必须分离。Human View 用短摘要帮助人类决策；Agent View 使用字段化契约给 agent 执行。传统 issue/ticket 只能作为人类项目管理线索，不能替代 Agent Task Packet。
+
+Agent Task Packet 在 M10 中升级为 Agent Task Pack：一个可执行、可验证、可恢复的上下文包。它必须携带任务身份、来源产物、交付轨道、human summary、agent execution contract、knowledge context、slice plan、verification policy 和 self-improvement triggers。
+
 ## v0.2.2 Complexity-Aware Workflow Hygiene
 
 v0.2.2 在三种交付模式之上增加复杂度分层，目标是让小任务轻响应、大任务强治理。复杂度不是新的 skill，也不是新的流程分支；它只控制 Router 展示、契约重量、上下文读取和 review 强度。

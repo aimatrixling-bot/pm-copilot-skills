@@ -6,6 +6,10 @@
     "task_name",
     "background",
     "desired_outcome",
+    "task_pack_identity",
+    "human_view",
+    "agent_view",
+    "knowledge_context",
     "delivery_mode",
     "scope",
     "non_goals",
@@ -16,6 +20,9 @@
     "slice_plan",
     "hitl_checkpoints",
     "verification_policy",
+    "human_transparency_protocol",
+    "anti_evasion_checks",
+    "self_improvement_triggers",
     "runtime_constraints",
     "acceptance_criteria",
     "verification",
@@ -109,5 +116,41 @@
     "minimum_checks",
     "observable_evidence",
     "cannot_claim_done_without"
+  ],
+  "task_pack_identity_required": [
+    "id",
+    "source_artifact",
+    "delivery_track"
+  ],
+  "delivery_track_values": [
+    "prd_spec",
+    "prototype",
+    "product"
+  ],
+  "human_view_required": [
+    "summary",
+    "decision_points"
+  ],
+  "agent_view_required": [
+    "execution_contract",
+    "context_pack"
+  ],
+  "knowledge_context_required": [
+    "required_layers",
+    "read_policy"
+  ],
+  "human_transparency_protocol_required": [
+    "announce_mode_and_risks",
+    "report_verification_gaps_before_completion",
+    "stop_and_ask_when"
+  ],
+  "anti_evasion_checks_required": [
+    "red_flags",
+    "forbidden_completion_claims"
+  ],
+  "self_improvement_triggers_required": [
+    "repeated_failure",
+    "template_gap",
+    "script_or_eval_candidate"
   ]
 }

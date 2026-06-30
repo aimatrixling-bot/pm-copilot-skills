@@ -14,6 +14,31 @@ Memory 只记录未来任务有复用价值的上下文、偏好、资产、决�
 | Decision Memory | 关键取舍、反转条件和后续检查点 |
 | Skill Evolution Memory | trigger miss、模板问题、缺失 gate、缺失 eval |
 
+## Knowledge Stratification
+
+M10 采用 L0-L4 项目知识分层，用于避免把全部知识塞进上下文，也避免文件记忆变成文档垃圾场。
+
+| Layer | 名称 | 内容 | 默认读取策略 |
+| --- | --- | --- | --- |
+| L0 | 产品概述 | 使命、目标用户、定位、核心体验、全局索引 | 项目首次进入、重塑、重大决策时读取 |
+| L1 | 业务规则 | 术语、业务规则、权限、边界条件、核心流程 | 涉及领域语义、权限、状态或流程时读取 |
+| L2 | 设计与技术规范 | 信息架构、UI/UX、模块边界、技术架构 | 涉及 UI、模块边界、技术约束时读取 |
+| L3 | 接口和验收契约 | API、数据模型、字段、请求响应、AC、测试口径 | 进入实现、测试、review 或 agent task 前读取 |
+| L4 | 需求演进 | active changes、archived changes、evidence、retrospectives、issues/task packs | 当前迭代、恢复上下文、证据审查时读取 |
+
+治理规则：
+
+- 项目记忆必须有索引入口；Agent 不应默认全量读取 `docs/**/*.md`。
+- 稳定知识进入 L0-L3；临时执行记录、当前变更、证据和复盘进入 L4。
+- research、exploration、temporary prototype 必须带生命周期或归档建议。
+- 完成一个 change 后，必须决定是否更新稳定知识、归档 L4、保留 evidence，或提交 cleanup proposal。
+- AI Builder OS 只能提出 `.ai-builder/`、project profile 或 artifact index 的初始化建议；不得自动写入、扫描、迁移、删除或重命名用户项目资产。
+
+M10 记忆相关模板：
+- `templates/project-memory-index/template.md` 用于提出 L0-L4 项目记忆入口、候选文件和读取策略；它是 proposal-only，不能授权自动创建目录或迁移文件。
+- `templates/delivery-retrospective/template.md` 用于记录单轮交付的恢复入口、剩余工作、证据和 self-improvement signals；默认属于 L4，不能自动升级为长期规则。
+- `templates/research-brief/template.md` 用于缓存会影响决策的调研结论；只有被接受进 spec、decision record 或其他 source-of-truth 后，才成为稳定知识。
+
 ## Project Onboarding
 
 Project Onboarding 是 AI Builder OS 首次进入或恢复一个项目时的横切协议，不是第 9 个核心 skill。它负责判断项目进入模式，并在不自动写入用户项目的前提下，生成 project profile、artifact index 初始化建议和下一步 handoff。

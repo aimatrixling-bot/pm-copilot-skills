@@ -129,6 +129,10 @@ function validateFlatTarget(targetName, targetDir, adapter) {
     assert(fs.existsSync(path.join(skillDir, 'templates', 'change-contract', 'template.md')), `${targetName}/${skillName} 缺少 embedded change contract template`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'branch-state', 'template.md')), `${targetName}/${skillName} 缺少 embedded branch state template`);
     assert(fs.existsSync(path.join(skillDir, 'templates', 'definition-drift-check', 'template.md')), `${targetName}/${skillName} 缺少 embedded definition drift template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'evidence-packet', 'template.md')), `${targetName}/${skillName} 缺少 embedded evidence packet template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'research-brief', 'template.md')), `${targetName}/${skillName} 缺少 embedded research brief template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'delivery-retrospective', 'template.md')), `${targetName}/${skillName} 缺少 embedded delivery retrospective template`);
+    assert(fs.existsSync(path.join(skillDir, 'templates', 'project-memory-index', 'template.md')), `${targetName}/${skillName} 缺少 embedded project memory index template`);
     assert(fs.existsSync(path.join(skillDir, 'adapters', targetName, 'README.md')), `${targetName}/${skillName} 缺少 target adapter docs`);
     assert(fs.existsSync(path.join(skillDir, '.ai-builder-os', 'runtime.json')), `${targetName}/${skillName} 缺少 runtime metadata`);
     validateInvocationMetadata({
@@ -180,6 +184,10 @@ function validateGenericTarget(targetName, targetDir, adapter) {
     'templates/change-contract/template.md',
     'templates/branch-state/template.md',
     'templates/definition-drift-check/template.md',
+    'templates/evidence-packet/template.md',
+    'templates/research-brief/template.md',
+    'templates/delivery-retrospective/template.md',
+    'templates/project-memory-index/template.md',
     'adapters/generic-agent/README.md',
     'evals/builder-os-trigger-evals.json',
     'README.md',

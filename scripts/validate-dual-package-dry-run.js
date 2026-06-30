@@ -75,6 +75,10 @@ const requiredPackFiles = [
   'templates/change-contract/template.md',
   'templates/branch-state/template.md',
   'templates/definition-drift-check/template.md',
+  'templates/evidence-packet/template.md',
+  'templates/research-brief/template.md',
+  'templates/delivery-retrospective/template.md',
+  'templates/project-memory-index/template.md',
   ...builderSkills.map((skillName) => `skills/${skillName}/SKILL.md`),
 ];
 

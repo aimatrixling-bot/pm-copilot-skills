@@ -14,7 +14,7 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 
 ## 资源读取
 
-- 通用质量评审时，读取 `kernel/gates/builder-quality-gates.zh.md` 和 `kernel/packets/evidence-packet.schema.md`。
+- 通用质量评审时，读取 `kernel/gates/builder-quality-gates.zh.md`、`kernel/packets/evidence-packet.schema.md` 和 `templates/evidence-packet/template.md`。
 - 评审 `prototype_to_spec` 输出时，读取 `references/prototype-to-spec-review.zh.md` 和共享 `references/prototype-to-spec.zh.md`。
 - 评审高保真、可运行或 visual-target 原型证据时，读取 `references/prototype-design-evidence-review.zh.md`。
 - 评审 UI、prototype 或界面实现时，读取 `kernel/gates/design-consistency-gate.zh.md`、`kernel/gates/product-logic-containment-gate.zh.md`、`templates/design-brief/template.md` 和 `references/ui-ux/`。
@@ -63,6 +63,7 @@ argument-hint: "[产物路径、输出、diff 或 review target]"
 - `definition_drift_review`：检查实现、原型、agent 输出或文档是否偏离 Module Execution Pack、Change Contract、Branch State、Spec 或 Agent Task Packet，并输出 definition_sync_audit。
 - `skill_quality_review`：检查 builder skill 或 skill patch 是否存在 no-op、sediment、sprawl、context_load、progressive_disclosure、completion_criterion 和 source_of_truth_boundary 问题。
 - `agent_navigability_review`：检查 agent 是否能用当前 skill/template/schema/eval 顺利导航任务，尤其是复杂度分层、handoff、Branch State、review profile、usage metrics v2 是否可见且不过载。
+- `anti_rationalization_review`：检查输出是否用自信语气、局部证据、旧日志、agent 自报、视觉观感或 validator 通过来替代当前范围验证。
 - `release_readiness`：检查是否达到 Go/No-Go 或 release seal 条件。
 - `not_reviewable`：缺少 review target、原始契约或证据，先要求补材料。
 
@@ -188,8 +189,9 @@ Dispatcher-first 规则：本入口先判断 `review_mode` 和 `review_profile`�
 8. 检查 `mode_switch_assessment`：任务是否从 improve 漂移成 reframe、从 prototype-first 漂移成 spec-first，或局部改动变成全局重塑。
 9. 如果 review target 涉及项目资产、文档膨胀、清理动作、交付物替代或 source-of-truth 变更，按 Artifact Hygiene Loop 做一次轻量审计：检查生命周期状态、index 更新需要、清理风险和一致性风险。
 10. 如果 review target 是 skill、skill patch、manifest、template、schema 或 eval，执行 `skill_quality_review` 或 `agent_navigability_review`，检查 no-op、sediment、sprawl、context_load、progressive_disclosure、completion_criterion 和 source_of_truth_boundary。
-11. 按严重程度列出 findings 和 required action。
-12. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
+11. 应用 Anti-Rationalization Gate：检查是否存在 fake completion、fake evidence、scope drift、requirement promotion、validator-only proof 或 agent self-report。命中时默认 `REQUEST_CHANGES`、`PARTIAL` 或 `BLOCKED`。
+12. 按严重程度列出 findings 和 required action。
+13. 给出 PASS、PARTIAL、BLOCKED、APPROVE 或 REQUEST_CHANGES。
 
 ## 输出契约
 
@@ -235,6 +237,13 @@ profile_specific_sections:
     installed_surface:
     profile_visibility:
     blocked_recovery:
+  anti_rationalization_audit:
+    completion_claim_supported:
+    evidence_freshness:
+    local_vs_full_verification:
+    agent_self_report_relied_on:
+    validator_only_proof:
+    required_status_downgrade:
   usage_metrics_v2:
     source_requirement_lines:
     response_output_lines:
@@ -253,6 +262,7 @@ profile_specific_sections:
 
 - Findings 必须引用产物路径或可观察证据。
 - 未检查证据前不要 approve。
+- 不得把 agent 自报成功、旧日志、局部检查、截图观感或 validator 通过当作完整完成证据。
 - 区分产品问题和实现问题。
 - 明确列出未验证区域。
 - UI/prototype review 必须检查 Design Brief、组件一致性、状态覆盖、交互真实性、响应式和 mock/demo 标注。
@@ -269,6 +279,7 @@ profile_specific_sections:
 - 发现定义冲突或需要业务/安全/权限/数据/发布决策时，默认 `BLOCKED` 或转 `builder-decision`。
 - 不要批准只有视觉上“像真的”、但缺少交互/状态证据的 UI 工作。
 - 如果证据不足，决策必须是 PARTIAL、BLOCKED 或 REQUEST_CHANGES，不能用 APPROVE 掩盖。
+- 命中 Anti-Rationalization Gate 时，必须指出具体规避路径和所需补证据；不得只写“需要更严格验证”。
 - 只有交付物、项目输出、资产替代、release readiness 或 source-of-truth 变更相关评审必须输出 `artifact_hygiene_audit`；quick_change_review 默认不展开该字段。
 - `skill_quality_review` 必须检查 no-op、sediment、sprawl、context_load、progressive_disclosure、completion_criterion 和 source_of_truth_boundary；发现只增加文字但不改变行为时默认 `REQUEST_CHANGES`。
 - `agent_navigability_review` 必须检查 agent 是否能从当前 skill、template、schema、eval、manifest 和 installed surface 找到下一步；找不到时输出 required fixes。
@@ -298,6 +309,7 @@ profile_specific_sections:
 - `memory/policies/artifact-consistency-policy.zh.md`
 - `memory/policies/artifact-cleanup-policy.zh.md`
 - `templates/review-report/template.md`
+- `templates/evidence-packet/template.md`
 - `templates/definition-drift-check/template.md`
 - `templates/design-brief/template.md`
 - `references/ui-ux/`

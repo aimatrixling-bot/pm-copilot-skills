@@ -375,6 +375,32 @@
         "metrics in quick_change_review by default",
         "source-of-truth sprawl"
       ]
+    },
+    {
+      "id": "m10-agent-task-pack-human-agent-views",
+      "delivery_mode": "improve",
+      "input": "把一个已接受的 Change Contract 拆成可交给 Codex 执行的任务包。人类需要快速判断风险和下一步，Codex 需要可执行上下文、L0-L4 读取边界、首个 slice、验证证据和重复失败后的沉淀触发器。",
+      "expected_artifact": "agent_task_packet",
+      "expected_template": "templates/agent-task-packet/template.md",
+      "expected_next_skills": [
+        "builder-agent-task",
+        "builder-review"
+      ],
+      "must_include": [
+        "delivery_track",
+        "task_pack_identity",
+        "human_view",
+        "agent_view",
+        "knowledge_context",
+        "slice_plan",
+        "verification_policy",
+        "self_improvement_triggers"
+      ],
+      "must_not_include": [
+        "plain issue as executable task",
+        "read all docs by default",
+        "auto write rules from retrospective"
+      ]
     }
   ]
 }

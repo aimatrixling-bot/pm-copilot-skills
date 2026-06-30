@@ -116,6 +116,10 @@ const requiredFiles = [
   'references/ui-ux/interaction-patterns.zh.md',
   'references/ui-ux/visual-style.zh.md',
   'templates/skill-hardening-brief/template.md',
+  'templates/evidence-packet/template.md',
+  'templates/research-brief/template.md',
+  'templates/delivery-retrospective/template.md',
+  'templates/project-memory-index/template.md',
   'templates/agent-task-packet/template.md',
   'templates/decision-record/template.md',
   'templates/prototype-brief/template.md',
@@ -240,7 +244,9 @@ const legacyArchiveExpectations = {
 
 const builderCoreExpectations = {
   'skills/builder-router/SKILL.md': [
+    'Use when',
     '## 资源读取',
+    '用户没有显式提到 AI Builder OS',
     '## 模式判断',
     'route_type',
     'answer',
@@ -493,6 +499,10 @@ const builderCoreExpectations = {
     'forbidden_actions',
     'human_approval_gates',
     'blocked_stop_condition',
+    'task_pack_identity',
+    'human_view',
+    'agent_view',
+    'knowledge_context',
     'delegation_mode',
     'afk_ready',
     'hitl_checkpoint_required',
@@ -501,6 +511,9 @@ const builderCoreExpectations = {
     'tracer_bullet',
     'hitl_checkpoints',
     'verification_policy',
+    'human_transparency_protocol',
+    'anti_evasion_checks',
+    'self_improvement_triggers',
     'next_skill_input',
     'delivery_mode',
     'module_execution_pack',
@@ -527,6 +540,7 @@ const builderCoreExpectations = {
     '默认 quick_change_review 只展示 required sections',
     '不能在普通 review 中默认展开',
     'templates/review-report/template.md',
+    'templates/evidence-packet/template.md',
     'templates/definition-drift-check/template.md',
     'docs/delivery-kernel.md',
     'kernel/gates/builder-quality-gates.zh.md',
@@ -551,6 +565,7 @@ const builderCoreExpectations = {
     'release_readiness',
     'skill_quality_review',
     'agent_navigability_review',
+    'anti_rationalization_review',
     'not_reviewable',
     'review_mode',
     'evidence_audit',
@@ -565,6 +580,7 @@ const builderCoreExpectations = {
     'artifact_index_update_proposal',
     'skill_quality_audit',
     'agent_navigability_audit',
+    'anti_rationalization_audit',
     'usage_metrics_v2',
     'no_op',
     'sediment',
@@ -573,6 +589,9 @@ const builderCoreExpectations = {
     'progressive_disclosure',
     'completion_criterion',
     'source_of_truth_boundary',
+    'Anti-Rationalization Gate',
+    'fake completion',
+    'validator-only proof',
     'unverified_areas',
     'evals/output-contract/builder-review.schema.json',
     'references/skill-design/skill-design-playbook.zh.md',
@@ -596,6 +615,17 @@ const builderCoreExpectations = {
 };
 
 const packetSchemaExpectations = {
+  'kernel/packets/evidence-packet.schema.md': [
+    'Evidence Packet',
+    'templates/evidence-packet/template.md',
+    'freshness',
+    'missing_evidence',
+    'completion_claim',
+    'PASS',
+    'PARTIAL',
+    'BLOCKED',
+    'validator-only proof',
+  ],
   'kernel/packets/agent-task-packet.schema.md': [
     'readiness_gate',
     'not_ready_for_agent_task',
@@ -605,6 +635,17 @@ const packetSchemaExpectations = {
     'business_rule_notes',
     'rule_notes_placement',
     'prototype_evidence_requirements',
+    'task_pack_identity',
+    'human_view',
+    'agent_view',
+    'knowledge_context',
+    'delegation_mode',
+    'slice_plan',
+    'hitl_checkpoints',
+    'verification_policy',
+    'human_transparency_protocol',
+    'anti_evasion_checks',
+    'self_improvement_triggers',
     'next_skill_input',
   ],
 };
@@ -629,6 +670,12 @@ const builderPlanGoalReferenceExpectations = {
     'Bug 诊断模板',
     '重构模板',
     'UI / 产品原型模板',
+    'M10 Router-first Prompt',
+    'from_idea',
+    'from_visual_or_prototype',
+    'from_existing_code',
+    'spec_to_agent_task_pack',
+    'review_readiness',
     'Milestone 1 `/goal`',
   ],
   'skills/builder-plan-goal/references/goal-template.zh.md': [
@@ -787,6 +834,8 @@ const builderUiUxExpectations = {
     'slice_plan',
     'hitl_checkpoints',
     'verification_policy',
+    'human_transparency_protocol',
+    'anti_evasion_checks',
     'vertical_slice',
     'tracer_bullet',
     'references/ui-ux/',
@@ -824,6 +873,12 @@ const deliveryKernelExpectations = {
     'Module Execution Pack',
     'Change Contract',
     'Definition Drift Check',
+    'M10 Builder Delivery Harness',
+    'delivery_track',
+    'prd_spec',
+    'prototype',
+    'product',
+    'Agent Task Pack',
     '中文优先',
     'M7',
     'M8',
@@ -888,6 +943,15 @@ const deliveryKernelExpectations = {
 
 
 const deliveryKernelV02Expectations = {
+  'docs/architecture.md': [
+    'Builder Delivery Harness',
+    '3P 交付轨道',
+    'PRD / Spec Track',
+    'Prototype Track',
+    'Product Track',
+    'Human View',
+    'Agent View',
+  ],
   'AGENTS.md': [
     'Repository Purpose',
     'Source-of-Truth Discipline',
@@ -911,15 +975,23 @@ const deliveryKernelV02Expectations = {
     'Do Not Duplicate In',
     'Claude Code source checkout 如何进入本仓库',
     'What are delivery modes?',
+    'What are 3P delivery tracks?',
     'How does routing work?',
     'What is a Module Execution Pack?',
     'What is a Change Contract?',
     'What is Branch State?',
     'How is definition drift handled?',
+    'What is an Evidence Packet?',
+    'What is a Research Brief?',
+    'What is a Delivery Retrospective?',
+    'What is a Project Memory Index?',
     'How are task complexity and response weight chosen?',
     'Where do small-change scope boundary fields live?',
     'How is skill load policy represented?',
     'What is artifact lifecycle policy for handoff, Branch State and Decision Record?',
+    'How should project knowledge be stratified?',
+    'What is an Agent Task Pack?',
+    'How does self-improvement become durable?',
     'How should builder skill quality be reviewed?',
     'Where do Agent task rules live?',
     'Where do review gates live?',
@@ -928,6 +1000,19 @@ const deliveryKernelV02Expectations = {
     'Where do schema / eval expectations live?',
     'Branch State 是分支运行状态缓存，不是长期 source of truth',
     'Decision Record 只在 hard-to-reverse',
+  ],
+  'memory/README.md': [
+    'Knowledge Stratification',
+    'L0',
+    'L1',
+    'L2',
+    'L3',
+    'L4',
+    'Agent 不应默认全量读取',
+    'templates/project-memory-index/template.md',
+    'templates/delivery-retrospective/template.md',
+    'templates/research-brief/template.md',
+    'cleanup proposal',
   ],
   'skills/builder-router/SKILL.md': [
     'Delivery Decision 判断',
@@ -976,10 +1061,15 @@ const deliveryKernelV02Expectations = {
     'after_user_decision',
     'before_handoff',
     'merge_disposition',
+    'task_pack_identity',
+    'human_view',
+    'agent_view',
+    'knowledge_context',
     'delegation_mode',
     'slice_plan',
     'hitl_checkpoints',
     'verification_policy',
+    'self_improvement_triggers',
     'vertical_slice',
     'tracer_bullet',
   ],
@@ -1072,9 +1162,69 @@ const deliveryKernelV02Expectations = {
     'hitl_checkpoints',
     'verification_policy',
   ],
+  'templates/evidence-packet/template.md': [
+    'artifact_type: evidence_packet',
+    'evidence_status: PASS | PARTIAL | BLOCKED',
+    'commands_run',
+    'screenshots',
+    'manual_checks',
+    'mapping_evidence',
+    'freshness',
+    'missing_evidence',
+    'completion_claim',
+    'agent self-report',
+    'validator-only proof',
+  ],
+  'templates/research-brief/template.md': [
+    'artifact_type: research_brief',
+    'research_question',
+    'decision_it_informs',
+    'sources_checked',
+    'findings',
+    'recommendation',
+    'staleness_risk',
+    'next_artifact',
+  ],
+  'templates/delivery-retrospective/template.md': [
+    'artifact_type: delivery_retrospective',
+    'what_changed',
+    'what_remains',
+    'next_resume_point',
+    'knowledge_disposition',
+    'self_improvement_triggers',
+    'script_or_eval_candidate',
+  ],
+  'templates/project-memory-index/template.md': [
+    'artifact_type: project_memory_index',
+    'status: proposal | accepted | needs_review',
+    'L0',
+    'L1',
+    'L2',
+    'L3',
+    'L4',
+    'approval_required',
+    'proposal-only',
+  ],
 };
 
 const skillDesignExpectations = {
+  'kernel/protocols/evidence-policy.zh.md': [
+    'Iron Law',
+    '没有新鲜证据',
+    '完成声明门禁',
+    '常见规避',
+    'agent 说成功了',
+    'PARTIAL',
+    'BLOCKED',
+  ],
+  'kernel/gates/builder-quality-gates.zh.md': [
+    'Anti-Rationalization Gate',
+    'Red Flags',
+    'Rationalization Check',
+    '人工介入',
+    '连续 3 次修复仍失败',
+    'validator 只证明契约',
+  ],
   'references/skill-design/skill-design-playbook.zh.md': [
     'Plan Goal Coach',
     '触发条件',
@@ -1089,6 +1239,13 @@ const skillDesignExpectations = {
     'eval',
     '安装态',
     'Skill Hardening Brief',
+    'RED / GREEN / REFACTOR',
+    'baseline_failure_scenarios',
+    'red_phase',
+    'green_phase',
+    'refactor_phase',
+    'Anti-Rationalization Gate',
+    'anti_evasion_rules',
     'Matt-Inspired Skill Engineering Discipline',
     'process_invariant',
     'no_op',
@@ -1104,11 +1261,17 @@ const skillDesignExpectations = {
     'artifact_type: skill_hardening_brief',
     'skill_name',
     'trigger_conditions',
+    'baseline_failure_scenarios',
+    'red_phase',
+    'green_phase',
+    'refactor_phase',
     'non_trigger_conditions',
     'mode_decision',
     'resource_map',
     'output_contract',
     'validator_eval_plan',
+    'red_flags',
+    'anti_evasion_rules',
     'installation_resources',
   ],
   'evals/quality/skill-design-playbook.rubric.md': [
@@ -1117,6 +1280,8 @@ const skillDesignExpectations = {
     'BLOCKED',
     '安装态',
     'handoff',
+    'baseline failure scenarios',
+    'anti-evasion rules',
   ],
 };
 
@@ -1390,6 +1555,10 @@ const outputContractExpectations = {
     'task_name',
     'background',
     'desired_outcome',
+    'task_pack_identity',
+    'human_view',
+    'agent_view',
+    'knowledge_context',
     'delivery_mode',
     'scope',
     'non_goals',
@@ -1400,6 +1569,9 @@ const outputContractExpectations = {
     'slice_plan',
     'hitl_checkpoints',
     'verification_policy',
+    'human_transparency_protocol',
+    'anti_evasion_checks',
+    'self_improvement_triggers',
     'runtime_constraints',
     'acceptance_criteria',
     'verification',
@@ -1470,12 +1642,18 @@ const outputContractExpectations = {
     'primary_artifact',
     'target_users',
     'source_baseline',
+    'baseline_failure_scenarios',
+    'red_phase',
+    'green_phase',
+    'refactor_phase',
     'trigger_conditions',
     'non_trigger_conditions',
     'mode_decision',
     'resource_map',
     'output_contract',
     'quality_gates',
+    'red_flags',
+    'anti_evasion_rules',
     'handoff_targets',
     'anti_patterns',
     'examples',
@@ -1824,8 +2002,38 @@ if (Array.isArray(agentTaskContract.optional)) {
     assert(agentTaskContract.optional.includes(field), `agent-task-packet optional 缺少 ${field}`, failures);
   }
 }
-for (const field of ['delegation_mode', 'slice_plan', 'hitl_checkpoints', 'verification_policy']) {
+for (const field of ['task_pack_identity', 'human_view', 'agent_view', 'knowledge_context', 'delegation_mode', 'slice_plan', 'hitl_checkpoints', 'verification_policy', 'human_transparency_protocol', 'anti_evasion_checks', 'self_improvement_triggers']) {
   assert(agentTaskContract.required.includes(field), `agent-task-packet required 缺少执行纪律字段: ${field}`, failures);
+}
+assert(Array.isArray(agentTaskContract.task_pack_identity_required), 'agent-task-packet schema 必须包含 task_pack_identity_required 数组', failures);
+if (Array.isArray(agentTaskContract.task_pack_identity_required)) {
+  for (const field of ['id', 'source_artifact', 'delivery_track']) {
+    assert(agentTaskContract.task_pack_identity_required.includes(field), `agent-task-packet task_pack_identity_required 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.delivery_track_values), 'agent-task-packet schema 必须包含 delivery_track_values 数组', failures);
+if (Array.isArray(agentTaskContract.delivery_track_values)) {
+  for (const value of ['prd_spec', 'prototype', 'product']) {
+    assert(agentTaskContract.delivery_track_values.includes(value), `agent-task-packet delivery_track_values 缺少 ${value}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.human_view_required), 'agent-task-packet schema 必须包含 human_view_required 数组', failures);
+if (Array.isArray(agentTaskContract.human_view_required)) {
+  for (const field of ['summary', 'decision_points']) {
+    assert(agentTaskContract.human_view_required.includes(field), `agent-task-packet human_view_required 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.agent_view_required), 'agent-task-packet schema 必须包含 agent_view_required 数组', failures);
+if (Array.isArray(agentTaskContract.agent_view_required)) {
+  for (const field of ['execution_contract', 'context_pack']) {
+    assert(agentTaskContract.agent_view_required.includes(field), `agent-task-packet agent_view_required 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.knowledge_context_required), 'agent-task-packet schema 必须包含 knowledge_context_required 数组', failures);
+if (Array.isArray(agentTaskContract.knowledge_context_required)) {
+  for (const field of ['required_layers', 'read_policy']) {
+    assert(agentTaskContract.knowledge_context_required.includes(field), `agent-task-packet knowledge_context_required 缺少 ${field}`, failures);
+  }
 }
 assert(Array.isArray(agentTaskContract.branch_state_policy_required), 'agent-task-packet schema 必须包含 branch_state_policy_required 数组', failures);
 if (Array.isArray(agentTaskContract.branch_state_policy_required)) {
@@ -1885,6 +2093,24 @@ assert(Array.isArray(agentTaskContract.verification_policy_required), 'agent-tas
 if (Array.isArray(agentTaskContract.verification_policy_required)) {
   for (const field of ['minimum_checks', 'observable_evidence', 'cannot_claim_done_without']) {
     assert(agentTaskContract.verification_policy_required.includes(field), `agent-task-packet verification_policy_required 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.human_transparency_protocol_required), 'agent-task-packet schema 必须包含 human_transparency_protocol_required 数组', failures);
+if (Array.isArray(agentTaskContract.human_transparency_protocol_required)) {
+  for (const field of ['announce_mode_and_risks', 'report_verification_gaps_before_completion', 'stop_and_ask_when']) {
+    assert(agentTaskContract.human_transparency_protocol_required.includes(field), `agent-task-packet human_transparency_protocol_required 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.anti_evasion_checks_required), 'agent-task-packet schema 必须包含 anti_evasion_checks_required 数组', failures);
+if (Array.isArray(agentTaskContract.anti_evasion_checks_required)) {
+  for (const field of ['red_flags', 'forbidden_completion_claims']) {
+    assert(agentTaskContract.anti_evasion_checks_required.includes(field), `agent-task-packet anti_evasion_checks_required 缺少 ${field}`, failures);
+  }
+}
+assert(Array.isArray(agentTaskContract.self_improvement_triggers_required), 'agent-task-packet schema 必须包含 self_improvement_triggers_required 数组', failures);
+if (Array.isArray(agentTaskContract.self_improvement_triggers_required)) {
+  for (const field of ['repeated_failure', 'template_gap', 'script_or_eval_candidate']) {
+    assert(agentTaskContract.self_improvement_triggers_required.includes(field), `agent-task-packet self_improvement_triggers_required 缺少 ${field}`, failures);
   }
 }
 
@@ -2122,7 +2348,7 @@ if (builderReviewContract.review_profile_required_sections && typeof builderRevi
 }
 assert(Array.isArray(builderReviewContract.review_mode_values), 'builder-review schema 必须包含 review_mode_values 数组', failures);
 if (Array.isArray(builderReviewContract.review_mode_values)) {
-  for (const value of ['contract_review', 'evidence_review', 'design_review', 'prototype_design_evidence_review', 'prototype_to_spec_review', 'definition_drift_review', 'skill_quality_review', 'agent_navigability_review', 'release_readiness', 'not_reviewable']) {
+  for (const value of ['contract_review', 'evidence_review', 'design_review', 'prototype_design_evidence_review', 'prototype_to_spec_review', 'definition_drift_review', 'skill_quality_review', 'agent_navigability_review', 'anti_rationalization_review', 'release_readiness', 'not_reviewable']) {
     assert(builderReviewContract.review_mode_values.includes(value), `builder-review review_mode_values 缺少 ${value}`, failures);
   }
 }
@@ -2134,13 +2360,14 @@ if (Array.isArray(builderReviewContract.decision_values)) {
 }
 assert(Array.isArray(builderReviewContract.optional), 'builder-review schema 必须包含 optional 数组', failures);
 if (Array.isArray(builderReviewContract.optional)) {
-  for (const field of ['cleanup_proposal', 'design_plan_audit', 'design_consistency_audit', 'product_logic_containment_audit', 'prototype_design_evidence_audit', 'prototype_to_spec_audit', 'definition_drift_check', 'definition_sync_audit', 'mode_switch_assessment', 'branch_state_audit', 'artifact_hygiene_audit', 'artifact_index_update_proposal', 'skill_quality_audit', 'agent_navigability_audit', 'usage_metrics_v2']) {
+  for (const field of ['cleanup_proposal', 'design_plan_audit', 'design_consistency_audit', 'product_logic_containment_audit', 'prototype_design_evidence_audit', 'prototype_to_spec_audit', 'definition_drift_check', 'definition_sync_audit', 'mode_switch_assessment', 'branch_state_audit', 'artifact_hygiene_audit', 'artifact_index_update_proposal', 'skill_quality_audit', 'agent_navigability_audit', 'anti_rationalization_audit', 'usage_metrics_v2']) {
     assert(builderReviewContract.optional.includes(field), `builder-review optional 缺少 ${field}`, failures);
   }
 }
 for (const [fieldName, expectedFields] of Object.entries({
   skill_quality_audit_fields: ['no_op', 'sediment', 'sprawl', 'context_load', 'progressive_disclosure', 'completion_criterion', 'source_of_truth_boundary'],
   agent_navigability_audit_fields: ['route_clarity', 'artifact_lifecycle', 'installed_surface', 'profile_visibility', 'blocked_recovery'],
+  anti_rationalization_audit_fields: ['completion_claim_supported', 'evidence_freshness', 'local_vs_full_verification', 'agent_self_report_relied_on', 'validator_only_proof', 'required_status_downgrade'],
   usage_metrics_v2_fields: ['source_requirement_lines', 'response_output_lines', 'contract_output_lines', 'references_loaded_count', 'expected_files_touched', 'files_touched', 'files_outside_allowed_scope', 'implementation_rounds', 'review_rounds', 'branch_state_required', 'docs_updated'],
 })) {
   assert(Array.isArray(builderReviewContract[fieldName]), `builder-review schema 必须包含 ${fieldName} 数组`, failures);
@@ -2181,6 +2408,12 @@ const skillHardeningContract = readJson('evals/output-contract/skill-hardening-b
 assert(skillHardeningContract.artifact_type === 'skill_hardening_brief', 'skill-hardening schema artifact_type 必须是 skill_hardening_brief', failures);
 assert(skillHardeningContract.reference_playbook === 'references/skill-design/skill-design-playbook.zh.md', 'skill-hardening schema reference_playbook 必须指向 Skill Design Playbook', failures);
 assert(skillHardeningContract.template === 'templates/skill-hardening-brief/template.md', 'skill-hardening schema template 必须指向 Skill Hardening Brief 模板', failures);
+assert(Array.isArray(skillHardeningContract.required), 'skill-hardening schema 必须包含 required 数组', failures);
+if (Array.isArray(skillHardeningContract.required)) {
+  for (const field of ['baseline_failure_scenarios', 'red_phase', 'green_phase', 'refactor_phase', 'red_flags', 'anti_evasion_rules']) {
+    assert(skillHardeningContract.required.includes(field), `skill-hardening required 缺少反规避字段: ${field}`, failures);
+  }
+}
 
 const builderSpecContract = readJson('evals/output-contract/builder-spec.schema.json');
 assert(Array.isArray(builderSpecContract.optional), 'builder-spec schema 必须包含 optional 数组', failures);
@@ -2470,7 +2703,7 @@ assert(deliveryKernelCases.status === 'v0.2', 'delivery-kernel eval status 必�
 assert(Array.isArray(deliveryKernelCases.cases), 'delivery-kernel eval 必须包含 cases 数组', failures);
 if (Array.isArray(deliveryKernelCases.cases)) {
   const deliveryCaseIds = deliveryKernelCases.cases.map(item => item.id);
-  for (const expectedCaseId of ['delivery-create-module-execution-pack', 'delivery-improve-change-contract', 'delivery-reframe-asset-digestion', 'definition-sync-drift-classes', 'delivery-hybrid-improve-with-reframe-risk', 'branch-state-runtime-protocol', 'minimal-full-profile-selection', 'mode-switch-assessment-drift', 'runtime-surface-availability', 'review-profile-output-shaping', 'complexity-aware-lite-contract', 'agent-task-execution-discipline', 'prototype-intent-lifecycle', 'skill-load-policy-runtime-neutral', 'skill-quality-review-profile']) {
+  for (const expectedCaseId of ['delivery-create-module-execution-pack', 'delivery-improve-change-contract', 'delivery-reframe-asset-digestion', 'definition-sync-drift-classes', 'delivery-hybrid-improve-with-reframe-risk', 'branch-state-runtime-protocol', 'minimal-full-profile-selection', 'mode-switch-assessment-drift', 'runtime-surface-availability', 'review-profile-output-shaping', 'complexity-aware-lite-contract', 'agent-task-execution-discipline', 'm10-agent-task-pack-human-agent-views', 'prototype-intent-lifecycle', 'skill-load-policy-runtime-neutral', 'skill-quality-review-profile']) {
     assert(deliveryCaseIds.includes(expectedCaseId), `delivery-kernel eval 缺少用例: ${expectedCaseId}`, failures);
   }
   for (const mode of ['create', 'improve', 'reframe']) {
@@ -2518,6 +2751,15 @@ if (Array.isArray(deliveryKernelCases.cases)) {
   if (agentDisciplineCase && Array.isArray(agentDisciplineCase.must_include)) {
     for (const term of ['delegation_mode', 'hitl_checkpoint_required', 'slice_plan', 'vertical_slice', 'tracer_bullet', 'verification_policy']) {
       assert(agentDisciplineCase.must_include.includes(term), `agent-task-execution-discipline 缺少: ${term}`, failures);
+    }
+  }
+  const m10TaskPackCase = deliveryKernelCases.cases.find(item => item.id === 'm10-agent-task-pack-human-agent-views');
+  if (m10TaskPackCase && Array.isArray(m10TaskPackCase.must_include) && Array.isArray(m10TaskPackCase.must_not_include)) {
+    for (const term of ['delivery_track', 'task_pack_identity', 'human_view', 'agent_view', 'knowledge_context', 'self_improvement_triggers']) {
+      assert(m10TaskPackCase.must_include.includes(term), `m10-agent-task-pack-human-agent-views 缺少: ${term}`, failures);
+    }
+    for (const term of ['plain issue as executable task', 'read all docs by default', 'auto write rules from retrospective']) {
+      assert(m10TaskPackCase.must_not_include.includes(term), `m10-agent-task-pack-human-agent-views must_not_include 缺少: ${term}`, failures);
     }
   }
   const prototypeIntentCase = deliveryKernelCases.cases.find(item => item.id === 'prototype-intent-lifecycle');

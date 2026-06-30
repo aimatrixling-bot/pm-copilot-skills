@@ -30,3 +30,10 @@ M6 Delivery Kernel 新增 4 个交付契约模板：
 - `templates/change-contract/template.md`：迭代模式 `improve` 的局部变更契约。
 - `templates/branch-state/template.md`：多轮 Goal、上下文压缩和跨资产任务的当前状态缓存。
 - `templates/definition-drift-check/template.md`：完成前检查定义与实现是否漂移。
+
+M10 Prompt / Template support 新增 4 个轻量模板：
+
+- `templates/evidence-packet/template.md`：记录当前范围的 fresh evidence，防止 `PASS`、完成声明或 release readiness 只依赖 agent self-report、旧日志或 validator-only proof。
+- `templates/research-brief/template.md`：缓存会影响产品、架构、实现或交付决策的调研结论；调研结论进入 spec 或 decision 前不能自动升级为需求。
+- `templates/delivery-retrospective/template.md`：记录单轮交付做了什么、遗留什么、下一轮从哪里恢复，以及是否触发 rule/template/script/eval/skill-hardening 输入。
+- `templates/project-memory-index/template.md`：提出 L0-L4 项目记忆入口和读取策略；它是 proposal-only，不授权自动创建、迁移、删除或重命名用户项目文件。

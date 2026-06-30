@@ -28,6 +28,7 @@
     "artifact_index_update_proposal",
     "skill_quality_audit",
     "agent_navigability_audit",
+    "anti_rationalization_audit",
     "usage_metrics_v2"
   ],
   "review_profile_required_sections": {
@@ -137,6 +138,7 @@
     "definition_drift_review",
     "skill_quality_review",
     "agent_navigability_review",
+    "anti_rationalization_review",
     "release_readiness",
     "not_reviewable"
   ],
@@ -163,6 +165,14 @@
     "installed_surface",
     "profile_visibility",
     "blocked_recovery"
+  ],
+  "anti_rationalization_audit_fields": [
+    "completion_claim_supported",
+    "evidence_freshness",
+    "local_vs_full_verification",
+    "agent_self_report_relied_on",
+    "validator_only_proof",
+    "required_status_downgrade"
   ],
   "usage_metrics_v2_fields": [
     "source_requirement_lines",

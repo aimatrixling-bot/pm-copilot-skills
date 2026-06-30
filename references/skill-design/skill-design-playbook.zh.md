@@ -77,6 +77,8 @@ Plan Goal Coach 的反模式让 agent 不会把复杂任务包装成漂亮但不
 - 只做文案润色，不改变可执行性。
 - 假装完成，没有证据。
 - handoff 不完整。
+- 使用“应该能跑”“只是小改”“测试过一部分”“agent 说成功了”来替代验证。
+- 用 validator 通过替代真实业务、UI、权限、数据或发布证据。
 
 ### 6. 示例必须覆盖边界，不只覆盖理想输入
 
@@ -90,7 +92,17 @@ Plan Goal Coach 的反模式让 agent 不会把复杂任务包装成漂亮但不
 
 示例不是为了装饰，而是让未来 eval 能从真实输入出发。
 
-### 7. 输出格式要稳定
+### 7. Skill hardening 使用 RED / GREEN / REFACTOR
+
+把 skill 当成流程文档的 TDD。先定义没有 hardening 时 agent 会怎样失败，再写规则，再移除没有行为价值的沉积内容。
+
+- RED：写出真实压力输入、预期失败、agent 可能使用的 rationalization，以及失败会伤害哪个用户结果。
+- GREEN：只补能改变路由、输出、验证、停止条件或 handoff 的规则，并把它接入 schema、eval 或 validator。
+- REFACTOR：删除 no-op 文案，减少默认上下文加载，把详细解释沉到 reference/template，保留入口执行骨架。
+
+如果没有 RED 阶段，不能确定新增规则是否真的教会了 agent 新行为；如果没有 validator/eval，不能证明规则不会再次漂移。
+
+### 8. 输出格式要稳定
 
 Plan Goal Coach 的固定输出格式让用户能快速复制和审阅。其他 builder skill 也应有稳定输出契约：
 
@@ -103,7 +115,7 @@ Plan Goal Coach 的固定输出格式让用户能快速复制和审阅。其他 
 
 字段名应能进入 output-contract schema。
 
-### 8. Handoff 是一等公民
+### 9. Handoff 是一等公民
 
 AI Builder OS 不是单个 skill 的集合，而是一条构建链路。每个 builder skill 都要明确：
 
@@ -181,10 +193,13 @@ handoff 至少包含目标、上下文来源、关键假设、non-goals、验收
 
 - Scope Gate。
 - Evidence Gate。
+- Anti-Rationalization Gate。
 - Handoff Gate。
 - 与领域相关的专用 gate。
 
 质量门禁必须说明失败处理：补信息、降级、转 Plan、请求人工决策或标记 BLOCKED。
+
+质量门禁还必须列出 red flags 和 anti-evasion rules：哪些措辞、状态或行为说明 agent 正在用推断替代证据；出现这些信号时应停下、补证据、降级状态或请求人工决策。
 
 ### Step 7: 分层放置内容
 
@@ -259,12 +274,18 @@ Temporary artifact policy / Lifecycle 规则：
 - `target_role`
 - `primary_artifact`
 - `target_users`
+- `baseline_failure_scenarios`
+- `red_phase`
+- `green_phase`
+- `refactor_phase`
 - `trigger_conditions`
 - `non_trigger_conditions`
 - `mode_decision`
 - `resource_map`
 - `output_contract`
 - `quality_gates`
+- `red_flags`
+- `anti_evasion_rules`
 - `handoff_targets`
 - `anti_patterns`
 - `examples`

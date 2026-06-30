@@ -15,11 +15,25 @@ AI Builder OS 是一套 AI 原生构建操作系统，服务于产品经理、�
 
 它帮助用户把想法、需求、业务问题和项目上下文，转化为 Codex、Claude Code、Qoder、Cursor、Trae、Workbuddy 以及通用 agent runtime 可以执行、验证和复用的构建流程。
 
+M10 Builder Delivery Harness 将 AI Builder OS 明确为产品判断与 Agent 执行之间的交付内核。它不是 AI IDE，也不是 PM 插件集合，而是把自然语言意图转化为 Human View、Agent View、可验证证据和长期项目记忆的协议层。
+
 核心工作流：
 
 ```text
 想法 -> 判断路径 -> 规格 -> 原型 -> Agent Task Packet -> 执行 -> 证据 -> 发布/评审 -> 演进
 ```
+
+M10 引入 3P 交付轨道作为用户侧交付深度：
+
+```text
+PRD / Spec Track       定义是否清楚
+Prototype Track        体验和状态是否正确
+Product Track          是否可运行、可验证、可交接
+```
+
+3P 是交付轨道，不是强制线性阶段。具体任务仍由 Router 和 Delivery Kernel 判断应走 `create`、`improve`、`reframe`、Plan、Goal 或对应 builder skill。
+
+Human View 面向人类快速决策，突出目标、风险、验收和下一步。Agent View 面向执行，必须字段化、带上下文来源、non-goals、forbidden actions、验证方式和停止条件。PRD 可以保留为 Human View；agent-facing canonical artifact 应是 Execution Spec、Change Contract、Module Execution Pack 或 Agent Task Packet。
 
 M6 Delivery Kernel 在该链路中提供轻量交付内核：
 

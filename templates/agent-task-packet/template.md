@@ -14,6 +14,19 @@ reroute_recommendation:
 task_name:
 background:
 desired_outcome:
+task_pack_identity:
+  id:
+  source_artifact:
+  delivery_track: prd_spec | prototype | product
+human_view:
+  summary:
+  decision_points:
+agent_view:
+  execution_contract:
+  context_pack:
+knowledge_context:
+  required_layers:
+  read_policy:
 scope:
 non_goals:
 context_sources:
@@ -33,6 +46,17 @@ verification_policy:
   minimum_checks:
   observable_evidence:
   cannot_claim_done_without:
+human_transparency_protocol:
+  announce_mode_and_risks: true | false
+  report_verification_gaps_before_completion: true | false
+  stop_and_ask_when:
+anti_evasion_checks:
+  red_flags:
+  forbidden_completion_claims:
+self_improvement_triggers:
+  repeated_failure:
+  template_gap:
+  script_or_eval_candidate:
 runtime_constraints:
 plan_prompt:
 goal_prompt:

@@ -42,6 +42,134 @@
 - 如果需求与现有架构冲突，请明确指出。
 ```
 
+## M10 Router-first Prompt 模板
+
+这些模板用于从常见入口进入 AI Builder OS。稳定标识用于 validator：`from_idea`、`from_visual_or_prototype`、`from_existing_code`、`spec_to_agent_task_pack`、`review_readiness`。
+
+### from_idea：从想法开始
+
+```text
+/plan
+
+我现在只有一个产品/功能/重构想法，请先不要实现，也不要直接写完整 spec。
+
+原始想法：
+[写下想法、目标用户、业务背景、为什么现在要做]
+
+请先按 AI Builder OS 路由：
+1. 判断应该先进入 builder-frame、builder-spec、builder-prototype、builder-agent-task、builder-review 还是 builder-decision。
+2. 如果信息不足，最多问 3 个会真正影响方向的问题，并给出推荐默认答案。
+3. 输出 Human View：目标、边界、主要风险、需要我决定的点。
+4. 输出 Agent View：下一步 skill、需要读取的上下文、不得做的事、可验证产物。
+5. 如果可以继续，请给出可直接交给下一步 skill 的 next_skill_input。
+
+约束：
+- 不新增第 9 个 core skill。
+- 不把模糊想法直接升级成实现任务。
+- 不默认要求 agent 全量读取项目 docs。
+```
+
+### from_visual_or_prototype：从截图、原型或视觉目标开始
+
+```text
+/plan
+
+我有截图、原型、设计稿或已有页面作为输入，请先判断应该走 prototype-first、boundary-first 还是 spec-first。
+
+输入材料：
+[截图/原型路径、URL、已有页面、设计说明或差异描述]
+
+请输出：
+1. visual/prototype 输入能确定的事实。
+2. 仍然只是推断的内容。
+3. 应进入 builder-prototype、builder-spec 还是 builder-review。
+4. 需要生成或更新的 Design Brief / Prototype Brief / Spec。
+5. 对 mock、业务规则、API、权限和数据来源的边界说明。
+6. 可直接复制的下一步 `/goal` 或 next_skill_input。
+
+约束：
+- 不把 prototype gaps 写成已确认需求。
+- 不用视觉相似度替代交互、状态和证据验证。
+- 如果需要运行原型，必须说明 preview URL、截图、viewport/state 和 design QA。
+```
+
+### from_existing_code：从已有代码迭代开始
+
+```text
+/plan
+
+我想在已有代码库中做一次迭代，请先检查现状并规划，不要直接大范围修改。
+
+目标变化：
+[描述希望改变的行为、页面、API、模块或体验]
+
+已知上下文：
+- 仓库/目录：
+- 相关文件或模块：
+- 当前行为：
+- 期望行为：
+- 明确不改：
+
+请输出：
+1. delivery_mode 应该是 improve、create 还是 reframe。
+2. 是否需要 Change Contract、Module Execution Pack、Branch State 或 Definition Drift Check。
+3. 最小安全实现路径。
+4. 可能影响的文件/模块。
+5. 验证方式和不能声称完成的条件。
+6. 可直接复制的 Milestone 1 `/goal`。
+
+约束：
+- 优先小范围 improve；发现目标形态不清或范围膨胀时，明确提示 reframe 风险。
+- 保留现有架构、公共 API、权限、数据和生产配置，除非我明确批准。
+```
+
+### spec_to_agent_task_pack：把 spec 转成 Agent Task Pack
+
+```text
+/plan
+
+我已经有 spec / PRD / Change Contract / Module Execution Pack，请帮我转成可交给 coding agent 的 Agent Task Pack。
+
+来源产物：
+[粘贴或指向 spec、PRD、Change Contract、Module Execution Pack、Design Brief、Prototype Brief]
+
+请输出：
+1. task_pack_identity：任务 ID、来源产物、delivery_track。
+2. Human View：一句话目标、需要我决定的点、风险。
+3. Agent View：执行契约、context pack、non-goals、forbidden actions。
+4. knowledge_context：需要读取的 L0-L4 层和读取策略，禁止默认全量读取。
+5. slice_plan：首个 vertical slice 或 tracer bullet。
+6. verification_policy：最小检查、可观察证据、不能 claim done 的条件。
+7. self_improvement_triggers：重复失败、模板缺口、脚本/eval 候选。
+
+约束：
+- 传统 issue/ticket 不能替代 Agent Task Pack。
+- 如果来源 spec 不足以执行，先给 reroute_recommendation，不要伪造完整任务包。
+```
+
+### review_readiness：进入审查或发布前检查
+
+```text
+/plan
+
+我需要判断当前产物是否可以进入下一步，请按 AI Builder OS review/readiness 思路规划检查。
+
+待审查对象：
+[spec/prototype/agent task/diff/evidence/release handoff 的路径或摘要]
+
+请输出：
+1. 应使用的 review_profile：quick_change_review、prototype_review、definition_drift_review、skill_quality_review、agent_navigability_review 或 release_readiness。
+2. 必须读取的契约、模板、证据和 source-of-truth。
+3. Evidence Packet 是否足够；如果不足，列出 missing_evidence。
+4. 是否需要 Definition Drift Check、Branch State audit、artifact hygiene audit。
+5. 可能的 PASS / PARTIAL / BLOCKED / REQUEST_CHANGES 条件。
+6. 可直接交给 builder-review 的 next_skill_input。
+
+约束：
+- 不用 validator-only proof、agent self-report、旧日志或视觉观感替代当前证据。
+- 缺证据时默认 PARTIAL、BLOCKED 或 REQUEST_CHANGES。
+```
+
 ## 需求澄清模板
 
 ```text

@@ -7,7 +7,7 @@
       "id": "desc-router-ambiguous-next-step",
       "input": "我有个产品构建想法，但不知道下一步应该 frame、spec、prototype 还是让 Codex 做。",
       "expected_skill": "builder-router",
-      "must_include_in_expected_description": ["路由", "不知道下一步", "handoff"],
+      "must_include_in_expected_description": ["Use when", "路由", "不知道下一步", "handoff"],
       "confusing_skills": []
     },
     {

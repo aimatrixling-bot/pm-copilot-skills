@@ -11,6 +11,7 @@
 - 是否把详细规则、模板、示例和反模式分层到 references/templates/assets。
 - 是否有 output contract 或 handoff packet。
 - 是否有 quality gates 和失败处理。
+- 是否有 baseline failure scenarios、RED/GREEN/REFACTOR 记录和 anti-evasion rules。
 - 是否有真实输入风格的 trigger/routing/eval case。
 - 是否检查安装态相对资源可用。
 - 是否中文优先，且没有把 `SKILL.md` 写成巨型论文。
@@ -22,6 +23,7 @@
 
 - 只有 `SKILL.md` 改动，没有 references/template/eval。
 - 有模板但没有 validator/eval 覆盖。
+- 有反规避口号，但没有具体 red flags、借口路径或状态降级规则。
 - 有触发条件但缺少不触发条件。
 - 有产物字段但没有 handoff 说明。
 - 新增 skill 文案有价值但尚未接入 schema/eval/validator。
@@ -33,5 +35,6 @@
 - 需要删除或重命名旧 `pm-*` skill。
 - 需要新增依赖、runtime 或发布配置，但未获确认。
 - 输出会伪装成已验证，但没有证据。
+- skill patch 声称改善 agent 行为，但没有 RED 阶段、pressure prompt 或可观察失败信号。
 - skill patch 只是 no-op 文案膨胀，没有行为、契约或验证变化。
 - 同一长期规则散落在多个 source of truth，造成 sprawl。

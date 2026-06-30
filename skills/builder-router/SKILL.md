@@ -1,7 +1,7 @@
 ---
 name: builder-router
 displayName: Builder Router
-description: "路由宽泛、模糊或多阶段的 AI Builder OS 构建请求。适用于用户不知道下一步该用哪个 builder skill、需要选择 Prompt/Plan/Goal/Plan 到 Goal 或需要把产品/构建意图拆成 handoff 路径。不要用于已明确要求产出 Feature Frame、spec、prototype、Agent Task Packet、review report 或 Decision Record 的请求；这类请求应直接交给对应 builder skill。"
+description: "Use when 用户给出宽泛、模糊或多阶段的 AI Builder OS 构建请求，需要路由到对应 builder skill；适用于不知道下一步该 frame、spec、prototype、agent task、review、decision，或需要选择 Prompt / Plan / Goal / Plan 到 Goal、生成 handoff 路径。不要用于已明确要求产出 Feature Frame、spec、prototype、Agent Task Packet、review report 或 Decision Record 的请求；这类请求应直接交给对应 builder skill。"
 user-invocable: true
 argument-hint: "[用户请求或项目上下文]"
 ---
@@ -25,6 +25,7 @@ argument-hint: "[用户请求或项目上下文]"
 ## 何时使用
 
 - 用户给出的是模糊想法、需求、项目或 agentic coding 任务。
+- 用户没有显式提到 AI Builder OS，但请求本质上是宽泛、多阶段或需要 formal builder workflow 的产品/构建任务。
 - 用户询问应该使用什么模式或 skill。
 - 任务可能需要 Plan、Goal 或 Plan -> Goal。
 - 请求横跨 framing、spec、prototype、agent task、review 或 decision。

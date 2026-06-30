@@ -10,7 +10,7 @@ argument-hint: "[任务、spec、产物路径或目标 runtime]"
 
 ## 使命
 
-创建一个其他 agentic runtime 可以安全、可验证执行的 Agent Task Packet。
+创建一个其他 agentic runtime 可以安全、可验证执行的 Agent Task Packet。M10 后，Agent Task Packet 同时是 Agent Task Pack：它不是普通 issue/ticket，而是带 Human View、Agent View、Knowledge Context、slice plan、verification policy 和 self-improvement triggers 的可恢复上下文包。
 
 ## 资源读取
 
@@ -113,6 +113,13 @@ verification_policy:
   minimum_checks:
   observable_evidence:
   cannot_claim_done_without:
+human_transparency_protocol:
+  announce_mode_and_risks: true | false
+  report_verification_gaps_before_completion: true | false
+  stop_and_ask_when:
+anti_evasion_checks:
+  red_flags:
+  forbidden_completion_claims:
 ```
 
 - 优先 `vertical_slice` 或 `tracer_bullet`：先交付一条可观察、可验证的窄端到端路径，再扩展。
@@ -120,6 +127,8 @@ verification_policy:
 - `afk_ready` 要求 scope、non-goals、验收、验证、禁止动作、停止条件和回滚/恢复策略都清楚。
 - `hitl_checkpoint_required` 用于设计、业务、安全、权限、生产、范围升级或关键视觉判断需要人类确认的场景。
 - `blocked` 用于缺少契约、无法验证、需要未授权生产动作，或 agent 继续会制造错误确定性。
+- `human_transparency_protocol` 用于要求执行 agent 在开始时说明当前模式、关键风险、需要人类确认的点，并在完成前主动报告验证缺口；这不是礼貌说明，而是防止 agent 用自信语气替代证据。
+- `anti_evasion_checks` 用于列出本任务最容易出现的规避路径，例如“只跑局部检查就声称完成”“把 mock 当真实实现”“用截图观感替代交互验证”“把实现结果升级为需求事实”。
 
 ## 执行流程
 
@@ -133,10 +142,15 @@ verification_policy:
 8. 如果涉及 UI/UX，附上 Design Brief、组件约束、交互状态、Product Logic Containment Gate 和 Design Consistency Gate 期望。
 9. 如果涉及高保真原型或可运行 demo，附上 `design_plan`、`ui_content_boundary`、`business_rule_notes`、`rule_notes_placement` 和 `prototype_evidence_requirements`。
 10. 如果任务会写入或改变项目资产，补充 `artifact_index_update_proposal`，说明预计新增、更新、替代、归档或禁止删除的资产。
-11. 选择 `delegation_mode`，并把任务拆成 `slice_plan`；默认 vertical slice / tracer bullet，不默认水平拆层。
-12. 补充 `hitl_checkpoints`、human approval gates 和停止条件。
-13. 写明 `verification_policy`，明确不能声称完成所需的最小命令、截图、浏览器检查或人工证据。
-14. 需要时产出可复制的 Plan/Goal 提示词。
+11. 补充 `task_pack_identity`，记录任务 ID、来源产物和 `delivery_track: prd_spec | prototype | product`。
+12. 输出 `human_view` 与 `agent_view`：前者帮助人类决策，后者给执行 agent 使用。
+13. 输出 `knowledge_context`，说明需要读取的 L0-L4 知识层和读取策略；不得默认要求全量读取项目文档。
+14. 选择 `delegation_mode`，并把任务拆成 `slice_plan`；默认 vertical slice / tracer bullet，不默认水平拆层。
+15. 补充 `hitl_checkpoints`、human approval gates 和停止条件。
+16. 写明 `verification_policy`，明确不能声称完成所需的最小命令、截图、浏览器检查或人工证据。
+17. 写明 `human_transparency_protocol` 和 `anti_evasion_checks`，要求执行 agent 在证据不足、范围漂移、连续失败或需要人类判断时停下报告。
+18. 写明 `self_improvement_triggers`，让重复失败、模板缺口、可程序化检查进入后续 rule/template/script/eval/skill-hardening 判断。
+19. 需要时产出可复制的 Plan/Goal 提示词。
 
 ## 输出契约
 
@@ -146,6 +160,10 @@ reroute_recommendation:
 task_name:
 background:
 desired_outcome:
+task_pack_identity:
+human_view:
+agent_view:
+knowledge_context:
 scope:
 non_goals:
 context_sources:
@@ -155,6 +173,9 @@ delegation_mode: afk_ready | hitl_checkpoint_required | blocked
 slice_plan:
 hitl_checkpoints:
 verification_policy:
+human_transparency_protocol:
+anti_evasion_checks:
+self_improvement_triggers:
 delivery_mode: create | improve | reframe | unknown
 runtime_constraints:
 plan_prompt:
@@ -201,7 +222,12 @@ handoff_packet:
 - 高保真原型或可运行 demo 任务必须包含 `design_plan`、`runnable_prototype` 或要求执行 agent 先补 Design Plan。
 - Agent 指令必须区分真实实现、mock 数据、demo-only 交互和 review-only 产物。
 - 任何 Goal 指令必须包含 Done when、Verification 和 blocked stop condition。
+- Agent Task Packet 必须包含 `task_pack_identity`、`human_view`、`agent_view` 和 `knowledge_context`，不得退化成普通 issue/ticket。
+- `knowledge_context` 必须约束 L0-L4 读取范围，不得默认要求执行 agent 全量读取项目文档。
 - Agent Task Packet 必须包含 `delegation_mode`、`slice_plan`、`hitl_checkpoints` 和 `verification_policy`，不得只给大段执行愿望。
+- Agent Task Packet 必须包含 `human_transparency_protocol`，说明执行 agent 何时需要向人类 partner 报告模式、风险、验证缺口或停止条件。
+- Agent Task Packet 必须包含 `anti_evasion_checks`，列出本任务不能接受的完成声明、局部证据替代和 mock/真实边界混淆。
+- Agent Task Packet 必须包含 `self_improvement_triggers`，但该字段只能提出后续沉淀信号，不授权执行 agent 自动改 rule、template、script、eval 或 skill。
 - 默认优先 vertical slice / tracer bullet；除非依赖关系明确要求，不要把任务拆成纯水平层。
 - `delegation_mode: afk_ready` 只有在执行 agent 可以不等待人类输入且验证闭环清楚时使用；否则使用 `hitl_checkpoint_required` 或 `blocked`。
 - 来自 Module Execution Pack / Change Contract 的任务必须保留 delivery_mode、non-goals、verification、definition_sync 和 forbidden actions。
@@ -216,7 +242,7 @@ handoff_packet:
 
 ## 交接
 
-输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、context_sources、non_goals、acceptance_criteria、verification、delegation_mode、slice_plan、hitl_checkpoints、verification_policy、branch_state_policy、artifact_index_update_proposal、design_plan、ui_content_boundary、business_rule_notes、rule_notes_placement、prototype_evidence_requirements、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
+输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、task_pack_identity、human_view、agent_view、knowledge_context、context_sources、non_goals、acceptance_criteria、verification、delegation_mode、slice_plan、hitl_checkpoints、verification_policy、human_transparency_protocol、anti_evasion_checks、self_improvement_triggers、branch_state_policy、artifact_index_update_proposal、design_plan、ui_content_boundary、business_rule_notes、rule_notes_placement、prototype_evidence_requirements、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
 
 ## 参考
 

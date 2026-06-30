@@ -19,7 +19,7 @@ const builderSkills = [
 ];
 
 const skillRequiredTerms = {
-  'builder-router': ['路由', '不知道下一步', '对应 builder skill', '不要用于'],
+  'builder-router': ['Use when', '路由', '不知道下一步', '对应 builder skill', '不要用于'],
   'builder-plan-goal': ['Prompt', 'Plan', 'Goal', '/plan', '/goal', '不要用于'],
   'builder-frame': ['模糊想法', 'Feature Frame', 'spec readiness', '不要用于'],
   'builder-spec': ['可构建规格', 'Mini Spec', '验收标准', 'Design Brief', '不要用于'],
