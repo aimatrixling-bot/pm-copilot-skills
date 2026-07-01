@@ -244,6 +244,107 @@ handoff_packet:
 
 输出本身就是 handoff。当目标 runtime 已知时，补充 `adapters/` 中对应 runtime 的说明，并保留 readiness_gate、reroute_recommendation、task_pack_identity、human_view、agent_view、knowledge_context、context_sources、non_goals、acceptance_criteria、verification、delegation_mode、slice_plan、hitl_checkpoints、verification_policy、human_transparency_protocol、anti_evasion_checks、self_improvement_triggers、branch_state_policy、artifact_index_update_proposal、design_plan、ui_content_boundary、business_rule_notes、rule_notes_placement、prototype_evidence_requirements、human_approval_gates、forbidden_actions、blocked_stop_condition 和 next_skill_input。
 
+## Skill Hardening Brief
+
+```yaml
+skill_name: builder-agent-task
+primary_artifact: agent-task-packet.yaml（Human View + Agent View + Knowledge Context + Slice Plan + Verification Policy）
+target_users:
+  - 需要把任务交给 agentic runtime 的非程序员
+  - 需要 HITL checkpoint 的高风险任务 owner
+  - 多轮 Goal / 跨仓库 / 跨资产 / 上下文压缩风险的复杂任务 agent
+baseline_failure_scenarios:
+  - 缺 frame/spec/验收就生成伪可执行任务包
+  - afk_ready 模式缺 verification 或 forbidden_actions
+  - 按水平层（前端/后端/测试）拆分而非 vertical slice
+  - Branch State 缺失导致上下文压缩后丢失方向
+  - artifact_index_update_proposal 被当作已执行而非 proposal
+trigger_conditions:
+  explicit:
+    - 用户说"交给 Codex/Claude Code/Qoder/Cursor 执行"
+    - 用户已有 spec/prototype/frame，要执行提示词
+    - 用户需要把多个上游产物合并成 agent handoff
+  implicit:
+    - 非程序员需要清晰 agent 指令和验收
+    - 任务包内部需要 Prompt/Plan/Goal 路由
+  adjacent_skill_boundaries:
+    - builder-spec：用户只需 spec → spec
+    - builder-prototype：用户只需本地原型 → prototype
+non_trigger_conditions:
+  - 用户只需产品 framing
+    - 任务缺足够上下文 → 回退 frame 或 spec
+  - 请求要求当前仓库直接本地实现
+  - 用户需要评审结果 → review
+mode_decision:
+  - prompt / plan / goal / plan_to_goal / ask_first / not_ready_for_agent_task
+  - delegation_mode: afk_ready | hitl_checkpoint_required | blocked
+  - slice_plan.strategy: vertical_slice | tracer_bullet | horizontal_layer | investigation_only
+quality_gates:
+  - readiness_gate：缺 frame/spec/验收/验证/runtime/stop conditions 必须 not_ready + reroute
+  - 必须包含 non_goals 和验证方式
+  - 高风险必须列 forbidden_actions
+  - UI 任务必须含 Design Brief 或明确设计约束
+  - 高保真必须含 design_plan
+  - 必须区分真实实现 / mock 数据 / demo-only / review-only
+  - delegation_mode=afk_ready 必须 scope/non_goals/验收/验证/forbidden_actions/stop_conditions/回滚全清楚
+  - multi-round Goal / 高保真 / 跨仓库 / 跨资产 / 压缩风险 / 复杂业务必须要求 Branch State
+  - 默认 vertical slice / tracer bullet，不水平拆层
+  - anti_evasion_checks 必须列本任务不能接受的完成声明
+red_flags:
+  - delegation_mode=afk_ready 但 verification_policy.minimum_checks 为空
+  - slice_plan.strategy=horizontal_layer 但无明确技术依赖说明
+  - branch_state_policy.required=true 但 file_path 缺失
+  - knowledge_context 默认要求全量读取项目文档
+anti_evasion_rules:
+  - 不允许用"任务包很完整"掩盖未实际检查的 readiness
+  - 不允许把 artifact_index_update_proposal 当作已执行
+  - 不允许 self_improvement_triggers 授权 agent 自动改 rule/template/script/eval/skill
+done_when:
+  - readiness_gate=pass 或 not_ready + reroute
+  - delegation_mode 已选定
+  - slice_plan 已拆（默认 vertical slice）
+  - verification_policy 含 minimum_checks 和 observable_evidence
+  - branch_state_policy 若 required=true，path_policy 和 update_triggers 已填
+open_questions:
+  - afk_ready 在多 runtime 场景下是否需要 per-runtime verification 模板
+```
+
+## Meta-Review
+
+何时该被 builder-review 复审：
+
+- agent 执行结果触发 anti_evasion_checks（任务包未充分预防）
+- delegation_mode=afk_ready 但 agent 反复 hitl_checkpoint（判断不准）
+- branch_state 缺失导致上下文压缩后丢失方向（policy 不够严格）
+
+已知 false-positive 场景：
+
+- 简单一次性任务被识别为需要 Branch State（应 required=false）
+
+已知 false-negative 场景：
+
+- 多轮 Goal 任务未识别为 required=true，导致压缩后丢失状态
+
+## Evolution Writeback
+
+本 skill 的稳定决策应迁移到以下 source-of-truth（参考 `docs/source-of-truth-map.md`）：
+
+- Agent Task Packet schema → `kernel/packets/agent-task-packet.schema.md`
+- Agent Task Packet 模板 → `templates/agent-task-packet/template.md`
+- Delivery Kernel → `docs/delivery-kernel.md`
+- Design Plan to Prototype Loop → `loops/recipes/design-plan-to-prototype.loop.md`
+- Artifact Write Policy → `harness/artifact-write-policy.zh.md`
+
+## 示例
+
+**示例**（should_trigger / 已确认 spec 到 Agent Task Packet）**: 用户输入 "基于这份 Mini Spec 给 coding agent 写执行包"。agent-task 输出 context / files_to_touch / acceptance_criteria / stop_conditions / verification，handoff 到具体 runtime（codex / claude-code）。
+
+**示例**（should_not_trigger / spec 还在迭代）**: 用户输入 "spec 还没确认，先写 agent task 试试"。agent-task 检测到 readiness 不足，回退到 `builder-spec`，不生成会误导执行的 packet。
+
+**示例**（adjacent-skill 分流）**: 用户输入 "评审 agent 已交付的代码"。agent-task 不在自身做评审，路由到 `builder-review` 的 `agent_output_review`。
+
+**示例**（high-risk ask-first / 跨仓库或生产边界）**: 用户输入 "agent 要改 CRM 仓库的权限模型"。agent-task 检测到跨仓库 + 权限敏感，先 ask_user 确认 Change Contract、mock boundary、回归验收和 sign-off owner，不直接生成 packet。
+
 ## 参考
 
 - `kernel/packets/agent-task-packet.schema.md`

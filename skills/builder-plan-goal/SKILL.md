@@ -158,6 +158,95 @@ handoff_packet:
 
 handoff 时至少包含：目标、上下文来源、推荐模式、关键假设、non-goals、验收标准、验证方式和停止条件。
 
+## Skill Hardening Brief
+
+```yaml
+skill_name: builder-plan-goal
+primary_artifact: mode-recommendation + copy-ready /plan 或 /goal 提示词
+target_users:
+  - 需要给 agentic runtime 写提示词的非程序员
+  - 不确定任务该用 Prompt/Plan/Goal 的 builder
+  - 需要 milestone 拆分的高复杂度任务 owner
+baseline_failure_scenarios:
+  - 把日常小任务包装成 Plan/Goal（过度工程化）
+  - Goal 缺 Scope/Non-goals/Done when/Verification，agent 自我声称完成
+  - Plan -> Goal 没拆 milestone，一口气做完不可审查
+  - 业务/安全决策缺失时未 ask first，假装可以继续
+trigger_conditions:
+  explicit:
+    - 用户说"帮我判断用 Plan 还是 Goal"
+    - 用户说"帮我生成计划/目标提示词"
+    - 用户要把工作交给另一个 agentic runtime
+  implicit:
+    - 复杂、模糊、长周期或易范围膨胀的编码任务
+    - 大 diff、多模块、跨层级、技术选型任务
+  adjacent_skill_boundaries:
+    - builder-frame：意图本身模糊（不知道要做什么）→ 先 frame
+    - builder-spec：已决定要做但需要规格 → spec
+non_trigger_conditions:
+  - 简单问答、概念解释、翻译
+  - 一次性小改动，范围清楚
+  - 用户已经明确要求立即实现且任务小
+mode_decision:
+  - prompt / plan / goal / plan_to_goal / ask_first
+  - 默认推荐最轻有效模式，不过度包装
+quality_gates:
+  - 推荐模式必须是最轻的有效模式
+  - Goal 必须含 Scope/Non-goals/Done when/Verification
+  - Plan 必须含现状侦察/方案比较/风险/里程碑/Milestone 1 Goal
+  - Plan -> Goal 必须拆成可 review、可验证的 milestone
+  - 缺高风险决策时必须 ask first
+  - 输出必须能直接复制给目标 runtime
+red_flags:
+  - copy_ready_plan_prompt 为空但 mode_recommendation 是 Plan
+  - milestones 只有 1 个（不构成 Plan -> Goal）
+  - Goal 缺 Verification
+anti_evasion_rules:
+  - 不允许用"综合判断"掩盖未实际检查的 missing_context
+  - 不得把 ask_first 包装成 record_decision
+  - 不得让 Goal 承担需求澄清或战略判断
+done_when:
+  - mode_recommendation 已选定（5 模式之一）
+  - 若推荐 Plan/Goal，copy_ready prompt 已生成
+  - next_skill_input 或"复制 prompt 即可"已说明
+open_questions:
+  - 是否需要为不同 runtime（Codex/Claude Code/Qoder）维护差异化模板
+```
+
+## Meta-Review
+
+何时该被 builder-review 复审：
+
+- 生成的 /plan 或 /goal 在下游 agent 执行中反复失败（说明 prompt 不够清楚）
+- mode_recommendation 被用户连续 2 次推翻
+
+已知 false-positive 场景：
+
+- 简单任务被推荐为 Plan（过度工程化）
+
+已知 false-negative 场景：
+
+- Plan -> Goal 场景被识别为单一 Goal，导致 milestone 拆分缺失
+
+## Evolution Writeback
+
+本 skill 的稳定决策应迁移到以下 source-of-truth（参考 `docs/source-of-truth-map.md`）：
+
+- 模式判断规则 → `kernel/routing/plan-goal-routing.zh.md`
+- /plan /goal 模板 → `references/plan-template.zh.md` / `references/goal-template.zh.md`
+- 决策规则 → `references/decision-rules.zh.md`
+- 反模式 → `references/anti-patterns.zh.md`
+
+## 示例
+
+**示例**（should_trigger / 模糊目标到 Plan Brief）**: 用户输入 "我想提升客服效率"。plan-goal 先用 grill 问题收敛为"为 50 人客服团队降低 30% 重复问题处理时间"，输出 Plan Brief（goal_statement / non_goals / success_metrics / handoff_target=builder-frame）。
+
+**示例**（should_not_trigger / 已有 Feature Frame）**: 用户输入 "这是已确认的 Feature Frame，直接做 prototype"。plan-goal 不再生成 Plan Brief，直接路由到 `builder-prototype`。
+
+**示例**（adjacent-skill 分流）**: 用户输入 "帮我把这个目标拆成 sprint backlog"。这是 prioritization 而非 plan-goal，路由到 legacy `pm-backlog` 或 `builder-spec`（agent-readable spec）。
+
+**示例**（high-risk ask-first）**: 用户输入 "目标是 Q3 收入翻倍"。plan-goal 检测到不可量化/不可达的成功指标，先 ask_user 确认范围约束（产品线、时间窗、基线），不直接生成不可执行的 Plan Brief。
+
 ## 参考
 
 - `kernel/routing/plan-goal-routing.zh.md`
@@ -171,3 +260,4 @@ handoff 时至少包含：目标、上下文来源、推荐模式、关键假设
 - `assets/output-format.zh.md`
 - `references/skill-design/skill-design-playbook.zh.md`
 - `templates/skill-hardening-brief/template.md`
+- `templates/plan-brief/template.md` — Plan Brief 输出模板（goal_statement / non_goals / success_metrics / decision_points / handoff_target）

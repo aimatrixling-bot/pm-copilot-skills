@@ -149,6 +149,100 @@ next: builder-review | builder-agent-task | builder-spec | builder-frame | itera
 
 带着 artifact path、三路径判断、prototype_intent、intent_lifecycle、visual target、保真度、覆盖流程、状态覆盖、缺口、runnable evidence、验证方式和下一步建议，交给 `builder-review`、`builder-agent-task`、`builder-spec` 或继续迭代。日常交接保持简短；只有进入评审、发布、promotion 或治理场景时再展开 Evidence Packet、artifact governance 和 handoff packet。
 
+## Skill Hardening Brief
+
+```yaml
+skill_name: builder-prototype
+primary_artifact: prototype artifact（HTML/CSS/JS、React/Vue 或等价）+ prototype-brief.yaml + runnable_evidence
+target_users:
+  - 需要可评审原型的 PM 或产品负责人
+  - 需要 visual target 还原的 designer/builder
+  - 需要 spec 之前快速验证想法的迭代场景
+baseline_failure_scenarios:
+  - 信息不足时输出空白 not_ready_for_prototype（应 degraded_prototype）
+  - 高保真视觉还原缺 visual target 却声称完成
+  - PMS 等存量复杂系统未保持 boundary_first
+  - 业务规则说明侵入界面主体
+trigger_conditions:
+  explicit:
+    - 用户要求 wireframe / prototype / mockup / demo / UI layout / screen flow
+    - 用户要求 visual target 还原 / 截图转代码
+  implicit:
+    - 已有 frame/spec/PRD，需要可评审或可交接的原型
+    - 用户只有粗略界面想法但风险低
+  adjacent_skill_boundaries:
+    - builder-spec：用户明确要完整 PRD 或工程规格 → spec
+    - builder-agent-task：用户要交给 coding agent 直接实现 → agent-task
+non_trigger_conditions:
+  - 用户明确要完整 PRD / 验收标准 / 工程规格
+  - 用户需要另一个 agent 直接实现工程变更
+  - 用户只要求评审已有原型 → review
+mode_decision:
+  - prototype_first / boundary_first / spec_first
+  - 输出模式: runnable_prototype / wireframe / prototype_brief / degraded_prototype
+  - visual_target: none / brief_only / source_image / source_url / existing_code / generated_option / not_required
+  - prototype_intent: throwaway_question_probe / durable_product_demo / visual_variation_experiment / coded_reference
+quality_gates:
+  - 不允许空手拒绝（信息不足 → degraded_prototype）
+  - 低风险界面想法优先交付可评审原型
+  - 高保真还原必须有 visual_target
+  - PMS / 存量复杂系统必须保持 boundary_first
+  - mock / demo / 未接入路由必须诚实标注
+  - 业务规则必须与界面本体分离
+  - prototype_intent 必须与生命周期一致
+red_flags:
+  - fidelity=high 但 visual_target.type=none
+  - runnable_evidence 字段空但 prototype_mode=runnable_prototype
+  - gaps 字段为空但任务明显信息不足
+anti_evasion_rules:
+  - 不得用"看起来像真的"替代实际运行验证
+  - 不得把 mock 数据当作已接入 API
+  - 不得把 throwaway_question_probe 当作 durable source of truth
+done_when:
+  - 三路径之一已选定
+  - visual_target 已判断
+  - 输出契约 YAML 全字段已填或显式 null
+  - 若 runnable_prototype，runnable_evidence 已生成或 blocker 已说明
+open_questions:
+  - AI 生成 visual_target 的 preference 选择 UX 是否需要标准化
+```
+
+## Meta-Review
+
+何时该被 builder-review 复审：
+
+- 高保真原型进入 agent-task 前的 prototype_design_evidence_review
+- spec_first 输出后下游 spec 反复 reroute（说明路径判断不准）
+- durable_product_demo 的 intent_lifecycle 缺失或 stale
+
+已知 false-positive 场景：
+
+- 低风险想法被识别为 boundary_first（应 prototype_first）
+
+已知 false-negative 场景：
+
+- 高保真还原任务被识别为 prototype_first（应先检查 visual_target）
+
+## Evolution Writeback
+
+本 skill 的稳定决策应迁移到以下 source-of-truth（参考 `docs/source-of-truth-map.md`）：
+
+- 三路径规则 → `references/prototype-path-rules.zh.md`
+- Visual Target 规则 → `references/visual-target-rules.zh.md`
+- Coded Prototype Recipe → `references/coded-prototype-recipe.zh.md`
+- Prototype Brief 模板 → `templates/prototype-brief/template.md`
+- Fake UI Gate → `kernel/gates/fake-ui-gate.zh.md`
+
+## 示例
+
+**示例**（should_trigger / 低风险想法到低保真原型）**: 用户输入 "做一个 onboarding 跳过按钮的布局"。prototype 选 `prototype_first` + `fidelity=low`，直接产 wireframe，不先写 spec。
+
+**示例**（should_not_trigger / 高风险后端规则）**: 用户输入 "原型展示权限矩阵怎么计算"。prototype 检测到业务规则风险，降级为 `spec_first`，输出 visual scope + gaps + handoff 到 `builder-spec`，不假装能用 UI 解决权限逻辑。
+
+**示例**（adjacent-skill 分流）**: 用户输入 "基于已确认 spec 做可运行原型"。prototype 直接进入 `runnable_prototype`，不重复 spec 工作；若用户只要 PRD 则分流到 `builder-spec`。
+
+**示例**（high-risk ask-first / 高保真还原）**: 用户输入 "把这个 Figma 截图 1:1 还原成代码"。prototype 检测 `visual_target=source_image` + `fidelity=high`，确认 design system 是否已有、是否需要 boundary_first（PMS 存量系统）。
+
 ## 参考
 
 - `references/prototype-path-rules.zh.md`
@@ -172,3 +266,4 @@ next: builder-review | builder-agent-task | builder-spec | builder-frame | itera
 - `loops/recipes/design-plan-to-prototype.loop.md`
 - `evals/output-contract/builder-prototype.schema.json`
 - `references/skill-design/skill-design-playbook.zh.md`
+- `templates/delivery-sign-off/template.md` — 3P 交付确认模板（prototype 进入 review 时填写）

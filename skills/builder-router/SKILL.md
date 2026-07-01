@@ -212,6 +212,95 @@ handoff_packet:
 
 把 Intent Packet、project_mode、project_profile_proposal、task_complexity、response_profile、contract_profile、context_strategy、delivery_decision、推荐路径、缺失上下文、风险标记和下一步提示词交给选定的 `builder-*` skill。
 
+## Skill Hardening Brief
+
+```yaml
+skill_name: builder-router
+primary_artifact: intent-packet.yaml + routing-decision（用户可见四块正文 + 内部 trace）
+target_users:
+  - 不知道该用哪个 builder skill 的用户
+  - 首次进入项目或恢复 .ai-builder/ 状态的 agent
+  - 需要从自然语言进入 AI Builder OS 的非程序员
+baseline_failure_scenarios:
+  - 把模糊大型任务直接路由到 Goal，跳过 frame/spec
+  - 把日常建议强行触发 builder workflow（过度包装）
+  - brownfield 场景自动扫描全盘或自动迁移资产
+  - 用户已显式 call 下游 skill 但输入不成熟时，未输出 reroute 建议
+trigger_conditions:
+  explicit:
+    - 用户问"我应该用哪个 skill / 模式"
+    - 用户给出模糊、宽泛、多阶段请求
+    - 项目首次进入或恢复 .ai-builder/ 状态
+  implicit:
+    - 请求本质是产品/构建任务但未指明 skill
+    - 跨 framing/spec/prototype/agent_task/review/decision 多阶段
+  adjacent_skill_boundaries:
+    - builder-plan-goal：用户明确问 Prompt/Plan/Goal 模式选择 → plan-goal
+    - builder-frame：用户已明确要 Feature Frame → 直接 frame
+non_trigger_conditions:
+  - 简单事实问答
+  - 用户已显式 call 更具体的 skill 且范围清楚
+  - 轻量文案润色或日常讨论
+mode_decision:
+  - answer / prompt / plan / goal / plan_to_goal / skill_route / ask_first
+  - delivery_decision: create / improve / reframe / improve_with_reframe_risk / create_with_brownfield_references / reframe_blocked_until_target_shape / unknown
+quality_gates:
+  - 不把大型模糊任务直接路由到 Goal
+  - 风险影响业务/安全/权限/生产/数据时先询问或路由到 Plan
+  - 首次进入项目必须输出 project_mode（内部 trace）
+  - 具体交付任务必须生成 delivery_decision（内部 trace）
+  - improve 任务出现 IA/状态模型/页面类型/领域语义变化风险时必须标记 secondary_mode: reframe
+red_flags:
+  - 用户可见正文展开 delivery_mode / contract_profile 字段名（terse/normal profile 不该展示）
+  - project_profile_proposal 声称已创建 .ai-builder/
+  - brownfield 自动扫描全盘
+anti_evasion_rules:
+  - 不得用"看起来路由合理"掩盖未实际检查 project_mode
+  - 不得把 delivery_decision 包装成已确认决策
+  - 不得声称 runtime 会自动连续执行多个 skill
+done_when:
+  - 用户可见四块正文（理解/下一步/需要决定/验收）已填
+  - 内部 trace 含 route_type / recommended_skill / delivery_decision（若涉及交付）
+  - next_skill_input 已准备
+open_questions:
+  - response_profile 自动升级条件是否需要更明确
+```
+
+## Meta-Review
+
+何时该被 builder-review 复审：
+
+- routing 决定导致下游 skill 反复 reroute（说明 router 判断不准）
+- 用户连续 2 次说"你路由错了"
+- project_mode 判断与实际项目状态不一致
+
+已知 false-positive 场景：
+
+- 用户问"你能做 X 吗"被路由到具体 builder skill，实际只需 answer 模式
+
+已知 false-negative 场景：
+
+- 用户已用 `/builder-X` 显式调用但输入不成熟，router 未识别为 reroute 场景
+
+## Evolution Writeback
+
+本 skill 的稳定决策应迁移到以下 source-of-truth（参考 `docs/source-of-truth-map.md`）：
+
+- 路由规则 → `kernel/routing/builder-router.zh.md` / `kernel/routing/skill-selection-rules.zh.md`
+- Intent Packet 定义 → `kernel/packets/intent-packet.schema.md`
+- Delivery Kernel 判断 → `docs/delivery-kernel.md`
+- 项目 onboarding 政策 → `harness/project-onboarding-policy.zh.md`
+
+## 示例
+
+**示例**（should_trigger / 用户显式触发）**: 用户输入 `/builder-router 我想做一个宠物领养匹配小程序`。router 把 Intent Packet 标记为 `trigger_source=user_explicit`、`complexity_hint=unknown`，路由到 `builder-plan-goal` 形成 Plan Brief，不直接跳到 prototype。
+
+**示例**（should_not_trigger / 已有 spec 直接消费）**: 用户输入 "基于这份已确认的 PRD 直接出工程请求"。router 检测到已有 spec readiness，跳过 frame/plan-goal，直接路由到 `builder-spec` 的 `engineering_request` profile。
+
+**示例**（adjacent-skill 分流）**: 用户输入 "帮我评审这份 prototype 是否符合 Design Brief"。router 识别评审意图，路由到 `builder-review`，不在 router 层做评审。
+
+**示例**（high-risk ask-first）**: 用户输入 "把这个 demo 直接发到生产环境"。router 检测到生产边界 + 数据/权限风险，不直接路由，先 ask_user 确认 release gate、回滚预案和 sign-off owner。
+
 ## 参考
 
 - `kernel/routing/builder-router.zh.md`

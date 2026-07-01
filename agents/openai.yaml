@@ -1,6 +1,6 @@
 name: ai-builder-os
 display_name: AI Builder OS
-version: 0.7.0
+version: 1.1.0
 package_name: pm-copilot-skills
 package_surface: pure-builder-core
 runtime_export:
@@ -35,6 +35,8 @@ release_gates:
   - npm run validate:onboarding-evals
   - npm run validate:dual-package-dry-run
   - npm run prepare:dual-package-publish
+  - npm run validate:eval-suite
+  - npm run check:examples
   - npm run validate:doctor-preference-e2e
   - npm run test:doctor-preference-e2e
   - npm pack --dry-run --json

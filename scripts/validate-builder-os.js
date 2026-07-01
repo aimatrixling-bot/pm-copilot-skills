@@ -51,6 +51,10 @@ const requiredFiles = [
   'memory/README.md',
   'memory/schemas/artifact-index.schema.md',
   'memory/schemas/project-profile.schema.md',
+  'memory/schemas/decision-memory.schema.md',
+  'memory/schemas/evolution-note.schema.md',
+  'memory/schemas/project-memory.schema.md',
+  'memory/schemas/user-memory.schema.md',
   'memory/policies/artifact-lifecycle-policy.zh.md',
   'memory/policies/artifact-cleanup-policy.zh.md',
   'memory/policies/artifact-consistency-policy.zh.md',
@@ -1878,6 +1882,61 @@ for (const skillName of builderSkills) {
   }
 }
 
+// P0.1: Skill Hardening Brief — 8 SKILL.md 必须新增 3 个章节
+// 入口契约不强求标题（部分 skill 用 ## 输入 章节等价），但 router/decision 必须引用 intent-packet
+const skillHardeningNewSections = [
+  '## Skill Hardening Brief',
+  '## Meta-Review',
+  '## Evolution Writeback',
+];
+for (const skillName of builderSkills) {
+  const relativePath = `skills/${skillName}/SKILL.md`;
+  const content = read(relativePath);
+  for (const section of skillHardeningNewSections) {
+    assert(content.includes(section), `${relativePath} 缺少 P0.1 章节: ${section}`, failures);
+  }
+}
+// builder-router / builder-decision 必须引用 intent-packet.schema.md
+for (const skillName of ['builder-router', 'builder-decision']) {
+  const relativePath = `skills/${skillName}/SKILL.md`;
+  const content = read(relativePath);
+  assert(content.includes('intent-packet'), `${relativePath} 必须引用 intent-packet（入口契约基础）`, failures);
+}
+
+// P0.2: builder-decision 关键词检查
+{
+  const content = read('skills/builder-decision/SKILL.md');
+  for (const term of ['MCDA', 'Reversibility Matrix', 'Cost of Delay']) {
+    assert(content.includes(term), `skills/builder-decision/SKILL.md 缺少 P0.2 决策框架关键词: ${term}`, failures);
+  }
+  assert(fs.existsSync(path.join(root, 'skills/builder-decision/references/decision-frameworks.zh.md')), '缺少 skills/builder-decision/references/decision-frameworks.zh.md', failures);
+}
+
+// P0.3: builder-frame 端到端 worked example
+assert(fs.existsSync(path.join(root, 'skills/builder-frame/references/worked-example-idea-to-feature-frame.zh.md')), '缺少 skills/builder-frame/references/worked-example-idea-to-feature-frame.zh.md', failures);
+assert(read('skills/builder-frame/SKILL.md').includes('worked-example-idea-to-feature-frame'), 'skills/builder-frame/SKILL.md 必须引用 worked-example-idea-to-feature-frame', failures);
+
+// P1.1: plan-brief template + builder-plan-goal 引用
+assert(fs.existsSync(path.join(root, 'templates/plan-brief/template.md')), '缺少 templates/plan-brief/template.md', failures);
+assert(read('skills/builder-plan-goal/SKILL.md').includes('plan-brief'), 'skills/builder-plan-goal/SKILL.md 必须引用 plan-brief', failures);
+
+// P1.2: delivery-sign-off template + builder-spec / builder-prototype 引用
+assert(fs.existsSync(path.join(root, 'templates/delivery-sign-off/template.md')), '缺少 templates/delivery-sign-off/template.md', failures);
+assert(read('skills/builder-spec/SKILL.md').includes('delivery-sign-off'), 'skills/builder-spec/SKILL.md 必须引用 delivery-sign-off', failures);
+assert(read('skills/builder-prototype/SKILL.md').includes('delivery-sign-off'), 'skills/builder-prototype/SKILL.md 必须引用 delivery-sign-off', failures);
+
+// P1.6: Product Track — builder-spec full_prd + prd-quality-checklist
+assert(read('skills/builder-spec/SKILL.md').includes('full_prd'), 'skills/builder-spec/SKILL.md 必须包含 full_prd 模式', failures);
+assert(fs.existsSync(path.join(root, 'references/prd-quality-checklist.zh.md')), '缺少 references/prd-quality-checklist.zh.md', failures);
+assert(read('skills/builder-spec/SKILL.md').includes('prd-quality-checklist'), 'skills/builder-spec/SKILL.md 必须引用 prd-quality-checklist', failures);
+
+// P1.4: evals README 边界声明
+assert(fs.existsSync(path.join(root, 'evals/README.md')), '缺少 evals/README.md', failures);
+
+// P1.5: lightweight eval runner + examples coverage scanner
+assert(fs.existsSync(path.join(root, 'scripts/run-eval-suite.js')), '缺少 scripts/run-eval-suite.js', failures);
+assert(fs.existsSync(path.join(root, 'scripts/check-examples-coverage.js')), '缺少 scripts/check-examples-coverage.js', failures);
+
 for (const [relativePath, expectedTerms] of Object.entries(builderCoreExpectations)) {
   const content = read(relativePath);
   for (const term of expectedTerms) {
@@ -1889,6 +1948,26 @@ for (const [relativePath, expectedTerms] of Object.entries(packetSchemaExpectati
   const content = read(relativePath);
   for (const term of expectedTerms) {
     assert(content.includes(term), `${relativePath} 缺少 packet schema 字段: ${term}`, failures);
+  }
+}
+
+// P0.4: Memory Schema Gold Standard — 4 upgraded schemas must contain all 4 required sections
+const memorySchemaGoldStandardSections = [
+  '## Schema',
+  '## Field Rules',
+  '## Minimum Example',
+  '## Usage Rule',
+];
+const memorySchemaGoldStandardFiles = [
+  'memory/schemas/decision-memory.schema.md',
+  'memory/schemas/evolution-note.schema.md',
+  'memory/schemas/project-memory.schema.md',
+  'memory/schemas/user-memory.schema.md',
+];
+for (const relativePath of memorySchemaGoldStandardFiles) {
+  const content = read(relativePath);
+  for (const section of memorySchemaGoldStandardSections) {
+    assert(content.includes(section), `${relativePath} 缺少 Memory Schema 黄金标准章节: ${section}`, failures);
   }
 }
 

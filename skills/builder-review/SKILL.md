@@ -291,6 +291,105 @@ profile_specific_sections:
 
 交给负责修复问题的 skill；如果需要接受取舍，则交给 `builder-decision`。交接时保留 findings、required_fixes、unverified_areas、decision、next_step 和当前 review_profile 要求的 profile_specific_sections。
 
+## Skill Hardening Brief
+
+```yaml
+skill_name: builder-review
+primary_artifact: review-report.yaml（含 review_mode / review_profile / findings / decision / required_fixes / unverified_areas）
+target_users:
+  - 需要 GO/NO-GO 或 PASS/PARTIAL/BLOCKED 判断的产品负责人
+  - 需要审计 spec/prototype/agent 输出/evidence 的 builder
+  - release readiness 或 launch gate 场景的发布 owner
+baseline_failure_scenarios:
+  - 未检查证据前 approve
+  - 把 agent 自报成功 / 旧日志 / 局部检查 / 截图观感 / validator 通过当作完整完成证据
+  - quick_change_review 默认展开全量 audit 字段（噪音）
+  - 高保真原型缺 source visual / preview / screenshot 却 APPROVE
+  - prototype_to_spec 把 gaps 提升为已确认 requirements 却 APPROVE
+trigger_conditions:
+  explicit:
+    - 用户要求 review / critique / audit / readiness
+    - 用户需要 GO/NO-GO 或 PASS/PARTIAL/BLOCKED
+    - 用户要求 fake UI check / fake test check / design consistency audit
+  implicit:
+    - 已有 spec/prototype/agent task/代码变更/evidence packet
+    - 需要判断是否可进入下一 Goal / agent handoff / 发布
+  adjacent_skill_boundaries:
+    - builder-decision：用户只需记录取舍 → decision
+    - builder-spec：用户要从零创建新产物 → spec
+non_trigger_conditions:
+  - 用户要求从零创建新产物
+  - 还没有 review target
+  - 用户只是想头脑风暴
+mode_decision:
+  - contract_review / evidence_review / design_review / prototype_design_evidence_review / prototype_to_spec_review / definition_drift_review / skill_quality_review / agent_navigability_review / anti_rationalization_review / release_readiness / not_reviewable
+  - review_profile: quick_change_review | prototype_review | definition_drift_review | skill_quality_review | agent_navigability_review | release_readiness
+quality_gates:
+  - findings 必须引用产物路径或可观察证据
+  - 未检查证据前不 approve
+  - 不得把 agent 自报 / 旧日志 / 局部检查 / 截图观感 / validator 通过当作完整完成证据
+  - 区分产品问题和实现问题
+  - 明确列出未验证区域
+  - UI/prototype review 必须检查 Design Brief / 组件一致性 / 状态覆盖 / mock 标注
+  - 高保真 visual-target review 缺关键证据时默认 REQUEST_CHANGES
+  - prototype_to_spec 必须检查 source_provenance / facts vs inference / gaps / mock boundary
+  - definition_drift 必须输出 mode_switch_assessment
+  - 命中 Anti-Rationalization Gate 时默认 REQUEST_CHANGES / PARTIAL / BLOCKED
+red_flags:
+  - quick_change_review 输出 usage_metrics_v2（默认不展示）
+  - artifact_index_update_proposal 声称已更新 index
+  - decision=APPROVE 但 unverified_areas 非空
+anti_evasion_rules:
+  - 不允许用"看起来达标"替代可观察证据
+  - 不允许用 validator-only proof 替代范围验证
+  - 不允许高风险清理在 review 中要求自动删除
+done_when:
+  - review_mode 和 review_profile 已选定
+  - profile_required_sections 全部填齐
+  - decision 已明确（PASS / PARTIAL / BLOCKED / APPROVE / REQUEST_CHANGES）
+  - required_fixes 和 unverified_areas 已列
+open_questions:
+  - usage_metrics_v2 自动展示阈值是否需要量化
+```
+
+## Meta-Review
+
+本 skill 是评审中枢，自身应由 meta-review（人工或更高层 review）定期校准：
+
+何时该被复审：
+
+- 同一 review_profile 在多个项目中反复给出错误 APPROVE/REQUEST_CHANGES
+- Anti-Rationalization Gate 命中率显著变化（说明 gate 规则需要更新）
+
+已知 false-positive 场景：
+
+- 简单 quick change 被升级为 release_readiness（应保持默认 quick_change_review）
+
+已知 false-negative 场景：
+
+- 命中 Anti-Rationalization Gate 但 decision 标记为 APPROVE（应 REQUEST_CHANGES）
+
+## Evolution Writeback
+
+本 skill 的稳定决策应迁移到以下 source-of-truth（参考 `docs/source-of-truth-map.md`）：
+
+- 质量门禁 → `kernel/gates/builder-quality-gates.zh.md`
+- Fake UI Gate → `kernel/gates/fake-ui-gate.zh.md`
+- Fake Test Gate → `kernel/gates/fake-test-gate.zh.md`
+- Evidence Packet schema → `kernel/packets/evidence-packet.schema.md`
+- Review Report 模板 → `templates/review-report/template.md`
+- Artifact Hygiene Loop → `loops/recipes/artifact-hygiene.loop.md`
+
+## 示例
+
+**示例**（should_trigger / prototype 进入评审）**: 用户输入 "评审这份 high-fidelity 原型是否符合 Design Brief"。review 启动 `prototype_design_evidence_review`，检查 visual_target 还原、状态覆盖、mock honesty，输出 review report + pass/fail/revise。
+
+**示例**（should_not_trigger / spec 还没成型）**: 用户输入 "评审这个想法值不值得做"。review 不在自身做想法评估，路由到 `builder-frame` 或 `builder-decision`。
+
+**示例**（adjacent-skill 分流）**: 用户输入 "评审 agent 已交付代码的工程质量"。review 进入 `agent_output_review`（代码 / 测试 / 证据维度），与 `prototype_design_evidence_review` 区分。
+
+**示例**（high-risk ask-first / release gate）**: 用户输入 "这版可以发布了吗"。review 检测 release readiness，先 ask_user 确认是否触发 Release Gate（含 regression / rollback / sign-off / artifact governance），不直接给 pass。
+
 ## 参考
 
 - `kernel/gates/builder-quality-gates.zh.md`

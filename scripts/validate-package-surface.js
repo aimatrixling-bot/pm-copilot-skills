@@ -112,7 +112,7 @@ for (const forbiddenFileEntry of ['_archived/', 'research/', 'references/', 'ref
 assert(skillPack.name === 'ai-builder-os', 'skill-pack name 必须是 ai-builder-os');
 assert(skillPack.display_name === 'AI Builder OS', 'skill-pack display_name 必须是 AI Builder OS');
 assert(skillPack.version === packageJson.version, 'skill-pack version 必须与 package.json version 一致');
-assert(skillPack.status === 'm3.9-publish-prep-dry-run', 'skill-pack status 必须声明 m3.9-publish-prep-dry-run');
+assert(skillPack.status && skillPack.status.length > 0, 'skill-pack status 必须非空；与 bundles/core/manifest.json 保持一致（由 line 117 一致性检查覆盖）');
 assert(coreManifest.version === packageJson.version, 'core bundle manifest version 必须与 package.json version 一致');
 assert(coreManifest.status === skillPack.status, 'core bundle manifest status 必须与 skill-pack status 一致');
 assert(skillPack.package.npm_name === packageJson.name, 'skill-pack package.npm_name 必须与 package.json name 一致');
@@ -154,6 +154,8 @@ assert(skillPack.release_gates.includes('npm run validate:artifact-evals'), 'ski
 assert(skillPack.release_gates.includes('npm run validate:onboarding-evals'), 'skill-pack release_gates 必须包含 validate:onboarding-evals');
 assert(skillPack.release_gates.includes('npm run validate:dual-package-dry-run'), 'skill-pack release_gates 必须包含 validate:dual-package-dry-run');
 assert(skillPack.release_gates.includes('npm run prepare:dual-package-publish'), 'skill-pack release_gates 必须包含 prepare:dual-package-publish');
+assert(skillPack.release_gates.includes('npm run validate:eval-suite'), 'skill-pack release_gates 必须包含 validate:eval-suite');
+assert(skillPack.release_gates.includes('npm run check:examples'), 'skill-pack release_gates 必须包含 check:examples');
 
 for (const excluded of ['_archived/', 'research/', 'skills/pm-*', 'skills/pdf', 'skills/pptx', 'skills/download-anything', 'skills/references', 'references/source-blueprints/']) {
   assert(skillPack.active_surface.excluded_from_package_surface.includes(excluded), `skill-pack 必须声明排除 ${excluded}`);

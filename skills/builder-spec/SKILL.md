@@ -192,6 +192,100 @@ next_skill_input:
 
 交给 `builder-prototype`、`builder-agent-task`、`builder-review`，或 legacy architecture/implementation skills。交接时保留 readiness_gate、reroute_recommendation、spec_type、spec_output_profile、source_prototype、visual_target、runnable_evidence、design_evidence、extracted_from_prototype、prototype_gaps、scope、non_goals、acceptance_criteria、verification_plan、assumptions、open_questions、risks、next_skill_hint 和 next_skill_input。
 
+## Skill Hardening Brief
+
+```yaml
+skill_name: builder-spec
+primary_artifact: builder-spec.yaml（含 spec_type / spec_output_profile / delivery_mode / acceptance_criteria）
+target_users:
+  - 需要可构建规格交给开发团队的 PM
+  - 需要 agent-readable spec 的 builder
+  - 从 prototype 反向提取 spec 的迭代场景
+baseline_failure_scenarios:
+  - Feature Frame 不成熟却强行写完整 spec
+  - 把 prototype gaps 提升为已确认 requirement
+  - visual_target / screenshot 被升级为业务规则
+  - micro_note / lite_change_contract 任务被自动展开 full PRD
+trigger_conditions:
+  explicit:
+    - 用户要求 PRD、spec、验收标准、工程请求
+    - 用户要求从 prototype 反向提取 spec
+    - 用户显式要求 full_prd（交付开发团队 / ≥2 周模块）
+  implicit:
+    - 已有 Feature Frame 需要转交付细节
+    - 下游 agent 工作需要明确范围和验证方式
+  adjacent_skill_boundaries:
+    - builder-frame：问题和用户仍不清楚 → frame
+    - builder-prototype：用户只需基于已接受 spec 做 prototype → prototype
+non_trigger_conditions:
+  - 问题/用户仍不清楚 → 先 frame
+  - 用户只需基于已接受 spec 做 prototype
+  - 用户需要给其他 runtime 写执行指令 → agent-task
+mode_decision:
+  - mini_spec / prd / full_prd / engineering_request / agent_readable_spec / module_execution_pack / change_contract / prototype_to_spec / not_ready_for_spec
+  - spec_output_profile: micro_note | lite | minimal | standard | full | prototype_to_spec | engineering_request
+quality_gates:
+  - 必须区分产品需求和实现猜测
+  - prototype_to_spec 必须区分 prototype facts / inferred / gaps / 已验证证据
+  - prototype gaps 不得提升为已确认 requirement
+  - 必须包含 non_goals 和 acceptance_criteria
+  - 必须输出 spec_output_profile（默认最轻可验收档位）
+  - micro/lite 默认不得 secondary_mode: reframe
+  - UI-facing spec 必须说明 ui_content_boundary 和 business_rule_notes
+red_flags:
+  - spec_output_profile=full 但 delivery_mode=create 没说明升级理由
+  - acceptance_criteria 无法被人工 review / 自动检查 / 证据验证
+  - prototype 的 mock endpoint 被写成最终 API
+anti_evasion_rules:
+  - 不得用"看起来 PRD 完整"掩盖未实际检查的 spec readiness
+  - 不得把 prototype 当作已确认需求来源
+  - 不得让 full_prd 包含未验证的 prototype 推断
+done_when:
+  - spec_type 和 spec_output_profile 已选定
+  - delivery_mode 已明确（create / improve / reframe / unknown）
+  - readiness_gate=pass 或 not_ready_for_spec + reroute_recommendation
+  - next_skill_input 已生成
+open_questions:
+  - full_prd 触发条件是否需要量化（模块预估周数、干系人数量）
+```
+
+## Meta-Review
+
+何时该被 builder-review 复审：
+
+- spec 进入 prototype/agent-task 后立即触发 definition_drift_review
+- prototype_to_spec 输出被下游质疑（provenance 丢失）
+- full_prd 交付后开发团队反馈"无法实现"（说明 spec 缺验收）
+
+已知 false-positive 场景：
+
+- 小 UI 改动被识别为 standard_change_contract（应 micro_note）
+
+已知 false-negative 场景：
+
+- prototype_to_spec 输出遗漏 mock boundary，被下游 agent 当真实 API 实现
+
+## Evolution Writeback
+
+本 skill 的稳定决策应迁移到以下 source-of-truth（参考 `docs/source-of-truth-map.md`）：
+
+- Spec 模板 → `templates/builder-spec.template.md`
+- Spec 规则 → `references/spec-rules.zh.md`
+- 验收标准 → `references/acceptance-criteria.zh.md`
+- prototype_to_spec 规则 → `references/prototype-to-spec.zh.md`
+- PRD 质量清单（P1.6 落地）→ `references/prd-quality-checklist.zh.md`
+- Delivery Kernel → `docs/delivery-kernel.md`
+
+## 示例
+
+**示例**（should_trigger / Feature Frame 到 Mini Spec）**: 用户输入 "把这份 Feature Frame 转成交付细节"。spec 选 `mini_spec` profile，输出 objective / scope / non_goals / acceptance_criteria / verification_plan，handoff 到 `builder-prototype`。
+
+**示例**（should_not_trigger / frame 不成熟）**: 用户输入 "我想做更好的搜索"。spec 检测到 frame readiness 不足，输出 `readiness_gate=fail` + `reroute_recommendation=builder-frame`，不强行写伪完整 spec。
+
+**示例**（adjacent-skill 分流）**: 用户输入 "从这份 prototype 反向提取 spec"。spec 进入 `prototype_to_spec` profile，区分 prototype facts / inferred / gaps，不与 `builder-prototype` 重叠（prototype 只产 artifact，不产 spec）。
+
+**示例**（high-risk ask-first / full_prd）**: 用户输入 "这是交付开发团队的完整 PRD"。spec 检测 `full_prd` 触发条件（≥2 周模块、跨干系人、release readiness），升级到 `full_change_contract` profile 并要求 design brief、依赖关系、风险登记。
+
 ## 参考
 
 - `kernel/packets/output-packet.schema.md`
@@ -212,5 +306,7 @@ next_skill_input:
 - `references/prototype-to-spec.zh.md`
 - `references/examples-prototype-to-spec.zh.md`
 - `references/migration-notes.md`
+- `references/prd-quality-checklist.zh.md` — PRD 完整交付清单（full_prd 模式时使用）
+- `templates/delivery-sign-off/template.md` — 3P 交付确认模板（spec 进入 review 时填写）
 - `evals/output-contract/builder-spec.schema.json`
 - `references/skill-design/skill-design-playbook.zh.md`

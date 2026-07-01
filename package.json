@@ -1,6 +1,6 @@
 {
   "name": "pm-copilot-skills",
-  "version": "0.7.0",
+  "version": "1.1.0",
   "description": "AI Builder OS skills and protocols for executable, verifiable agentic building workflows",
   "license": "Apache-2.0",
   "scripts": {
@@ -15,6 +15,8 @@
     "prepare:dual-package-publish": "node scripts/prepare-dual-package-publish.js",
     "validate:codex-install": "node scripts/validate-codex-install.js",
     "validate:doctor-preference-e2e": "node scripts/validate-doctor-preference-e2e.js",
+    "validate:eval-suite": "node scripts/run-eval-suite.js",
+    "check:examples": "node scripts/check-examples-coverage.js",
     "test:doctor-preference-e2e": "node --test evals/doctor-preference-e2e/reference-implementation/*.test.js"
   },
   "bin": {

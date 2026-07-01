@@ -94,11 +94,12 @@ const forbiddenPrefixes = [
   'references/source-blueprints/',
 ];
 
+const sourceVersion = require('../package.json').version;
 const packageTargets = [
   {
     id: 'primary',
     packageName: 'ai-builder-os',
-    version: '1.0.0-dry-run.0',
+    version: `${sourceVersion}-dry-run.0`,
     description: 'AI Builder OS primary package dry run for agent-executable builder workflows',
     compatibilityPolicy: 'primary 1.0 package name; keep pm-copilot-skills as compatibility package during migration',
     installCommands: [
@@ -110,7 +111,7 @@ const packageTargets = [
   {
     id: 'compatibility',
     packageName: 'pm-copilot-skills',
-    version: '1.0.0-compat-dry-run.0',
+    version: `${sourceVersion}-compat-dry-run.0`,
     description: 'Compatibility package dry run for AI Builder OS users migrating from pm-copilot-skills',
     compatibilityPolicy: 'compatibility package; keep existing install paths while documenting ai-builder-os as the primary package',
     installCommands: [

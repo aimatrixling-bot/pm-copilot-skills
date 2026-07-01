@@ -7,7 +7,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const root = path.resolve(__dirname, '..');
-const defaultReleaseVersion = '1.0.0';
+const defaultReleaseVersion = require('../package.json').version;
 const builderSkills = [
   'builder-router',
   'builder-plan-goal',
