@@ -28,7 +28,7 @@ grade: P1
 1. Classify the request as create, improve, audit, or deprecate. Completion: target Skill path, mode, requester, scope, and expected output are explicit.
 2. Run the Evolver Iron Law create gate. Completion: prove_no_reuse, prove_no_merge, prove_no_demote, prove_no_archive, prove_no_clarify, and scope are answered; global scope has human confirmation.
 3. Apply the Deletion Test: answer "what breaks if this Skill does not exist or does not change?" Completion: result is Lose, Workaround, Safe-drop, or Reject with one-sentence rationale.
-4. Load only required source-of-truth files. Completion: `vnext/references/skill-authoring.md`, relevant blueprint anchors, target SKILL.md, and any referenced disclosed files are identified.
+4. Load only required source-of-truth files and baseline the target. For create mode, list missing fields and SECTIONs; for improve mode, list current Skill versus target-state gaps; for audit or deprecate mode, capture the current-state snapshot before judgment. Completion: source files are identified and the baseline gap table (missing fields, missing SECTIONs, and target-state gaps) is written so Step 5 and Step 7 can judge scope from evidence.
 5. Run the acceptance check for create/improve. Completion: 9 required fields plus grade are present; description follows the three rules; step-based Skills include Completion criteria; description starts with a listed leading word.
 6. Run the audit dimensions. Completion: Premature Completion, Variance, Context Pointer Miss, and Bloat are checked; Pruning covers single source of truth, relevance, and sentence-level no-op removal; the information hierarchy ladder is intact.
 7. Apply the smallest coherent Skill change. Completion: owner_agent remains single, shared_with stays explicit, scope is honest, status and grade are not mixed, and no unrelated Skill is edited.
@@ -43,6 +43,7 @@ grade: P1
 - 11 leading words to check explicitly: Model-Invoked, User-Invoked, Description, Context Pointer, Router Skill, Information Hierarchy, Steps, Completion Criterion, Progressive Disclosure, Leading Word, Pruning.
 - Acceptance check: 9 required frontmatter fields plus grade, description three rules, step-based Skill includes Completion criteria, and the description starts with a listed leading word.
 - Audit dimensions: the 4 failure modes, Pruning three disciplines, and information hierarchy ladder completeness.
+- Do not duplicate generic Iron Law self-review steps inside Skill bodies: Iron Law plus L3 Harness enforce self-check before declaring done, while Skill Steps carry only skill-specific acceptance criteria.
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24.5 -->
