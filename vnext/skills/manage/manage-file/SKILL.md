@@ -26,11 +26,11 @@ grade: P0
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-file -->
 1. Classify the file operation. Completion: create, move, rename, version, index, or verify is named, with the requesting Agent and target artifact type.
-2. Check path authority and placement rule. Completion: target is relative, inside `paths`, inside the requester scope, and justified by index, blueprint, source map, or explicit user instruction.
-3. Apply naming and version policy. Completion: filename, extension, slug/date/version marker, and directory conventions are checked before writing.
+2. Check path authority and placement rule. Completion: target is relative, inside `paths`, inside the requester scope, and justified by index, blueprint, source map, or explicit user instruction. Consult `references/path-authority-map.md` when sub-path placement is ambiguous or falls outside the standard table.
+3. Apply naming and version policy. Completion: filename, extension, slug/date/version marker, and directory conventions are checked before writing. Consult `references/naming-rules.md` and `references/versioning-rules.md` when slug case, date marker, or active/archive state is ambiguous.
 4. Detect conflicts and rollback needs. Completion: existing target, duplicate artifact, stale version, and required backup/rename decision are recorded before mutation.
 5. Execute the smallest file change. Completion: only the intended path set changes; no broad recursive move/delete or unrelated formatting churn is introduced.
-6. Produce evidence after the operation. Completion: existence check, diff/stat, moved-from/moved-to mapping, or index impact is recorded for the caller.
+6. Produce evidence after the operation. Completion: existence check, diff/stat, moved-from/moved-to mapping, or index impact is recorded for the caller. For non-trivial operations (move, rename, version, archive), optionally emit a File Decision Record using `references/file-decision-template.md`, and verify `_index.md` update requirement per `references/index-rules.md`.
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
