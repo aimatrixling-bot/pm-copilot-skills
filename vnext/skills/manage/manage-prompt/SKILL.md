@@ -1,13 +1,13 @@
 ---
 name: manage-prompt
-description: "Prompt shaping when input is vague or overloaded, fails when goal, scope, or context remain implicit."
+description: "Context Pointer when user input is vague, overloaded, or misrouted, fails when goal, scope, or agent boundary stays implicit."
 disable-model-invocation: false
-can-invoke: []
+can-invoke: [manage-grill]
 paths: []
 status: draft
-owner_agent: shared
-shared_with: [supervisor, researcher, builder, reviewer, evolver]
-scope: global
+owner_agent: supervisor
+shared_with: [researcher, builder, reviewer, evolver]
+scope: project
 grade: P0
 ---
 
@@ -18,34 +18,41 @@ grade: P0
 
 ## Invocation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.0-manage-prompt -->
-- Invoke when user input is vague, overloaded, missing context, or hard for Supervisor to route.
-- Use it before `manage-grill` when the likely goal exists but the wording needs structure.
-- Output a refined prompt plus a short reason list; do not invent missing facts.
+- Invoke when raw user input is vague, overloaded, underspecified, or likely to be routed to the wrong Agent.
+- Use before Supervisor dispatch when wording needs a durable Context Pointer rather than immediate execution.
+- Do not invent missing facts, solve the task, or hide ambiguity; unresolved blocking ambiguity routes to `manage-grill`.
+- Output a compact context pointer that preserves the original wording, restates the goal, bounds scope, and names the receiving Agent or blocker.
 
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-prompt -->
-1. Extract the likely goal, scope, inputs, constraints, and requested output. Completion: each extracted item is either filled from user text or marked as missing.
-2. Rewrite the prompt into routeable structure for Supervisor or a target Agent. Completion: the rewritten prompt has goal, context, deliverable, and acceptance checks.
-3. List assumptions separately from user-provided facts. Completion: no assumption is phrased as confirmed source truth.
-4. Decide whether `manage-grill` is still required. Completion: unresolved ambiguity flags are explicit.
+1. Capture raw user input verbatim before mutation. Completion: original phrase, stated goal, named scope hints, and agent routing signal are recorded.
+2. Restate goal in one sentence with explicit actor and outcome. Completion: restatement uses user vocabulary, names the single actor, and surfaces the single outcome; multi-goal input is split or flagged.
+3. Resolve scope boundaries. Completion: in-scope items, explicit non-goals, and ambiguous edges are listed; ambiguity that cannot be resolved by restatement triggers `manage-grill`.
+4. Classify routing signal. Completion: target agent (`supervisor`, `researcher`, `builder`, `reviewer`, or `evolver`) is named with one-line reason, or routed back to user for disambiguation.
+5. Produce a Context Pointer output. Completion: restated goal, scope summary, routing decision, and original verbatim anchor are packaged for the receiving Skill or Agent.
+6. Hand off grill results when Step 3 invokes `manage-grill`. Completion: grill answers are merged into the Context Pointer and the original restatement is updated, not duplicated.
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- `vnext/references/skill-authoring.md §2` for invocability and predictable process.
-- `vnext/references/skill-authoring.md §4.1` for sharp completion criteria.
-- `docs/vnext-blueprint.md §2.20` for Supervisor routing and Intent Packet dependencies.
+- `docs/vnext-blueprint.md §2.20` defines Supervisor ownership for intent identification, prompt optimization, and routing.
+- `docs/vnext-blueprint.md §2.21` defines `manage-prompt` as the P0 input-quality Skill.
+- `docs/vnext-blueprint.md §2.23` defines Intent and Output Packet fields used for routing, evidence, and next actions.
+- `docs/vnext-blueprint.md §2.24` defines leading words, Context Pointer, Progressive Disclosure, and failure-mode diagnostics.
+- `docs/vnext-blueprint.md §2.25.1` fixes the P0 vNext directory and Skill authoring discipline.
+- `docs/vnext-blueprint.md §2.26` covers GT-01, where `manage-prompt` precedes `manage-grill` and `craft-agent-task`.
+- `vnext/references/skill-authoring.md §4.1` defines completion criteria discipline; §8 defines premature completion diagnostics.
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-prompt -->
-- Refined prompt contains goal, scope, deliverable, constraints, and acceptance checks.
-- Assumptions are separated from facts and can be inspected line by line.
-- If ambiguity remains, output names the exact `ambiguity_flags` for `manage-grill`.
+- Frontmatter keeps the 9 required Skill fields plus `grade`, with `owner_agent: supervisor`, `scope: project`, `can-invoke: [manage-grill]`, and `shared_with` excluding the owner.
+- Description starts with `Context Pointer`, follows `X when Y, fails when Z`, stays one sentence under 200 characters, and preserves the routing failure mode.
+- All five SECTION headings remain in order and keep `SECTION_REF` anchors to existing blueprint sections.
+- Every step has a `Completion:` criterion, and the output preserves raw input, single-actor restatement, scope boundary, routing signal, and ambiguity handoff.
+- Deletion Test remains Lose: no other P0 Skill owns conversion from raw user wording into a routeable Context Pointer.
 
 ## Failure Modes
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- Signal: "I assume the user wants..." without marking it as an assumption.
-- Signal: polished rewrite that removes constraints or source references.
-- Signal: premature completion when goal, scope, or context remain implicit.
-- Signal: routing directly to Builder/Reviewer while ambiguity flags are unresolved.
-
-<!-- VERIFICATION: skeleton-of-skeleton Step A - Skill file, 9 frontmatter fields + grade, 5 sections, 0 business content -->
+- Signal: Hidden Assumption - restatement silently fills gaps the user never stated, without flagging the assumption.
+- Signal: Constraint Erasure - stated user constraints such as time, tech stack, scope, role, or source boundary disappear from the Context Pointer.
+- Signal: Premature Routing - routes to an Agent before scope or goal is restated, pushing ambiguity downstream.
+- Signal: Polish Without Structure - rewrites tone or wording without structuring goal, scope, route, and original anchor.
