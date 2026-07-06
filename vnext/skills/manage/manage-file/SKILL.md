@@ -1,11 +1,11 @@
 ---
 name: manage-file
-description: "File placement when an asset must be created, moved, or versioned, fails when target index or path is unchecked."
+description: "Context Pointer when a project asset must be created, moved, renamed, or versioned, fails when path, naming, conflict, or evidence is unchecked."
 disable-model-invocation: false
 can-invoke: []
-paths: ["**"]
+paths: ["30_Projects/**", "40_Content/**"]
 status: draft
-owner_agent: shared
+owner_agent: builder
 shared_with: [supervisor, researcher, builder, reviewer, evolver]
 scope: project
 grade: P0
@@ -18,34 +18,40 @@ grade: P0
 
 ## Invocation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.0-manage-file -->
-- Invoke when creating, moving, renaming, indexing, or verifying files and directories.
-- Use it before write operations that depend on `_index.md`, source-of-truth maps, or path ownership.
-- Calling Agent path permissions still constrain this Skill; `paths: ["**"]` is not blanket authority.
+- Invoke when a project or content asset must be created, moved, renamed, versioned, indexed, or verified.
+- Use before write operations that depend on directory ownership, `_index.md`, source-of-truth maps, naming rules, or rollback safety.
+- Treat the requesting Agent's own path authority as an upper bound; this Skill does not grant permission to touch v1, blueprint, or unrelated project files.
+- Do not explain shell syntax or filesystem basics; keep branch-specific command details in the task output or disclosed references.
 
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-file -->
-1. Resolve the intended target path and ownership boundary. Completion: path is relative, inside allowed scope, and not a v1 frozen file unless explicitly allowed.
-2. Read the nearest relevant index or source-of-truth map. Completion: placement reason cites the controlling document or notes no index exists.
-3. Apply the file operation with minimal scope. Completion: only intended files are created or edited.
-4. Verify existence, content anchors, and index impact. Completion: command output or file diff confirms the write.
+1. Classify the file operation. Completion: create, move, rename, version, index, or verify is named, with the requesting Agent and target artifact type.
+2. Check path authority and placement rule. Completion: target is relative, inside `paths`, inside the requester scope, and justified by index, blueprint, source map, or explicit user instruction.
+3. Apply naming and version policy. Completion: filename, extension, slug/date/version marker, and directory conventions are checked before writing.
+4. Detect conflicts and rollback needs. Completion: existing target, duplicate artifact, stale version, and required backup/rename decision are recorded before mutation.
+5. Execute the smallest file change. Completion: only the intended path set changes; no broad recursive move/delete or unrelated formatting churn is introduced.
+6. Produce evidence after the operation. Completion: existence check, diff/stat, moved-from/moved-to mapping, or index impact is recorded for the caller.
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- `docs/vnext-blueprint.md §2.25.1` for the vNext P0 file tree.
-- `docs/vnext-blueprint.md §2.25.2` for side-by-side coexistence and rollback.
-- `vnext/references/skill-authoring.md §5.4` for scope honesty.
+- `docs/vnext-blueprint.md §2.21` defines `manage-file` as the P0 file/dir operation Skill with no downstream Skill invocation.
+- `docs/vnext-blueprint.md §2.25.1` defines the vNext P0 tree; §2.25.2 defines side-by-side coexistence and rollback.
+- `docs/vnext-blueprint.md §2.20` shows Researcher, Builder, Reviewer, Supervisor, and Evolver can route work through `manage-file`.
+- `vnext/references/skill-authoring.md §5.4` defines scope honesty; §8 names Bloat and Context Pointer Miss as failure modes.
+- Keep operation-specific shell commands in task evidence; this Skill owns decision order and acceptance criteria, not a filesystem tutorial.
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-file -->
-- Target path is justified by an index, blueprint section, or explicit user instruction.
-- `git diff --check -- <path>` or equivalent whitespace check has no output.
-- Created files contain required anchors and no placeholder markers.
+- Operation type, requester, target path, and placement authority are explicit.
+- Path is relative, scoped, and justified by index, blueprint, source map, or user instruction.
+- Naming/version/conflict decision is recorded before mutation.
+- Result evidence proves the intended path set changed and no unrelated path was touched.
+- Any index, manifest, or rollback impact is reported to the caller.
 
 ## Failure Modes
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- Signal: writing to a convenient path without checking the directory index.
-- Signal: touching v1 or blueprint files during a vNext-only task.
-- Signal: broad move/delete command built from string-expanded paths.
-- Signal: declaring files created without verifying they exist.
-
-<!-- VERIFICATION: skeleton-of-skeleton Step A - Skill file, 9 frontmatter fields + grade, 5 sections, 0 business content -->
+- Signal: Context Pointer Miss - target path cannot be justified by index, source map, blueprint, or explicit user instruction.
+- Signal: Boundary Drift - operation touches v1, blueprint, unrelated project, or out-of-scope files during a scoped task.
+- Signal: Conflict Blindness - existing file, duplicate artifact, or version collision is overwritten without a recorded decision.
+- Signal: Broad Mutation - recursive move/delete, wildcard staging, or generated path list changes more than the intended artifact set.
+- Signal: Evidence Gap - caller is told the file operation succeeded without existence, diff/stat, or moved-path proof.
