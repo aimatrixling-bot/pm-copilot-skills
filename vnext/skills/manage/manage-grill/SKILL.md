@@ -1,6 +1,6 @@
 ---
 name: manage-grill
-description: "Progressive Disclosure when ambiguity blocks routing or scoping, fails when questions assume the goal or exceed scope."
+description: "Progressive Disclosure 当歧义阻塞路由或定界时触发，问题预设目标或超出范围时失败。"
 disable-model-invocation: false
 can-invoke: []
 paths: []
@@ -18,40 +18,40 @@ grade: P0
 
 ## Invocation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.0-manage-grill -->
-- Invoke when a specific ambiguity blocks routing, scoping, acceptance, owner selection, or safe execution.
-- Use after `manage-prompt` or Supervisor identifies the blocking decision; do not grill merely because input is imperfect.
-- Ask only the questions needed to produce a routeable Context Pointer or explicit blocker.
-- Do not solve the task, select the user's goal for them, or loop after routing becomes possible.
+- 当某个具体歧义阻塞路由、定界、验收、owner 选择或安全执行时调用。
+- 在 `manage-prompt` 或 Supervisor 识别出阻塞性决策后使用；不要仅因为输入不完美就进行追问。
+- 只提出生成可路由上下文指针（Context Pointer）或显式阻塞点所需的问题。
+- 不要解决任务、替用户选择目标，或在已经可以路由后继续循环追问。
 
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-grill -->
-1. Identify the specific ambiguity blocking routing or scope. Completion: the blocking decision (`goal`, `scope`, `agent`, `constraint`, or `context`) is named; vagueness without a blocking decision does not trigger grilling.
-2. Draft questions that probe one assumption each. Completion: every question targets a stated assumption, is answerable in one phrase, and does not bundle two questions.
-3. Ask in batches the user can actually answer. Completion: questions are ordered by blocking priority, the batch size fits the user's turn, and convergence signal is defined before sending.
-4. Converge or escalate. Completion: either the user's answers remove the blocking ambiguity and produce a restated goal, or the ambiguity is reported back to `manage-prompt` as unresolvable without user direction.
-5. Re-batch only when new blocking ambiguity appears. Completion: one additional batch is asked only if the new ambiguity still blocks routing; otherwise route with the caveat.
+1. 识别阻塞路由或范围的具体歧义。Completion: 已命名阻塞性决策（`goal`、`scope`、`agent`、`constraint` 或 `context`）；没有阻塞性决策的模糊不会触发追问。
+2. 起草每次只探测一个假设的问题。Completion: 每个问题都指向一个已声明假设，可用一个短语回答，且没有捆绑两个问题。
+3. 按用户实际可回答的批次提问。Completion: 问题按阻塞优先级排序，批次大小适合用户当前回合，并且收敛信号在发送前已定义。
+4. 收敛或升级。Completion: 用户答案要么移除阻塞性歧义并产出重述目标，要么该歧义被报告回 `manage-prompt`，标记为没有用户指示就无法解决。
+5. 只有出现新的阻塞性歧义时才重新分批。Completion: 只有当新歧义仍阻塞路由时才追加一批问题；否则带限制说明路由。
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- `docs/vnext-blueprint.md §2.20` defines Supervisor responsibility for ask/grill, ambiguity handling, and routing.
-- `docs/vnext-blueprint.md §2.21` defines `manage-grill` as the P0 clarification Skill.
-- `docs/vnext-blueprint.md §2.23` defines Intent Packet fields such as `probe_depth`, routing, and Output Packet next actions.
-- `docs/vnext-blueprint.md §2.24` defines Progressive Disclosure, Context Pointer, Completion Criterion, and failure-mode diagnostics.
-- `docs/vnext-blueprint.md §2.25.1` fixes the P0 vNext directory and Skill authoring discipline.
-- `docs/vnext-blueprint.md §2.26` covers GT-01, where `manage-grill` resolves ambiguity before `craft-agent-task`.
-- `vnext/references/skill-authoring.md §4.1` defines completion criteria discipline; §8 defines premature completion diagnostics.
+- `docs/vnext-blueprint.md §2.20` 定义 Supervisor 对 ask/grill、歧义处理和路由的职责。
+- `docs/vnext-blueprint.md §2.21` 将 `manage-grill` 定义为 P0 澄清 Skill。
+- `docs/vnext-blueprint.md §2.23` 定义 Intent Packet 字段，例如 `probe_depth`、routing 和 Output Packet next actions。
+- `docs/vnext-blueprint.md §2.24` 定义渐进披露（Progressive Disclosure）、Context Pointer、Completion Criterion 和 failure-mode 诊断。
+- `docs/vnext-blueprint.md §2.25.1` 固定 P0 vNext 目录和 Skill 写作纪律。
+- `docs/vnext-blueprint.md §2.26` 覆盖 GT-01，其中 `manage-grill` 在 `craft-agent-task` 之前解决歧义。
+- `vnext/references/skill-authoring.md §4.1` 定义 completion criteria 纪律；§8 定义 premature completion 诊断。
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-grill -->
-- Frontmatter keeps the 9 required Skill fields plus `grade`, with `owner_agent: supervisor`, `can-invoke: []`, `scope: project`, and `shared_with` excluding the owner.
-- Description starts with `Progressive Disclosure`, follows `X when Y, fails when Z`, and stays one sentence under 200 characters.
-- All five SECTION headings remain in order and keep `SECTION_REF` anchors to existing blueprint sections.
-- Every step has a `Completion:` criterion, and the grill sequence identifies a blocker, asks single-assumption questions, defines convergence, and stops after route or escalation.
-- Deletion Test remains Lose: no other P0 Skill owns turning blocking ambiguity into user-provided routing evidence.
+- Frontmatter 保持 9 个必填 Skill 字段加 `grade`，并保持 `owner_agent: supervisor`、`can-invoke: []`、`scope: project`，且 `shared_with` 不包含 owner。
+- `description` 以 `Progressive Disclosure` 开头，遵循 `X when Y, fails when Z`，并保持一句话且少于 200 字符。
+- 五个 SECTION heading 全部按顺序保留，并保留指向现有 blueprint section 的 `SECTION_REF` 锚点。
+- 每个 step 都有 `Completion:` criterion，追问序列识别阻塞点、提出单假设问题、定义收敛，并在路由或升级后停止。
+- 删除测试（Deletion Test）保持 Lose：没有其他 P0 Skill 负责把阻塞性歧义转换为用户提供的路由证据。
 
 ## Failure Modes
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- Signal: Endless Probe - keeps asking questions past the point where a routing decision or explicit blocker is available.
-- Signal: Leading Question - question phrasing assumes the answer or narrows the user's options unfairly.
-- Signal: Premature Routing - gives up on grilling before the blocking ambiguity is resolved or explicitly escalated.
-- Signal: Solve-While-Grilling - answers the question for the user or slips a solution into the clarification prompt.
+- Signal: Endless Probe - 在已经可以做出路由决策或已有显式阻塞点后仍继续提问。
+- Signal: Leading Question - 问题措辞预设答案，或不公平地缩窄用户选项。
+- Signal: Premature Routing - 在阻塞性歧义被解决或显式升级前就放弃追问。
+- Signal: Solve-While-Grilling - 替用户回答问题，或把解决方案塞进澄清提示中。

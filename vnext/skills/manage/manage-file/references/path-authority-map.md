@@ -7,38 +7,38 @@ owner_skill: manage-file
 related_blueprint_sections: [§2.21, §2.24]
 ---
 
-# Path Authority Map — Sub-path Placement
+# 路径权限映射 — 子路径放置
 
-## 1. paths Scope
+## 1. paths 范围
 
-`manage-file` frontmatter limits file operations to `["30_Projects/**", "40_Content/**"]`.
+`manage-file` frontmatter 将文件操作限制在 `["30_Projects/**", "40_Content/**"]`。
 
-Paths outside this scope are rejected before the decision flow starts unless the user explicitly changes the task boundary.
+除非用户显式改变任务边界，否则在此范围之外的路径会在决策流程开始前被拒绝。
 
-## 2. Sub-path Authority Table
+## 2. 子路径权限表
 
-| Module | Sub-path | Contents | Naming |
+| 模块 | 子路径 | 内容 | 命名 |
 |---|---|---|---|
-| `30_Projects/company/{project}/` | project root | `prd.md`, `decision_log.md`, `airtable_design.md`, and standard company project docs | snake_case |
-| `30_Projects/company/{project}/` | `research/`, `specs/`, `docs/`, `scripts/` | project submodules | kebab-case |
-| `30_Projects/personal/{project}/` | project root and submodules | personal project docs with the same general structure | snake_case |
-| `40_Content/` | article directory | single article workspace | `YYYY-MM_topic_snake_case` |
-| `40_Content/{article}/` | article assets | `draft-v1.md`, `final-article.md`, `cover.png` | kebab-case |
-| `90_Archive/` | archive tree | complete project archive for provenance only | preserve original naming |
+| `30_Projects/company/{project}/` | project root | `prd.md`、`decision_log.md`、`airtable_design.md` 和标准公司项目文档 | snake_case |
+| `30_Projects/company/{project}/` | `research/`、`specs/`、`docs/`、`scripts/` | 项目子模块 | kebab-case |
+| `30_Projects/personal/{project}/` | project root 和子模块 | 具有相同通用结构的个人项目文档 | snake_case |
+| `40_Content/` | 文章目录 | 单篇文章工作区 | `YYYY-MM_topic_snake_case` |
+| `40_Content/{article}/` | 文章资产 | `draft-v1.md`、`final-article.md`、`cover.png` | kebab-case |
+| `90_Archive/` | 归档树 | 仅用于溯源（provenance）的完整项目归档 | 保留原始命名 |
 
-## 3. Out-of-Scope Paths（自动拒绝）
+## 3. 范围外路径（自动拒绝）
 
-- `00_System/`, `10_Library/`, `20_Skills/`, and `50_Career/`, unless the user explicitly instructs otherwise.
-- Hidden directories such as `.claude/` or `.ai-builder/`.
-- Any `.env`, secret, token, or CI/CD configuration.
-- v1 source, blueprint files, or another project's working tree.
-- Loose files at a project root without a classified module ownership.
+- `00_System/`、`10_Library/`、`20_Skills/` 和 `50_Career/`，除非用户另有显式指示。
+- `.claude/` 或 `.ai-builder/` 等隐藏目录。
+- 任何 `.env`、secret、token 或 CI/CD 配置。
+- v1 source、blueprint 文件或另一个项目的 working tree。
+- 项目根目录下未分类模块归属的散落文件。
 
-## 4. Ambiguity Triggers Consultation
+## 4. 歧义触发查阅
 
-Consult this reference and ask for user confirmation when:
+在以下情况查阅本 reference 并请求用户确认：
 
-- The user-specified path is outside the table.
-- A move crosses modules, such as `40_Content/` to `30_Projects/`.
-- Files with the same name appear in different modules.
-- A new project-root file lacks a clear submodule owner.
+- 用户指定路径位于表格之外。
+- 移动跨越模块，例如从 `40_Content/` 到 `30_Projects/`。
+- 同名文件出现在不同模块中。
+- 新的 project-root 文件缺少明确的子模块 owner。

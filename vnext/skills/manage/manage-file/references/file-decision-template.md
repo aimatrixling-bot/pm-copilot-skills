@@ -7,30 +7,30 @@ owner_skill: manage-file
 related_blueprint_sections: [§2.21, §2.24]
 ---
 
-# File Decision Record — Optional YAML Template
+# File Decision Record — 可选 YAML 模板
 
-## 1. When to Emit
+## 1. 何时产出
 
-This record is optional. It is suggested only for non-trivial file operations:
+此记录是可选的。仅建议用于非平凡文件操作：
 
-- `move`: cross-directory movement.
-- `rename`: slug change.
-- `version`: active version bump or archive snapshot.
-- `archive`: movement into `90_Archive/`.
+- `move`：跨目录移动。
+- `rename`：slug 变化。
+- `version`：活动版本提升或归档快照。
+- `archive`：移动到 `90_Archive/`。
 
-Do not emit a File Decision Record for create, content edits, or formatting changes.
+不要为 create、内容编辑或格式调整产出 File Decision Record。
 
-## 2. Why Optional
+## 2. 为什么可选
 
-Max Brain is a knowledge repository. Requiring YAML for every operation creates Bloat and violates Progressive Disclosure.
+Max Brain 是知识仓库。要求每次操作都写 YAML 会制造膨胀（Bloat），并违反渐进披露（Progressive Disclosure）。
 
-The record is useful when multi-file operations, cross-module moves, and archive decisions need replayable rationale.
+当多文件操作、跨模块移动和归档决策需要可重放理由时，此记录很有用。
 
-## 3. Template
+## 3. 模板
 
 ```yaml
-# Optional File Decision Record — emitted by manage-file
-# Trigger: move / rename / version / archive
+# 可选 File Decision Record — 由 manage-file 产出
+# 触发：move / rename / version / archive
 id: <stable-unique-id>
 operation: <move|rename|version|archive>
 path_before: <relative-path or null>
@@ -46,14 +46,14 @@ rationale: <one-sentence why this operation was chosen>
 timestamp: <ISO 8601>
 ```
 
-## 4. Storage
+## 4. 存储
 
-Do not create a standalone decision-record file.
+不要创建独立的 decision-record 文件。
 
-Store the record in the calling Skill's Output Packet `metadata` field or task evidence.
+将记录存放在调用方 Skill 的 Output Packet `metadata` 字段或任务证据中。
 
-## 5. Non-Goals
+## 5. 不做什么
 
-- Do not require a record for every operation.
-- Do not create a Decision Record index; that would overlap with `_index.md`.
-- Do not replace git log; the record explains why, while git records what changed.
+- 不要求每次操作都产出记录。
+- 不创建 Decision Record index；这会与 `_index.md` 重叠。
+- 不替代 git log；该记录解释为什么，git 记录改变了什么。
