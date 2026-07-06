@@ -3122,5 +3122,16 @@ execFileSync(process.execPath, [path.join(root, 'scripts/validate-artifact-evals
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-onboarding-evals.js')], { stdio: 'inherit' });
 execFileSync(process.execPath, [path.join(root, 'scripts/validate-dual-package-dry-run.js')], { stdio: 'inherit' });
 
+if (fs.existsSync(path.join(root, 'vnext'))) {
+  console.log('\n--- vnext 验证 ---');
+  const { validateVnext } = require('./validate-vnext');
+  const vnextResult = validateVnext(root);
+  if (vnextResult.errors.length > 0) {
+    vnextResult.errors.forEach((error) => console.error(error));
+    process.exit(1);
+  }
+  console.log('vnext 验证通过');
+}
+
 console.log('Builder OS 验证通过。');
 console.log(`已检查 ${builderSkills.length} 个 active builder skill、${legacyArchivedSkills.length} 个 legacy PM skill 归档和 ${requiredFiles.length} 个必需文件。`);
