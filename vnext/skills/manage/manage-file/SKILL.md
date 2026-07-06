@@ -6,7 +6,7 @@ can-invoke: []
 paths: ["30_Projects/**", "40_Content/**"]
 status: draft
 owner_agent: builder
-shared_with: [supervisor, researcher, builder, reviewer, evolver]
+shared_with: [supervisor, researcher, reviewer, evolver]
 scope: project
 grade: P0
 ---

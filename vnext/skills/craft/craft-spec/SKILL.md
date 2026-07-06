@@ -6,7 +6,7 @@ can-invoke: [discover-research, manage-file]
 paths: ["30_Projects/**", "40_Content/**"]
 status: draft
 owner_agent: researcher
-shared_with: [builder]
+shared_with: [builder, reviewer]
 scope: project
 grade: P0
 ---
