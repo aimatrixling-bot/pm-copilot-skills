@@ -839,14 +839,13 @@ forbidden:
 > **D12 硬要求**：含 step 的 skill 必须为每个 step 标注 `completion-criterion`（可检查 + 必要时穷尽）；纯 reference 类 skill 可豁免。详情见 §2.24。
 >
 > **Step D 清理说明（追溯：`vnext/references/codex-step-b-review-feedback.md` §C.1 / §C.2）**：P0 目录树只生成 11 个 P0 Skill 文件；`can-invoke` 可以保留已分级的 P1+ Skill 前向引用作为演化钩子，但不得把该引用计入 P0 文件清单。Writer / Helper 已按 D8 降级为 Skill bucket，不再作为 P0 Agent 出现在 `shared_with`。
+>
+> **语言策略说明**：P0 SKILL 正文以中文为主；英文契约层（frontmatter 字段名、Section heading、leading word、Failure Mode signal name 等）规格见 `vnext/references/skill-authoring.md §13`。下方 description 字段采用"英文首词 + 中文主体"格式，遵循 §13.5 公式。
 
 ```yaml
 # 1. manage-prompt
 name: manage-prompt
-description: |
-  WHEN user input 模糊或冗长 AND intent 不清
-  THEN optimize prompt (clarify goal / add context / structure)
-  AND return refined prompt + reason
+description: "Context Pointer 当用户输入模糊、过载或路由错位时触发；目标、范围或 Agent 边界隐式时失败。"
 can-invoke: []
 paths: []
 status: draft
@@ -857,10 +856,7 @@ grade: P0
 
 # 2. manage-grill
 name: manage-grill
-description: |
-  WHEN intent ambiguity > threshold (probe_depth=medium/deep)
-  THEN ask N targeted questions (one at a time, max 5)
-  AND attach recommended option + reason per question
+description: "User-Invokable 当用户调用 /manage-grill、或要求对方案/决策进行苏格拉底式挑战时触发；挑战未覆盖 5 类问题维度、或给出结论性判断时失败。"
 can-invoke: [manage-prompt]
 paths: []
 status: draft
@@ -871,9 +867,7 @@ grade: P0
 
 # 3. manage-file
 name: manage-file
-description: |
-  WHEN file/dir operation needed (create/move/rename/version)
-  THEN check target dir _index.md → place correctly → verify after write
+description: "Context Pointer 当文件操作请求落在 30_Projects/ 或 40_Content/ 范围、涉及创建/移动/重命名/归档时触发；目标路径越界、命名违规或并行 active 版本未拒绝时失败。"
 can-invoke: []
 paths: ["**"]                    # 受 Agent can_invoke paths 二次约束
 status: draft
@@ -884,10 +878,7 @@ grade: P0
 
 # 4. discover-research
 name: discover-research
-description: |
-  WHEN research topic identified
-  THEN collect from trusted sources (official docs/engineering blogs/reports)
-  AND return findings + evidence_table (claim → source URL + confidence)
+description: "Knowledge Gateway 当用户引用的方法论/案例/工具在 10_Library 中可能存在对应条目时触发；未检索直接输出方案、或检索到但未引用时失败。"
 can-invoke: [manage-file]
 paths: []
 status: draft
@@ -898,10 +889,7 @@ grade: P0
 
 # 5. craft-spec
 name: craft-spec
-description: |
-  WHEN deliverable type is PRD/Mini Spec/Eng Request/Requirements
-  THEN select profile (lite/standard/ultra) → render template → fill fields
-  AND attach audience (human/agent/dual) + citations
+description: "One-Click Trigger 当用户显式调用 /craft-spec 或要求产出 PRD/tech-spec/spec 时触发；缺少决策记录、或产出未遵循 §2.21 frontmatter 规范时失败。"
 can-invoke: [discover-research, manage-file]
 paths: ["30_Projects/**", "40_Content/**"]
 status: draft
@@ -912,10 +900,7 @@ grade: P0
 
 # 6. craft-prototype
 name: craft-prototype
-description: |
-  WHEN high-fidelity prototype requested (mock-data, runnable)
-  THEN scaffold UI + wire interactions + inject mock data
-  AND produce handoff document for downstream
+description: "One-Click Trigger 当用户要求产出高保真原型、可交互 demo 时触发；原型不可运行、或未配套验证步骤时失败。"
 can-invoke: [manage-file, craft-spec]
 paths: ["30_Projects/**/_sandbox/**", "**/prototype/**"]
 status: draft
@@ -926,10 +911,7 @@ grade: P0
 
 # 7. craft-agent-task
 name: craft-agent-task
-description: |
-  WHEN Supervisor decomposes task OR Builder hands off runtime work
-  THEN produce agent-readable task pack (goal/done_criteria/inputs/outputs/constraints)
-  AND attach stop_conditions + handoff_target
+description: "One-Click Trigger 当用户要求为 Agent 产出可执行任务包（task pack）时触发；任务包缺少 Intent/Evidence/Output Packet、或未通过验收时失败。"
 can-invoke: [manage-file]
 paths: []
 status: draft
@@ -940,10 +922,7 @@ grade: P0
 
 # 8. review-doc
 name: review-doc
-description: |
-  WHEN document deliverable ready for review
-  THEN run HALO 3-type diagnosis (hallucination/omission/misalignment)
-  AND produce Rationalization Table (issue → HALO type → severity → fix)
+description: "Routing Rule 当产出文档（PRD/spec/decision log）请求评审时触发；评审未对照项目 decision_log、或未输出结构化意见时失败。"
 can-invoke: [craft-test-case, evolve-memory]
 paths: []
 status: draft
@@ -954,10 +933,7 @@ grade: P0
 
 # 9. review-code
 name: review-code
-description: |
-  WHEN code changes ready for review OR Builder self-check
-  THEN check against coding-style/security/testing/patterns rules
-  AND output Evidence Packet with risk tier (P0/P1/P2)
+description: "Routing Rule 当代码变更请求评审、或 commit 前自检时触发；未对照 spec 验收、或忽略红线时失败。"
 can-invoke: [craft-test-case, evolve-memory]
 paths: ["**/*.{ts,tsx,js,jsx,py,go,rs,java}"]
 status: draft
@@ -968,10 +944,7 @@ grade: P0
 
 # 10. build-commit
 name: build-commit
-description: |
-  WHEN code changes verified (post review-code or self-check)
-  THEN stage targeted files (NOT git add -A) → write conventional commit message → commit
-  AND refuse if pre-commit hook fails (fix root cause, never --no-verify)
+description: "Routing Rule 当用户请求代码实现、功能开发、bug 修复时触发；实现未匹配 spec、或未通过 typecheck/lint/test 时失败。"
 can-invoke: [manage-file]
 paths: ["**"]
 status: draft
@@ -982,11 +955,7 @@ grade: P0
 
 # 11. evolve-memory
 name: evolve-memory
-description: |
-  WHEN trigger fires (user preference / correction / project state change / research done)
-  THEN classify (user/feedback/project/reference) → check existing → write or merge
-  AND enforce MEMORY.md ≤200 lines + topic file ref for details
-  Sub-modes: write / cleanup / merge / archive / prune
+description: "Routing Rule 当用户任务完成、Session 接近 compact、或产出含可复用模式信号时触发；未写回 memory、或写入违反 §2.26 schema 时失败。"
 can-invoke: []
 paths: ["**/memory/**", "**/MEMORY.md"]
 status: draft

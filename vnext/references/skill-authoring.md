@@ -380,6 +380,73 @@ SKILL.md 写到 800 行，所有 reference inline。
 
 ---
 
+## 13. 语言策略（Language Policy）
+
+> 适用范围：vNext P0/P1 SKILL.md 正文、Agent 契约、Reference 文件正文。Kernel Packets、Memory schemas、frontmatter 机器契约字段保持英文。
+
+### 13.1 设计原则
+
+vNext 以中文为主体语言，英文作为机器解析契约层。理由：
+- 主要审阅者（Max）为产品经理背景，中文审阅效率高于英文
+- 机器解析依赖稳定的关键字（frontmatter 字段名、Section heading、leading word），这些保持英文即可保证解析稳定性
+- 大模型对中文语义理解已足够强，不因语言切换损失能力
+
+### 13.2 英文契约层（铁律，不可中文化）
+
+| 元素 | 示例 | 为什么保持英文 |
+|---|---|---|
+| Frontmatter 字段名 | `name`, `description`, `owner_agent`, `shared_with`, `scope`, `paths`, `invoked`, `when`, `then` | 机器解析契约 |
+| Skill / Agent 标识符 | `manage-file`, `craft-spec`, `architect-agent` | 全局路由 key |
+| Section heading | `## Invocation`, `## Steps`, `## Reference`, `## Completion Criteria`, `## Failure Modes` | 解析锚点 |
+| Step 完成关键字 | `Completion:` | 解析锚点 |
+| Failure Mode signal name | `Conflict Blindness`, `Scope Violation`, `False Positive`, `Discipline Decay` | 跨 Skill 引用稳定 |
+| description 首词（leading word） | `Context Pointer`, `One-Click Trigger`, `User-Invokable`, `Routing Rule`, `Knowledge Gateway` | 见 §2.24.2 词表 |
+| Output Packet / Intent Packet / Evidence Packet | 字段名 `packet_spec`, `fields`, `validation` | 机器契约 |
+| Blueprint / Kernel / Memory / Skill / Agent | vNext namespace 术语 | 全局唯一指代 |
+
+### 13.3 中文主体层（这些使用中文）
+
+| 元素 | 示例 |
+|---|---|
+| description 主体（首词之后） | "当用户输入模糊、过载或路由错位时触发，目标、范围或 Agent 边界隐式时失败。" |
+| Invocation bullets | "用户显式调用 `/manage-file`" |
+| Step 正文 | "读取目标目录 `_index.md`，确认放置位置..." |
+| Completion Criteria 正文 | "目标文件已创建并写入正确位置；`_index.md` 已同步（如适用）" |
+| Failure Mode 描述 | "覆盖已有文件未做存在性检查，或并行 `-v1`/`-v2` 未拒绝。" |
+| Reference 段说明文字 | "详见 `references/naming-rules.md`" |
+| references/ 文件正文 | 全部中文 |
+
+### 13.4 术语首次出现规则
+
+- 首次出现：中文（English），如"渐进披露（Progressive Disclosure）"、"上下文工程（Context Engineering）"
+- 后续出现：纯中文即可
+- 已是英文专有名词（如 `Output Packet`、`Blueprint`）：保持英文不翻译
+
+### 13.5 description 字段写法
+
+公式：`<English Leading Word> 当 <trigger> 时触发，<failure mode> 时失败。`
+
+示例：
+- `Context Pointer 当用户输入模糊、过载或路由错位时触发，目标、范围或 Agent 边界隐式时失败。`
+- `One-Click Trigger 当用户显式调用 /craft-spec 时触发，未提供 PRD 输入或决策记录时失败。`
+
+### 13.6 套用范围
+
+- P0 SKILL.md（11 个）：Batch 5-7 逐步中文化
+- P1 SKILL.md：发布时直接按此策略
+- Agent 契约（§2.20）：描述主体中文化，frontmatter 保持英文
+- references/ 文件：正文中文，frontmatter 保持英文
+
+### 13.7 不做什么
+
+- 不翻译 frontmatter 字段名（`name:` 不能改成"名称:"）
+- 不翻译 Section heading（`## Steps` 不能改成"## 步骤"）
+- 不翻译 Skill/Agent 标识符
+- 不在英文契约元素中混用中英文标点
+- 不修改已发布的 Kernel Packets / Memory schemas（它们属于机器契约层）
+
+---
+
 ## 附录 A: 模板骨架（写新 SKILL.md 时复用）
 
 ```markdown
