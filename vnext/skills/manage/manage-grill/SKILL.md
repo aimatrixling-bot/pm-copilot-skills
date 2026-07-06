@@ -1,13 +1,13 @@
 ---
 name: manage-grill
-description: "Grill user intent when ambiguity exceeds threshold, fails when questions assume the goal or exceed scope."
+description: "Progressive Disclosure when ambiguity blocks routing or scoping, fails when questions assume the goal or exceed scope."
 disable-model-invocation: false
-can-invoke: [manage-prompt]
+can-invoke: []
 paths: []
 status: draft
 owner_agent: supervisor
-shared_with: [researcher]
-scope: global
+shared_with: [researcher, builder, reviewer, evolver]
+scope: project
 grade: P0
 ---
 
@@ -18,34 +18,40 @@ grade: P0
 
 ## Invocation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.0-manage-grill -->
-- Invoke when Intent Packet `probe_depth` is medium/deep or ambiguity blocks routing.
-- Use it for goal, scope, acceptance, audience, risk, or source-of-truth uncertainty.
-- Ask one focused question at a time with recommended options and a reason.
+- Invoke when a specific ambiguity blocks routing, scoping, acceptance, owner selection, or safe execution.
+- Use after `manage-prompt` or Supervisor identifies the blocking decision; do not grill merely because input is imperfect.
+- Ask only the questions needed to produce a routeable Context Pointer or explicit blocker.
+- Do not solve the task, select the user's goal for them, or loop after routing becomes possible.
 
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-grill -->
-1. Identify the blocking ambiguity and why it matters. Completion: each question maps to one `ambiguity_flag`.
-2. Ask the smallest useful question with 2-3 options plus a free-form path when needed. Completion: the user can answer without writing a full spec.
-3. Update the Intent Packet after each answer. Completion: resolved flags are removed and remaining flags are named.
-4. Stop when routing is possible or when five questions would be exceeded. Completion: next Agent or stop reason is explicit.
+1. Identify the specific ambiguity blocking routing or scope. Completion: the blocking decision (`goal`, `scope`, `agent`, `constraint`, or `context`) is named; vagueness without a blocking decision does not trigger grilling.
+2. Draft questions that probe one assumption each. Completion: every question targets a stated assumption, is answerable in one phrase, and does not bundle two questions.
+3. Ask in batches the user can actually answer. Completion: questions are ordered by blocking priority, the batch size fits the user's turn, and convergence signal is defined before sending.
+4. Converge or escalate. Completion: either the user's answers remove the blocking ambiguity and produce a restated goal, or the ambiguity is reported back to `manage-prompt` as unresolvable without user direction.
+5. Re-batch only when new blocking ambiguity appears. Completion: one additional batch is asked only if the new ambiguity still blocks routing; otherwise route with the caveat.
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- `docs/vnext-blueprint.md §2.23` for `probe_depth`, `ambiguity_flags`, and routing.
-- `vnext/references/skill-authoring.md §4.1` for completion criteria per step.
-- `vnext/references/skill-authoring.md §8` for premature completion and variance risks.
+- `docs/vnext-blueprint.md §2.20` defines Supervisor responsibility for ask/grill, ambiguity handling, and routing.
+- `docs/vnext-blueprint.md §2.21` defines `manage-grill` as the P0 clarification Skill.
+- `docs/vnext-blueprint.md §2.23` defines Intent Packet fields such as `probe_depth`, routing, and Output Packet next actions.
+- `docs/vnext-blueprint.md §2.24` defines Progressive Disclosure, Context Pointer, Completion Criterion, and failure-mode diagnostics.
+- `docs/vnext-blueprint.md §2.25.1` fixes the P0 vNext directory and Skill authoring discipline.
+- `docs/vnext-blueprint.md §2.26` covers GT-01, where `manage-grill` resolves ambiguity before `craft-agent-task`.
+- `vnext/references/skill-authoring.md §4.1` defines completion criteria discipline; §8 defines premature completion diagnostics.
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-grill -->
-- No more than five questions are asked before routing, stopping, or escalating.
-- Each answer changes the Intent Packet or proves the ambiguity cannot be resolved in-session.
-- Final output includes target Agent, unresolved flags, or a concrete blocker.
+- Frontmatter keeps the 9 required Skill fields plus `grade`, with `owner_agent: supervisor`, `can-invoke: []`, `scope: project`, and `shared_with` excluding the owner.
+- Description starts with `Progressive Disclosure`, follows `X when Y, fails when Z`, and stays one sentence under 200 characters.
+- All five SECTION headings remain in order and keep `SECTION_REF` anchors to existing blueprint sections.
+- Every step has a `Completion:` criterion, and the grill sequence identifies a blocker, asks single-assumption questions, defines convergence, and stops after route or escalation.
+- Deletion Test remains Lose: no other P0 Skill owns turning blocking ambiguity into user-provided routing evidence.
 
 ## Failure Modes
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- Signal: asking broad interview questions when one routing blocker is enough.
-- Signal: solving the task before the missing goal or acceptance criteria are known.
-- Signal: more than five questions without a routing decision.
-- Signal: options that steer the user toward the Agent's preferred answer.
-
-<!-- VERIFICATION: skeleton-of-skeleton Step A - Skill file, 9 frontmatter fields + grade, 5 sections, 0 business content -->
+- Signal: Endless Probe - keeps asking questions past the point where a routing decision or explicit blocker is available.
+- Signal: Leading Question - question phrasing assumes the answer or narrows the user's options unfairly.
+- Signal: Premature Routing - gives up on grilling before the blocking ambiguity is resolved or explicitly escalated.
+- Signal: Solve-While-Grilling - answers the question for the user or slips a solution into the clarification prompt.
