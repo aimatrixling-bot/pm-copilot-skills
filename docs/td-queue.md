@@ -278,6 +278,20 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | Evidence | TD-14 C2 已强制 skill grade ∈ {P0, P1}；agent/kernel/memory 分级无运营场景。未来若需要，走 `_surface.md` observer，不进 frontmatter。 |
 | 执行 batch | Batch 11（评估，可能 close 为 wontfix） |
 
+### TD-18 — vNext 文档语言约定（heading 英 / content 中）
+
+| 字段 | 值 |
+| --- | --- |
+| 类别 | docs-convention |
+| 状态 | done |
+| 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
+| 来源 | Batch 11A user decision + Batch 10-revised language audit |
+| 关闭条件 | 新增 `vnext/references/doc-style.md`，明确 heading 英 / content 中的分类冻结决策 ✅ |
+| 描述 | 保留 parser-friendly 英文结构锚点（frontmatter key、section heading、SECTION_REF），正文内容中文优先，防止 heading 中英混用扩散。 |
+| Evidence | 新增 `vnext/references/doc-style.md`，明确 heading 英 / content 中的分类冻结决策。当前 `vnext/kernel/*.md` / `vnext/memory/*.md` 现状符合约定，无需改动。 |
+| 执行 batch | Batch 11B |
+
 ---
 
 ## §2 Closed / Voided
@@ -366,3 +380,4 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | 登记 TD-16（references status 语义偏离）+ TD-17（agent/kernel/memory grade ROI），进 Batch 11 评估 | codex |
 | 2026-07-07 | TD-05 close obsolete — ref_impl_specificity 字段在 P0 references 已不存在，被 TD-16 重整覆盖 | codex |
 | 2026-07-07 | TD-17 close wontfix — agent/kernel/memory 不分级；frontmatter freeze 成本 > 收益；需要时走 _surface.md observer | codex |
+| 2026-07-07 | TD-18 close done — vnext/references/doc-style.md 落地，heading 英 / content 中约定成型 | codex |
