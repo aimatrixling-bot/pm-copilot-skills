@@ -8,7 +8,7 @@ status: draft
 owner_agent: evolver
 shared_with: [supervisor, reviewer]
 scope: global
-grade: P1
+grade: P0
 ---
 
 # evolve-skill
