@@ -44,3 +44,4 @@
 - Handoff packet 只作为当前交接的 pointer-only 临时上下文，不得成为长期事实源。
 - Branch State 可以记录临时判断和恢复上下文；合并前，长期有效决策必须迁移到正式 source of truth 或进入 open gap。
 - Decision Record 只在 hard-to-reverse、surprising、real tradeoff 或人类明确要求保留决策时创建；普通小改和实现细节不创建。
+- Harness State（TD/ID queue）介于决策记录和对话之间：ID-stable、可关闭可清理、不可丢编号；任何 ID 编号首次出现必须同一 turn 写入 `docs/td-queue.md`。
