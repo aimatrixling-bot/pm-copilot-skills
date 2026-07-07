@@ -206,13 +206,15 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | portability-fix |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | Codex Batch 7 review 反馈（portability 风险） |
-| 关闭条件 | (1) 3 个 SKILL.md 中 `C:\Users\max.ling\.claude\rules\common\*.md` 引用改为 runtime-neutral 表述；(2) 全 vnext/ 目录 `grep -r "C:\\Users\\max.ling"` 返回 0 结果；(3) validator 通过 |
+| 关闭条件 | (1) 3 个 SKILL.md 中 `C:\Users\max.ling\.claude\rules\common\*.md` 引用改为 runtime-neutral 表述 ✅；(2) 全 vnext/ 目录 `rg -n "C:\\Users\\max.ling" vnext` 返回 0 结果 ✅；(3) validator 通过 ✅ |
 | 描述 | 3 个 skill 的 references section 硬编码本机绝对路径，违反"vNext 是通用 runtime surface"原则：<br>• `vnext/skills/review/review-code/SKILL.md` L44-47（coding-style/security/testing/performance）<br>• `vnext/skills/build/build-commit/SKILL.md` L43-45（git-workflow/security/coding-style）<br>• `vnext/skills/craft/craft-prototype/SKILL.md` L42-43（patterns/testing） |
 | 替换策略 | 改为 runtime contract reference 表述（不绑具体路径），例如："本 skill 假设 runtime 提供 coding-style / security / testing 等通用工程纪律；具体规则路径由 runtime adapter 注入"。保留纪律契约，去掉本机路径。 |
 | 执行 spec | Batch 9 Commit 3（与 ADR 0002 / TD-11 同次 Codex 执行，独立 commit） |
+| Evidence | Batch 9 Commit 3：`review-code`、`build-commit`、`craft-prototype` 的本机绝对路径已替换为 runtime adapter contract；`rg -n "C:\\Users\\max.ling" vnext` 无结果；`npm run validate:builder-os` 通过。 |
 
 ### TD-14 — validate-vnext.js validator 能力升级
 
@@ -320,3 +322,4 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | TD-08 关闭为 done — ADR 0002 事实纳入：evolve-skill 提升至 P0，P0 Skill 11→12，manifest 28→29；验证输出见 Batch 9 Commit 1 记录 | codex |
 | 2026-07-07 | TD-10 关闭为 done — 蓝图 §2.25.5 / §2.26.4 checkbox 字符与 walkthrough 实证状态同步 | codex |
 | 2026-07-07 | TD-11 关闭为 done — 蓝图 L5 状态字段对齐 Step 3-D / Step 4 已完成事实，合并关闭 TD-10 | codex |
+| 2026-07-07 | TD-13 关闭为 done — 移除 vnext/skills/ 中 3 处本机绝对路径硬编码，改为 runtime adapter contract；validator 通过 | codex |

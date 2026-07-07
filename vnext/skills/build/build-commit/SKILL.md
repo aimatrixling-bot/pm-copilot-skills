@@ -40,9 +40,7 @@ grade: P0
 - `docs/vnext-blueprint.md §2.21` 将 `build-commit` 定义为 review 或 self-check 之后的 P0 git closeout Skill。
 - `docs/vnext-blueprint.md §2.23` 定义 Output Packet evidence expectations，例如 command output、commit hash 和 next actions。
 - `docs/vnext-blueprint.md §2.26` 在 GT-03、GT-05 和 GT-07 中使用 `build-commit` 作为可审计 handoff point。
-- `C:\Users\max.ling\.claude\rules\common\git-workflow.md` 定义 local commit message types 和 PR workflow boundaries。
-- `C:\Users\max.ling\.claude\rules\common\security.md` 要求 commit 前进行 secret checks。
-- `C:\Users\max.ling\.claude\rules\common\coding-style.md` 强化精确且可追溯到请求的修改。
+- Runtime adapter 必须注入 git-workflow / security / coding-style 通用工程纪律；本 skill 只依赖这些 contract，不绑定本机绝对路径。
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-build-commit -->

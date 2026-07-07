@@ -41,10 +41,7 @@ grade: P0
 - `docs/vnext-blueprint.md §2.23` 定义用于 findings、severity、risk 和 next actions 的 Evidence Packet 字段。
 - `docs/vnext-blueprint.md §2.26` 在 GT-05 和 GT-07 中使用 `review-code` 作为 code quality 和 self-check gate。
 - `vnext/references/skill-authoring.md §4.1` 要求 sharp completion criteria；§8 覆盖 premature completion 和 context pointer misses。
-- `C:\Users\max.ling\.claude\rules\common\coding-style.md` 定义 exact-change 和 readability expectations。
-- `C:\Users\max.ling\.claude\rules\common\security.md` 定义对 secrets、injection、XSS、authorization 和 sensitive error leakage 的 mandatory checks。
-- `C:\Users\max.ling\.claude\rules\common\testing.md` 定义 critical paths 和 bug fixes 的 pragmatic verification expectations。
-- `C:\Users\max.ling\.claude\rules\common\performance.md` 在 diff 触碰 hot paths、data volume、rendering 或 IO 时查阅。
+- Runtime adapter 必须注入 coding-style / security / testing / performance 通用工程纪律；本 skill 只依赖这些 contract，不绑定本机绝对路径。
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-review-code -->

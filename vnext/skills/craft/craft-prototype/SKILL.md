@@ -39,8 +39,7 @@ grade: P0
 - `docs/vnext-blueprint.md §2.21` 将 `craft-prototype` 定义为从 spec 到 runnable prototype output 的 P0 桥接。
 - `docs/vnext-blueprint.md §2.26` 覆盖 GT-03 和 GT-07，其中 prototype output 必须包含 run evidence 并保持绑定到 spec。
 - `vnext/references/skill-authoring.md §4.1` 要求 sharp completion criteria；§8 命名 Premature Completion、Variance、Context Pointer Miss 和 Bloat diagnostics。
-- `C:\Users\max.ling\.claude\rules\common\patterns.md` 要求在 new-project work 前检查 mature starters/scaffolds。
-- `C:\Users\max.ling\.claude\rules\common\testing.md` 将 prototype verification 定义为务实的 run evidence，而不是 full coverage。
+- Runtime adapter 必须注入 patterns / testing 通用工程纪律；本 skill 只依赖这些 contract，不绑定本机绝对路径。
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-craft-prototype -->
