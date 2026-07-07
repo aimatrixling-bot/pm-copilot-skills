@@ -60,11 +60,13 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | skill-fix |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | `vnext/references/manage-file-scope-decision.md` §5（旧 TD-08） |
-| 关闭条件 | `vnext/skills/manage-file/SKILL.md` 中 `shared_with` 字段移除 owner builder 语义；validator 通过 |
+| 关闭条件 | `vnext/skills/manage-file/SKILL.md` 中 `shared_with` 字段移除 owner builder 语义；validator 通过 ✅ |
 | 描述 | `manage-file` 当前规则允许 owner 通过 `shared_with` 写入自己的 builder scope，导致 scope 边界被绕过。需移除该 fallback。 |
+| Evidence | `manage-file/SKILL.md` frontmatter 为 `owner_agent: builder` + `shared_with: [supervisor, researcher, reviewer, evolver]`，builder 不在 `shared_with` 中；body 无"owner 通过 shared_with 写入自己 scope"的 fallback 文字。 |
 
 ### TD-03 — references 術语统一（evolve-skill Step 6 + manage-file Tier 2 references/）
 
@@ -82,11 +84,13 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | blueprint-drift |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | 蓝图 §2.21；当前 skill 正文 |
-| 关闭条件 | `manage-grill` 的 'Progressive Disclosure' 与蓝图 §2.21 'User-Invokable' 对齐；`craft-agent-task` 的 'Information Hierarchy' 与蓝图 §2.21 'One-Click Trigger' 对齐 |
+| 关闭条件 | `manage-grill` 的 'Progressive Disclosure' 与蓝图 §2.21 'User-Invokable' 对齐 ✅；`craft-agent-task` 的 'Information Hierarchy' 与蓝图 §2.21 'One-Click Trigger' 对齐 ✅ |
 | 描述 | 两个 skill 的正文 section 名与蓝图章节不一致，导致 SECTION_REF 指向模糊。属于 ID-1 batch（蓝图漂移）。 |
+| Evidence | `manage-grill` description 首词 `Progressive Disclosure` → `User-Invokable`；`craft-agent-task` description 首词 `Information Hierarchy` → `One-Click Trigger`；Reference 与 Completion Criteria 内部引用同步；与蓝图 §2.21 一致。 |
 
 ### TD-05 — references 中 `ref_impl_specificity` frontmatter 字段
 
@@ -381,3 +385,5 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | TD-05 close obsolete — ref_impl_specificity 字段在 P0 references 已不存在，被 TD-16 重整覆盖 | codex |
 | 2026-07-07 | TD-17 close wontfix — agent/kernel/memory 不分级；frontmatter freeze 成本 > 收益；需要时走 _surface.md observer | codex |
 | 2026-07-07 | TD-18 close done — vnext/references/doc-style.md 落地，heading 英 / content 中约定成型 | codex |
+| 2026-07-07 | TD-02 close done — manage-file frontmatter 已符合 "shared_with 移除 owner builder"，无需 body 修改 | codex |
+| 2026-07-07 | TD-04 close done — manage-grill/craft-agent-task description 首词对齐蓝图 §2.21 (User-Invokable / One-Click Trigger) | codex |

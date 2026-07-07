@@ -1,6 +1,6 @@
 ---
 name: craft-agent-task
-description: "Information Hierarchy 当 Supervisor 拆解或移交工作时触发，完成标准（done criteria）、owner 或 stop conditions 缺失时失败。"
+description: "One-Click Trigger 当用户要求为 Agent 产出可执行任务包（task pack）时触发；任务包缺少 Intent/Evidence/Output Packet、或未通过验收时失败。"
 disable-model-invocation: false
 can-invoke: [manage-file]
 paths: []
@@ -36,7 +36,7 @@ grade: P0
 - `docs/vnext-blueprint.md §2.20` 定义 Agent 契约、handoff 边界和 forbidden actions。
 - `docs/vnext-blueprint.md §2.21` 将 `craft-agent-task` 定义为 P0 Supervisor 任务分派 Skill。
 - `docs/vnext-blueprint.md §2.23` 定义 Output Packet 字段，例如 `content`、`metadata`、`next_actions` 和路由证据。
-- `docs/vnext-blueprint.md §2.24` 定义信息层级（Information Hierarchy）、Completion Criterion、Context Pointer 和 failure-mode 诊断。
+- `docs/vnext-blueprint.md §2.24` 定义信息层级（Information Hierarchy）、Completion Criterion、Context Pointer 和 failure-mode 诊断。本 skill 在 §2.21 的 trigger pattern 为 One-Click Trigger；Information Hierarchy 是 §2.24 通用机制。
 - `docs/vnext-blueprint.md §2.25.1` 固定 P0 vNext 目录和 Skill 写作纪律。
 - `docs/vnext-blueprint.md §2.26` 覆盖 GT-01 以及 v1-to-vNext 映射，其中 `builder-agent-task` 变为 `craft-agent-task`。
 - `vnext/references/skill-authoring.md §4.1` 定义 completion criteria 纪律；§8 定义 premature completion 诊断。
@@ -44,7 +44,7 @@ grade: P0
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-craft-agent-task -->
 - Frontmatter 保持 9 个必填 Skill 字段加 `grade`，并保持 `owner_agent: supervisor`、`can-invoke: [manage-file]`、`scope: project`，且 `shared_with` 不包含 owner。
-- `description` 以 `Information Hierarchy` 开头，遵循 `X when Y, fails when Z`，并保持一句话且少于 200 字符。
+- `description` 以 `One-Click Trigger` 开头，遵循 `X when Y, fails when Z`，并保持一句话且少于 200 字符。
 - 五个 SECTION heading 全部按顺序保留，并保留指向现有 blueprint section 的 `SECTION_REF` 锚点。
 - 每个 step 都有 `Completion:` criterion，任务包包含一个 owner、二元完成标准、stop conditions、持久 source/context pointers、放置决策和 Output Packet handoff。
 - 删除测试（Deletion Test）保持 Lose：没有其他 P0 Skill 负责把已路由意图转换为 Agent 可读的执行任务包。

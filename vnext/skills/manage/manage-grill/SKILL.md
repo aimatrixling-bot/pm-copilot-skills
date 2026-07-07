@@ -1,6 +1,6 @@
 ---
 name: manage-grill
-description: "Progressive Disclosure 当歧义阻塞路由或定界时触发，问题预设目标或超出范围时失败。"
+description: "User-Invokable 当用户调用 /manage-grill、或要求对方案/决策进行苏格拉底式挑战时触发；问题预设目标、或超出 5 类问题维度时失败。"
 disable-model-invocation: false
 can-invoke: []
 paths: []
@@ -36,7 +36,7 @@ grade: P0
 - `docs/vnext-blueprint.md §2.20` 定义 Supervisor 对 ask/grill、歧义处理和路由的职责。
 - `docs/vnext-blueprint.md §2.21` 将 `manage-grill` 定义为 P0 澄清 Skill。
 - `docs/vnext-blueprint.md §2.23` 定义 Intent Packet 字段，例如 `probe_depth`、routing 和 Output Packet next actions。
-- `docs/vnext-blueprint.md §2.24` 定义渐进披露（Progressive Disclosure）、Context Pointer、Completion Criterion 和 failure-mode 诊断。
+- `docs/vnext-blueprint.md §2.24` 定义渐进披露（Progressive Disclosure）、Context Pointer、Completion Criterion 和 failure-mode 诊断。本 skill 在 §2.21 的 trigger pattern 为 User-Invokable；Progressive Disclosure 是 §2.24 通用机制。
 - `docs/vnext-blueprint.md §2.25.1` 固定 P0 vNext 目录和 Skill 写作纪律。
 - `docs/vnext-blueprint.md §2.26` 覆盖 GT-01，其中 `manage-grill` 在 `craft-agent-task` 之前解决歧义。
 - `vnext/references/skill-authoring.md §4.1` 定义 completion criteria 纪律；§8 定义 premature completion 诊断。
@@ -44,7 +44,7 @@ grade: P0
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-grill -->
 - Frontmatter 保持 9 个必填 Skill 字段加 `grade`，并保持 `owner_agent: supervisor`、`can-invoke: []`、`scope: project`，且 `shared_with` 不包含 owner。
-- `description` 以 `Progressive Disclosure` 开头，遵循 `X when Y, fails when Z`，并保持一句话且少于 200 字符。
+- `description` 以 `User-Invokable` 开头，遵循 `X when Y, fails when Z`，并保持一句话且少于 200 字符。
 - 五个 SECTION heading 全部按顺序保留，并保留指向现有 blueprint section 的 `SECTION_REF` 锚点。
 - 每个 step 都有 `Completion:` criterion，追问序列识别阻塞点、提出单假设问题、定义收敛，并在路由或升级后停止。
 - 删除测试（Deletion Test）保持 Lose：没有其他 P0 Skill 负责把阻塞性歧义转换为用户提供的路由证据。
