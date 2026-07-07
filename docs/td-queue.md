@@ -193,12 +193,14 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | references-cleanup |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | Codex Batch 7 review 反馈 |
-| 关闭条件 | (1) 确认 8-Bucket（蓝图）为 source of truth；(2) `vnext/references/skill-authoring.md` L188 "6 桶必居其一" 改为 "8 桶必居其一"，补 `write-*` / `help-*` 两桶；(3) 扫描其他 references/skill 文件确保一致 |
+| 关闭条件 | (1) 确认 8-Bucket（蓝图）为 source of truth ✅；(2) `vnext/references/skill-authoring.md` L188 "6 桶必居其一" 改为 "8 桶必居其一"，补 `write-*` / `help-*` 两桶 ✅；(3) 扫描其他 references/skill 文件确保一致 ✅ |
 | 描述 | 蓝图 §2.0 L152 声明 `8-Bucket Closed Scheme`（discover/craft/review/build/evolve/write/manage/help）；但 skill-authoring.md L188 写 `6 桶必居其一`，缺 write/help 两桶。Codex 反馈指出这是"实质问题，不是措辞问题"。倾向：蓝图 8 桶为 SoT（理由：8 桶是 Step 2 封闭命名方案、§2.11 桶分布表支撑、L1537 changelog 明确"封闭"）。 |
-| 决策待确认 | 用户已"同意建议"，Batch 10 启动时再二次确认 |
+| 决策 | 蓝图 §2.0 的 8-Bucket 为 source of truth |
+| Evidence | Batch 10 Commit 1 (`d8d1ffd`): `skill-authoring.md` L188 6 桶 → 8 桶（含 write/help 两桶），Bucket Fit/Misfit/Checklist 同步；与蓝图 §2.0 L152 一致。 |
 | 执行 batch | Batch 10（独立 Codex 执行，不与 ADR 0002 同批） |
 
 ### TD-13 — 移除 vnext/skills/ 中 3 处本机绝对路径硬编码
@@ -221,25 +223,55 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | validator-hardening |
-| 状态 | gated |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | Codex Batch 7 review 反馈 |
-| 关闭条件 | validate-vnext.js 新增 5 类校验：(1) exact file list（manifest 一致性）；(2) P0/P1 允许清单（无未声明 P1/P2/P3）；(3) grade/status enum 校验；(4) can-invoke 前向引用必须指向存在资产；(5) 本机绝对路径扫描禁入 |
+| 关闭条件 | validate-vnext.js 新增 5 类校验：(1) exact file list（manifest 一致性）✅；(2) P0/P1 允许清单（无未声明 P1/P2/P3）✅；(3) grade/status enum 校验 ✅；(4) can-invoke 前向引用必须指向存在资产 ✅；(5) 本机绝对路径扫描禁入 ✅ |
 | 描述 | Codex 反馈：当前 validator 只校验 frontmatter/section/SECTION_REF 存在，能证明"格式像"，不能证明"vNext 可运行"。P0 acceptance 的可机器证明性依赖此升级。需要单独 spec（可能 ADR 0003）。 |
-| 阻塞条件 | TD-15 manifest 文件先落地（exact file list 校验依赖 manifest） |
-| 执行 batch | Batch 10（gated on TD-15） |
+| 阻塞条件 | TD-15 manifest 文件已落地（exact file list 校验依赖 manifest）✅ |
+| Evidence | Batch 10-revised-v2 Commit 4 (`1ba0a60`): `validate-vnext.js` 新增 5 类 surface check (C1-C5)，C4 按方案 a 仅校验 skill `can-invoke`，agent `can_invoke` 作为契约锚点 by design 跳过。 |
+| 执行 batch | Batch 10-revised-v2 |
 
 ### TD-15 — 新增 vnext/_surface.md manifest（vNext 资产允许清单）
 
 | 字段 | 值 |
 | --- | --- |
 | 类别 | manifest-establishment |
+| 状态 | done |
+| 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
+| 来源 | Codex Batch 7 review 建议 2 |
+| 关闭条件 | (1) 新增 `vnext/_surface.md`（或 JSON manifest）— 列允许存在的 Agent / Skill / Kernel / Memory / Reference、grade、status、owner、是否 runtime-visible ✅；(2) 与 ADR 0002 后的 P0 范围一致（12 Skill + 5 Agent + 4 Packet + 4 Memory schema + references）✅；(3) validator 升级（TD-14）依赖此文件作为 source of truth ✅ |
+| 描述 | Codex 建议：当前 vNext 没有明确的"允许存在清单"，所有 manifest count 检查都依赖蓝图章节隐式断言。建立 `_surface.md` 作为机器可读 manifest，是 TD-14 validator 升级的前置条件。 |
+| Evidence | Batch 10-revised Commit 3 (`ad3efc6`): `vnext/_surface.md` 新增，29 行 P0 资产清单（agent=5/skill=12/kernel=4/memory=4/reference=4），observer-only schema，由 TD-14 validator 消费。 |
+| 执行 batch | Batch 10-revised（先于 TD-14） |
+
+### TD-16 — references status 语义偏离（references/*.md 用 P0/P1/active 而非 draft/stable/deprecated）
+
+| 字段 | 值 |
+| --- | --- |
+| 类别 | references-cleanup |
 | 状态 | open |
 | 添加日 | 2026-07-07 |
-| 来源 | Codex Batch 7 review 建议 2 |
-| 关闭条件 | (1) 新增 `vnext/_surface.md`（或 JSON manifest）— 列允许存在的 Agent / Skill / Kernel / Memory / Reference、grade、status、owner、是否 runtime-visible；(2) 与 ADR 0002 后的 P0 范围一致（12 Skill + 5 Agent + 4 Packet + 4 Memory schema + references）；(3) validator 升级（TD-14）依赖此文件作为 source of truth |
-| 描述 | Codex 建议：当前 vNext 没有明确的"允许存在清单"，所有 manifest count 检查都依赖蓝图章节隐式断言。建立 `_surface.md` 作为机器可读 manifest，是 TD-14 validator 升级的前置条件。 |
-| 执行 batch | Batch 10（先于 TD-14） |
+| 来源 | Codex Batch 10-revised Commit 2 review 发现（Bug-3） |
+| 关闭条件 | (1) 决策 references/*.md frontmatter `status` 字段是否纳入 validator enum 校验；(2) 若纳入，扫描所有 references/*.md 把非 enum 值（P0/P1/active 等）改为 draft/stable/deprecated；(3) 若不纳入，在 _surface.md 注释中明确"references status 是 open namespace"；(4) validator（TD-14 C3）相应调整 |
+| 描述 | references/*.md 当前 status 字段值不统一（部分 P0/P1 表示优先级，部分 active 表示状态），与 skill/kernel/memory 的 draft/stable/deprecated enum 不同语义。TD-14 C3 暂跳过 reference 的 status 校验，需独立 ticket 评估：(a) 强制 references 也用 enum；(b) references status 走开放命名（允许 P0/P1/active 等），只在 _surface.md 注释说明 |
+| 决策待确认 | 需要用户决策 |
+| 执行 batch | Batch 11 |
+
+### TD-17 — agent / kernel / memory 是否需要 grade 字段（ROI 评估）
+
+| 字段 | 值 |
+| --- | --- |
+| 类别 | schema-decision |
+| 状态 | open |
+| 添加日 | 2026-07-07 |
+| 来源 | Codex Batch 10-revised Commit 2 review 发现（Bug-2 by design） |
+| 关闭条件 | (1) 评估"agent/kernel/memory 加 grade 字段"的收益（可被 validator C2 强制）vs 成本（frontmatter freeze 扩展、影响所有现有文件）；(2) 若决策加，写 ADR 0003+，更新 scripts/validate-vnext.js AGENT_FIELDS/THREE_FIELD_MANIFEST；(3) 若决策不加，在本 ticket 记录结论与理由，关闭 |
+| 描述 | 当前 frontmatter freeze: SKILL_FIELDS 含 grade，AGENT_FIELDS / THREE_FIELD_MANIFEST 不含。Bug-2 是 by design（agent/kernel/memory 不分级，只 skill 分级）。Batch 10-revised 暂保持现状；TD-17 是回头看是否需要扩展的 ROI 评估 ticket |
+| 决策待确认 | 需要用户决策 |
+| 执行 batch | Batch 11（评估，可能 close 为 wontfix） |
 
 ---
 
@@ -323,3 +355,7 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | TD-10 关闭为 done — 蓝图 §2.25.5 / §2.26.4 checkbox 字符与 walkthrough 实证状态同步 | codex |
 | 2026-07-07 | TD-11 关闭为 done — 蓝图 L5 状态字段对齐 Step 3-D / Step 4 已完成事实，合并关闭 TD-10 | codex |
 | 2026-07-07 | TD-13 关闭为 done — 移除 vnext/skills/ 中 3 处本机绝对路径硬编码，改为 runtime adapter contract；validator 通过 | codex |
+| 2026-07-07 | TD-12 关闭为 done — skill-authoring.md L188 6→8 桶，Bucket Fit/Misfit/Checklist 同步（d8d1ffd） | codex |
+| 2026-07-07 | TD-15 关闭为 done — vnext/_surface.md 新增 29 行 P0 manifest（ad3efc6） | codex |
+| 2026-07-07 | TD-14 关闭为 done — validate-vnext.js 新增 C1-C5 surface check，C4 方案 a 仅校验 skill can-invoke（1ba0a60） | codex |
+| 2026-07-07 | 登记 TD-16（references status 语义偏离）+ TD-17（agent/kernel/memory grade ROI），进 Batch 11 评估 | codex |
