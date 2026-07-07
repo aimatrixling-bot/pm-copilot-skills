@@ -185,18 +185,20 @@ can-invoke:
 
 ### 5.3 Bucket Fit
 
-6 桶必居其一:
+8 桶必居其一（封闭命名方案，与蓝图 §2.0 L152 一致）:
 
 | Bucket | 干什么 | 何时 NOT 用 |
 |---|---|---|
-| `manage` | 意图捕获、文件管理、对话 grill | 真正执行任务时 |
-| `discover` | 检索、研究、收集 | 已经知道做什么时 |
-| `craft` | 写 spec / 原型 / agent-task | 还没搞清意图时 |
-| `review` | 评审、检查 | 还没产出时 |
-| `build` | 提交、部署、运行 | 还没评审通过时 |
-| `evolve` | 记忆、改进、提炼 | 还没产出可沉淀经验时 |
+| `discover` | 信息收集 / 研究 / 调研 / 数据采集 | 已经知道做什么时 |
+| `craft` | 产出可交付文档或规格（spec/wireframe/story/prototype/agent-task/decision/handoff） | 还没搞清意图时 |
+| `review` | 对已成形的产物做评审 / 检查 / 测试 | 还没产出时 |
+| `build` | 实际编码、构建、提交、组件开发 | 还没评审通过时 |
+| `evolve` | Harness 元资产（skill/rule/agent/command/loop/workflow/component/memory）的创建与维护、熵减 | 还没产出可沉淀经验时 |
+| `write` | 自媒体原创与二创（含 extract 系列） | 非内容创作场景 |
+| `manage` | 跨 Agent 通用工具（prompt/file/eval-session/grill/brainstorm） | 真正执行任务时 |
+| `help` | 用户引导、上下文诊断、会话迁移 | 任务已在执行中时 |
 
-落不进 6 桶 = 桶设计或 skill 本身有问题，**不要硬塞**。
+落不进 8 桶 = 桶设计或 skill 本身有问题，**不要硬塞**。
 
 ### 5.4 Scope Honesty
 
@@ -246,7 +248,7 @@ Candidate → P0 → P1 → P2 → P3。降级 = 归档（移到 `_archived/`）
 |---|---|---|
 | **Grade Discipline** | 候选不能跳级到稳定态 | 每次 grade 变更 |
 | **Owner Anchoring** | skill 的 owner 唯一不可漂移 | frontmatter 校验 |
-| **Bucket Fit** | skill 必落 6 桶之一 | 新建 skill 时 |
+| **Bucket Fit** | skill 必落 8 桶之一 | 新建 skill 时 |
 | **Scope Honesty** | scope 字段诚实反映可发布范围 | 公开 / 私有判断 |
 
 ---
@@ -269,7 +271,7 @@ Candidate → P0 → P1 → P2 → P3。降级 = 归档（移到 `_archived/`）
 | **Grade Inflation** | Candidate 直接标 P0 | 强制走 Candidate → P0 |
 | **Owner Drift** | owner 被多次改写 | 重新设计 skill，而非改 owner |
 | **Orphan Skill** | 没 owner_agent | reject 合并 |
-| **Bucket Misfit** | skill 落不进 6 桶 | 拒收；检查桶设计或 skill 设计 |
+| **Bucket Misfit** | skill 落不进 8 桶 | 拒收；检查桶设计或 skill 设计 |
 
 ---
 
@@ -284,7 +286,7 @@ Candidate → P0 → P1 → P2 → P3。降级 = 归档（移到 `_archived/`）
 □ grade 按 Grade Discipline 流转（无跳级）
 □ status 按工程生命周期流转
 □ owner_agent 唯一
-□ bucket 落在 6 桶之一
+□ bucket 落在 8 桶之一
 □ scope 诚实（user 字段不写 global）
 □ 每个 step 有 completion criterion
 □ SKILL.md ≤ 300 行
