@@ -93,11 +93,14 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | references-cleanup |
-| 状态 | open |
+| 状态 | done (obsolete) |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | vnext/references/ 检查发现 |
-| 关闭条件 | 决定保留 / 移除 / 重命名 `ref_impl_specificity` frontmatter 字段；若保留则补 schema 说明 |
+| 关闭条件 | 字段已不存在；未来 references 新字段须先进入 REFERENCE_FIELDS schema（TD-16）✅ |
 | 描述 | 该字段在部分 references 文件出现但无 schema 定义，也无写作规范。属于 ID-1 batch。 |
+| Evidence | 当前 `vnext/references/*.md` 4 个 P0 references 文件（codex-step-a/b、manage-file-scope-decision、skill-authoring）均无 `ref_impl_specificity` 字段；该字段为 ID-1 batch 时代遗留，已被 references frontmatter 重整（TD-16）覆盖。 |
+| Note | 该字段在 P0 references 4 文件中已不存在；若未来 references 引入新字段，须先入 REFERENCE_FIELDS schema (TD-16)。 |
 
 ### TD-06 — 蓝图 §2.25.5 acceptance gap（DONE — 实为 5/6 PASS + 1 自然 defer）
 
@@ -265,12 +268,14 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | schema-decision |
-| 状态 | open |
+| 状态 | done (wontfix) |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | Codex Batch 10-revised Commit 2 review 发现（Bug-2 by design） |
-| 关闭条件 | (1) 评估"agent/kernel/memory 加 grade 字段"的收益（可被 validator C2 强制）vs 成本（frontmatter freeze 扩展、影响所有现有文件）；(2) 若决策加，写 ADR 0003+，更新 scripts/validate-vnext.js AGENT_FIELDS/THREE_FIELD_MANIFEST；(3) 若决策不加，在本 ticket 记录结论与理由，关闭 |
+| 关闭条件 | (1) 评估"agent/kernel/memory 加 grade 字段"的收益（可被 validator C2 强制）vs 成本（frontmatter freeze 扩展、影响所有现有文件）✅；(2) 决策不加，记录结论与理由 ✅ |
 | 描述 | 当前 frontmatter freeze: SKILL_FIELDS 含 grade，AGENT_FIELDS / THREE_FIELD_MANIFEST 不含。Bug-2 是 by design（agent/kernel/memory 不分级，只 skill 分级）。Batch 10-revised 暂保持现状；TD-17 是回头看是否需要扩展的 ROI 评估 ticket |
-| 决策待确认 | 需要用户决策 |
+| 决策 | 保持现状，不为 agent/kernel/memory 增加 `grade` frontmatter 字段。Agent 是契约锚点（不分级），kernel/memory 是被动 schema（被 agent 消费，不需要自评 grade）。需要分级时通过 `_surface.md` 的 grade 列临时标注（observer-only，不进 frontmatter）。frontmatter freeze 成本 > 强制收益。 |
+| Evidence | TD-14 C2 已强制 skill grade ∈ {P0, P1}；agent/kernel/memory 分级无运营场景。未来若需要，走 `_surface.md` observer，不进 frontmatter。 |
 | 执行 batch | Batch 11（评估，可能 close 为 wontfix） |
 
 ---
@@ -359,3 +364,5 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | TD-15 关闭为 done — vnext/_surface.md 新增 29 行 P0 manifest（ad3efc6） | codex |
 | 2026-07-07 | TD-14 关闭为 done — validate-vnext.js 新增 C1-C5 surface check，C4 方案 a 仅校验 skill can-invoke（1ba0a60） | codex |
 | 2026-07-07 | 登记 TD-16（references status 语义偏离）+ TD-17（agent/kernel/memory grade ROI），进 Batch 11 评估 | codex |
+| 2026-07-07 | TD-05 close obsolete — ref_impl_specificity 字段在 P0 references 已不存在，被 TD-16 重整覆盖 | codex |
+| 2026-07-07 | TD-17 close wontfix — agent/kernel/memory 不分级；frontmatter freeze 成本 > 收益；需要时走 _surface.md observer | codex |
