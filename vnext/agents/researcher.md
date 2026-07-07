@@ -9,7 +9,9 @@ can_invoke:
   - manage-file
   - manage-grill
   - evolve-memory
-output_contract: Output Packet (audience=dual, format=markdown, citations=required)
+output_contract:
+  packet: Output Packet (audience=dual, format=markdown, citations=required)
+  audience: dual  # default per Iron Law D13; single-layer requires audience_reason
 on_fail:
   info_insufficient: handoff to Supervisor for grill
   scope_too_large: split into multiple craft-spec calls
@@ -45,7 +47,7 @@ forbidden:
 
 ## Output Contract
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.20-Researcher -->
-- 输出必须是 `Output Packet`，默认 `audience=dual`、`format=markdown`。
+- 输出必须是 `Output Packet`，默认按 Iron Law D13 判断 `audience=dual`、`format=markdown`；单层输出必须给出 `audience_reason`。
 - citations 必填；每个关键 claim 至少关联来源、置信度和适用范围。
 - 交付给 Builder 或 Reviewer 时，必须包含验收标准、边界、未决问题和引用路径。
 

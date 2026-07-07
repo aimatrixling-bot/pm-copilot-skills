@@ -410,7 +410,7 @@
 | `format` | enum | `text` / `markdown` / `code` / `json` / `html` / `pdf` / `slides` | 输出载体类型 |
 | `risk` | enum | `none` / `reversible` / `destructive` | 是否触及红线（Destructive 必须人类确认） |
 | `citations` | list[string] | 路径或 URL | 引用的来源证据 |
-| `audience` | enum | `human` / `agent` / `dual` | 输出面向对象（D10） |
+| `audience` | enum | `human` / `agent` / `dual` | 输出面向对象（D10）；何时 `dual` 由 Iron Law D13 强制（见 §2.14a） |
 
 > `audience` 来自灵魂特质 #10「用户思维与体验品牌」的推论：Human-facing 输出（PRD/文章/UI）需考虑用户语言；Agent-facing 输出（task pack/spec/handoff）需考虑可机读；Dual 同时满足两者。Audience 决定 Skill 调用哪个 Template 子集。
 
@@ -467,6 +467,7 @@
 | D10 | **Output Packet 元数据 5 → 6 项**，新增 `audience: human/agent/dual` | ✅ 确认 |
 | D11 | **evolve-doc-check + evolve-kb-check 合并入 evolve-harness-audit 子模式**（type=docs / type=kb）；既有 doc-consistency-check / kb-health-check skill 内容保留为 references/{doc,kb}-checklist.md；与 D6 evolve-memory 单一化逻辑一致 | ✅ 确认 |
 | D12 | **吸收 mattpocock writing-great-skills 为 vNext skill 写作规范 source of truth**：§2.0 `disable-model-invocation` 升级为第 9 必填字段 + description 三规则（前置 leading word / 一个 branch 一个 trigger / 删 body 重复 identity）；§2.21 step-based skill 必含 completion criterion；§2.18 新增 B15 borrow；§2.5 evolve-skill 把 11 leading words + 4 failure modes 作为 acceptance check + 审计维度；中文细则沉淀 `references/skill-authoring.md`（Step 3-D 后）；新增 §2.24 完整落地 | ✅ 确认 |
+| D13 | **Audience Layering Iron Law** — AI 输出前必须判断受众，混合必须分层（人话先 / 技术后） | ✅ 采纳 |
 
 ### 2.13 灵魂特质 → 架构层级落地映射
 
@@ -483,7 +484,7 @@
 | 7 | Prototype 交付 | L0 Builder Agent + craft-prototype Skill | Builder 默认 P0 能力 |
 | 8 | Product 交付（11 子项：Frontend/Backend/API/Database/Auth/Storage/Deployment/Env Config/Observability/Test-QA/Release Notes） | L0 Builder Agent + build-* 桶 | 11 子项作为 build-* 桶子分类的检查清单，非 11 个 Skill |
 | 9 | PPT（不常用） | Output Packet.format=slides | 不独立成桶 |
-| 10 | 用户思维与品牌体验（Taste / Human-facing vs Agent-facing） | L1 Output Packet.audience 字段（D10） | audience=human 走用户语言模板；agent 走可机读模板 |
+| 10 | 用户思维与品牌体验（Taste / Human-facing vs Agent-facing） | L1 Iron Law D13 + Output Packet.audience 字段（D10） | audience=human 走用户语言模板；agent 走可机读模板；dual 由 Iron Law D13 强制分层 |
 | 11 | 认真负责 | L3 Harness Swiss Cheese 5 层护栏 | 多层叠层防御 |
 | 12 | 自动识别吸收 | L0 Supervisor 路由 + L4 Memory feedback 类 | Supervisor 主动识别可用 borrow；feedback memory 触发沉淀 |
 | 13 | 持续自我改进 | L0 Evolver Agent + Meta-Review Loop | Evolver 主职责 |
@@ -513,6 +514,34 @@ create_gate:
   - prove_no_archive: [归档清单检查结果]
   - prove_no_clarify: [意图澄清对话记录]
   - scope: project | global   # global 必须 human-confirm
+```
+
+### 2.14a Audience Layering Iron Law（D13）
+
+> **AI 在每次输出前必须判断受众：人 / Agent / 混合。**
+>
+> - 单一受众（纯技术对谈 / 纯闲聊 / grill 质询 / 用户主动问技术细节）→ 单层输出即可
+> - 混合受众（Codex prompt / 跨 Agent 交付 / 给非程序员的技术方案 / 涉及 schema 或代码变更的说明）→ **必须分层**：人话层（先）+ 技术层（后）
+> - **不判断就输出 = 违反 Iron Law**（即使最终选择单层）
+
+**与 D9（Evolver Iron Law）的关系**：
+
+| Iron Law | 约束什么 | 不约束什么 |
+| --- | --- | --- |
+| D9（如无必要勿增实体） | 创建前必须证明必要性 | 不禁止创建 |
+| D13（受众分层） | 输出前必须识别受众、混合必须分层 | 不强制每次都两层 |
+
+D13 仿照 D9 的"约束判断、不约束形式"模式。grill 不需要两层（受众单一）；Codex prompt 必须两层（混合受众）。
+
+```yaml
+audience_layering:
+  audience: human | agent | dual
+  - if dual:
+      human_layer_first: true
+      human_layer_avoids: [schema_key, commit_hash, field_name, validator_name, long_file_path]
+      tech_layer_for: agent_or_executor
+  - if single:
+      audience_reason: <一句话说明为何受众单一>
 ```
 
 ### 2.15 P0 最小闭环定义
@@ -841,6 +870,8 @@ forbidden:
 > **Step D 清理说明（追溯：`vnext/references/codex-step-b-review-feedback.md` §C.1 / §C.2）**：P0 目录树只生成 12 个 P0 Skill 文件；`can-invoke` 可以保留已分级的 P1+ Skill 前向引用作为演化钩子，但不得把该引用计入 P0 文件清单。Writer / Helper 已按 D8 降级为 Skill bucket，不再作为 P0 Agent 出现在 `shared_with`。
 >
 > **语言策略说明**：P0 SKILL 正文以中文为主；英文契约层（frontmatter 字段名、Section heading、leading word、Failure Mode signal name 等）规格见 `vnext/references/skill-authoring.md §13`。下方 description 字段采用"英文首词 + 中文主体"格式，遵循 §13.5 公式。
+>
+> **D13 受众分层要求**：面向用户的 Skill（`output_contract.audience ∈ {human, dual}`）在 Completion Criteria 中必须包含 audience 判断（Iron Law D13）。
 
 ```yaml
 # 1. manage-prompt

@@ -10,7 +10,9 @@ can_invoke:
   - craft-agent-task
   - manage-file
   - evolve-memory
-output_contract: Output Packet (audience=dual, format=code, risk=reversible|destructive)
+output_contract:
+  packet: Output Packet (audience=dual, format=code, risk=reversible|destructive)
+  audience: dual  # default per Iron Law D13; single-layer requires audience_reason
 on_fail:
   spec_unclear: handoff back to Researcher via Supervisor
   capability_limit: handoff to Supervisor for human-escalation
@@ -46,7 +48,7 @@ forbidden:
 
 ## Output Contract
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.20-Builder -->
-- 输出必须是 `Output Packet`，默认 `audience=dual`、`format=code|markdown`。
+- 输出必须是 `Output Packet`，默认按 Iron Law D13 判断 `audience=dual`、`format=code|markdown`；单层输出必须给出 `audience_reason`。
 - metadata 必须标注 `risk=none|reversible|destructive`，并列出验证命令或无法验证原因。
 - 交付实现时必须包含文件变更、行为变化、测试结果、风险假设和下一步。
 

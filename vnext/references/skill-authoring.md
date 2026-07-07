@@ -448,6 +448,15 @@ vNext 以中文为主体语言，英文作为机器解析契约层。理由：
 - 不在英文契约元素中混用中英文标点
 - 不修改已发布的 Kernel Packets / Memory schemas（它们属于机器契约层）
 
+## 14. 受众分层完成标准（Iron Law D13）
+
+> 面向用户的 Skill（`output_contract.audience ∈ {human, dual}`）必须在 Completion Criteria 中：
+> 1. 显式列出 audience 判断条件（单一受众场景 → 单层；混合受众 → dual）
+> 2. dual 场景定义人话层最小集：要改什么 / 为什么 / 什么效果 / 风险
+> 3. 引用 Iron Law D13（蓝图 §2.14a）作为强制来源
+
+单一受众场景（grill / 纯技术对谈）允许单层，但 Completion Criteria 须注明 `audience_reason`。
+
 ---
 
 ## 附录 A: 模板骨架（写新 SKILL.md 时复用）

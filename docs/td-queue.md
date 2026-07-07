@@ -305,14 +305,16 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | iron-law-establishment |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | `docs/vnext-decisions/0003-audience-layering-iron-law.md`（ADR 0003）；用户 2026-07-07 拍板"动 Iron Law（A 方案）"，要求灵魂特质级落地，但明确"不是每次回复都必须两层" |
 | 关闭条件 | (1) ADR 0003 Parts A-F 在单次 commit 完成：蓝图 §2.9/§2.12/§2.13/§2.14/§2.21 同步 ✅；(2) 新增 `vnext/references/audience-layering.md`（触发条件表 + 示例）✅；(3) `vnext/references/skill-authoring.md` 新增 §X 受众分层完成标准 ✅；(4) 5 个 Agent output_contract 显式声明 `audience: dual` 默认 ✅；(5) `vnext/_surface.md` references 行 +1 ✅；(6) `npm run validate:builder-os` 通过 ✅ |
 | 描述 | 把 Claude-Codex 协作中已验证的"人话层 + 技术层"两层输出模式升级为 D13 Iron Law（与 D9 Evolver Iron Law 对称：约束判断、不约束形式）。复用 D10 audience enum（human/agent/dual），通过自检 YAML `audience_reason` 字段保留执行弹性（grill / 简单问答等单一受众场景允许单层）。 |
 | 执行 spec | `docs/vnext-decisions/0003-audience-layering-iron-law.md` Parts A-F |
 | 执行 batch | Batch 11C（branch `vnext/batch11c-td19-adr0003`） |
 | 关联 | memory/communication-style.md（Claude-Codex 两层输出实践来源）；灵魂特质 #10；D10 Output Packet.audience |
+| Evidence | Batch 11C 单 commit 落地：蓝图 D13 / §2.14a / §2.9 / §2.13 / §2.21 同步；新增 `vnext/references/audience-layering.md`；`skill-authoring.md` 新增 §14；5 个 Agent output_contract 加 `audience: dual` 默认；`_surface.md` total 29→30、reference 4→5；`node scripts/validate-vnext.js` 与 `npm run validate:builder-os` 通过。 |
 
 ---
 
@@ -408,3 +410,4 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | TD-03 close done — references/ 路径术语统一：skill-local vs vnext-global 显式区分 | codex |
 | 2026-07-07 | TD-16 close done — references frontmatter 按 type 子类冻结（design-decision/reviewer-feedback/spec），validator 接入 validateReferencesByType | codex |
 | 2026-07-07 | 登记 TD-19 — Audience Layering Iron Law D13（ADR 0003），进 Batch 11C；状态 open | claude + max.ling |
+| 2026-07-07 | TD-19 close done — ADR 0003 / D13 Audience Layering Iron Law 落地；蓝图、reference、Agent output_contract、_surface.md 同步 | codex |

@@ -9,8 +9,10 @@ can_invoke:
   - evolve-harness-audit
   - manage-eval-session
 output_contract:
-  - Output Packet (audience=agent)
-  - Iron_Law_Self_Check: required YAML
+  packets:
+    - Output Packet (audience=agent)
+    - Iron_Law_Self_Check: required YAML
+  audience: dual  # default per Iron Law D13; single-layer requires audience_reason
 on_fail:
   iron_law_violation: refuse creation, output reject_reason
   global_scope_change: wait for human confirmation
@@ -46,7 +48,7 @@ forbidden:
 
 ## Output Contract
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.20-Evolver -->
-- 输出必须是 `Output Packet`，默认 `audience=agent`，并附 Iron Law 自检 YAML。
+- 输出必须是 `Output Packet`，默认按 Iron Law D13 判断 `audience=dual`，并附 Iron Law 自检 YAML；单层输出必须给出 `audience_reason`。
 - 自检至少覆盖复用优先、证据来源、global scope 确认、删除风险和验证命令。
 - 若拒绝创建或修改，输出 reject_reason、替代路径和需要人类决策的点。
 

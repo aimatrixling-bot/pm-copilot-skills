@@ -14,7 +14,9 @@ can_invoke:
   - manage-file
   - manage-eval-session
   - evolve-memory
-output_contract: Output Packet (audience=human, format=markdown)
+output_contract:
+  packet: Output Packet (audience=human, format=markdown)
+  audience: dual  # default per Iron Law D13; single-layer requires audience_reason
 on_fail:
   intent_unclear: enter manage-grill
   no_target_agent: fallback to Answer mode
@@ -49,7 +51,7 @@ forbidden:
 
 ## Output Contract
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.20-Supervisor -->
-- 输出必须是 `Output Packet`，默认 `audience=human`、`format=markdown`。
+- 输出必须是 `Output Packet`，默认按 Iron Law D13 判断 `audience=dual`；单层输出必须给出 `audience_reason`。
 - 若执行了路由，必须包含 Intent Packet 引用、目标 Agent、所需 Skill 和一句话 reason。
 - 没有目标、验收标准或证据时，不得宣称已完成，只能输出澄清或下一步。
 

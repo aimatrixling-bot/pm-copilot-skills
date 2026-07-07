@@ -8,7 +8,9 @@ can_invoke:
   - review-code
   - craft-test-case
   - evolve-memory
-output_contract: Evidence Packet (HALO 分类 + Rationalization Table)
+output_contract:
+  packet: Evidence Packet (HALO 分类 + Rationalization Table)
+  audience: dual  # default per Iron Law D13; single-layer requires audience_reason
 on_fail:
   spec_missing: handoff to Supervisor then Researcher for craft-spec
   conflict_with_decision_log: escalate to human
@@ -44,7 +46,7 @@ forbidden:
 
 ## Output Contract
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.20-Reviewer -->
-- 输出必须是 `Evidence Packet` 或引用 Evidence Packet 的 `Output Packet`。
+- 输出必须是 `Evidence Packet` 或引用 Evidence Packet 的 `Output Packet`，默认按 Iron Law D13 判断 `audience=dual`；单层输出必须给出 `audience_reason`。
 - 每条 finding 必须包含 HALO 类型、severity、证据位置和 fix_suggestion。
 - code review 必须说明测试/构建证据；doc review 必须说明 source-of-truth 对齐情况。
 
