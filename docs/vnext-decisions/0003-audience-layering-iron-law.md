@@ -1,7 +1,7 @@
 ---
 title: Audience Layering Iron Law（D12）— AI 输出受众分层
 adr_id: 3
-status: Proposed
+status: Accepted
 phase_target: vnext-p0
 created: 2026-07-07T00:00:00.000Z
 deciders:
@@ -21,13 +21,15 @@ supersedes: []
 
 ## Status
 
-Proposed — 用户 2026-07-07 拍板"动 Iron Law（A 方案）"，要求灵魂特质级别落地，但明确"不是每次回复都必须两层"。
+Accepted — 用户 2026-07-07 拍板"动 Iron Law（A 方案）"，要求灵魂特质级别落地，但明确"不是每次回复都必须两层"。
 
 用户原话：
 
 > "我更倾向于A，因为这就应该是AI Builder OS的灵魂特质——但是，也不是么一次回复响应都必须有人话层+技术层，例如简单的问答；还有grill等，还是要具体情况具体分析具体对待。"
 
 > "我们不抗拒调整元规则，如果确实有必要的话。"
+
+2026-07-07 用户 Accept ADR 0003，授权派 Codex 执行 Batch 11C（commit ec41122 → Batch 11C 落地）。
 
 ## Context
 
@@ -242,3 +244,4 @@ Refs: ADR 0003, TD-19, memory/communication-style.md
 | 日期 | 变更 | 操作者 |
 | --- | --- | --- |
 | 2026-07-07 | 初始版本，Proposed 状态；用户同意 Iron Law 路径（A 方案）；待 Codex 执行 | claude + max.ling |
+| 2026-07-07 | 用户 Accept；状态 Proposed → Accepted；commit ec41122（登记 + TD-19）→ 待 Codex 执行 Parts A-F | claude + max.ling |
