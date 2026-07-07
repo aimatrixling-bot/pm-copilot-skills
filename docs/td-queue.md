@@ -111,7 +111,7 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 关闭条件 | §2.25.5 的 6 条验收标准逐项验证 ✅ |
 | Evidence | 2026-07-07 walkthrough：(1) vnext 目录 28 文件骨架 ✅ (2) frontmatter 9 字段 + SECTION_REF 由 validate-vnext.js 实证 ✅ (3) vnext/README.md 5 sections ✅ (4) 三 _index.md 完整可导航 ✅ (5) validator 已挂接 vnext/（TD-01 evidence）✅ (6) GT-01~08 跑通 = Step 4 任务，蓝图原文标注"非 3-D 范围"，自然 defer 到 Step 4 ⏸ |
 | 教训 | prior session summary 描述"2/6 ❌"未经实证即登记；实际只有 checkbox 字符未改，内容已全部满足。注册 acceptance-gap TD 必须先逐项 walkthrough。 |
-| 残留 | 蓝图 §2.25.5 的 6 个 `[ ]` checkbox 字符未勾选 — 文档漂移问题（与 TD-07 合并处理）。 |
+| 残留 | 已由 TD-10/TD-11 在 Batch 9 Commit 2 关闭：蓝图 §2.25.5 的 6 个 checkbox 字符已同步为 `[x]`。 |
 
 ### TD-07 — 蓝图 §2.26.4 Step 4 acceptance gap（DONE — 实为 5/5 PASS）
 
@@ -125,7 +125,7 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 关闭条件 | §2.26.4 的 5 条验收标准逐项验证 ✅ |
 | Evidence | 2026-07-07 walkthrough：(1) GT-01~08 每条 5 字段（Trigger/Agent 链/Skill 链/Packet/Pass-Fail）全填 ✅（蓝图 line 1330-1416）(2) 5 Agent / 11 Skill / 4 Packet / 4 Memory schema 全覆盖 ✅（line 1326 明确声明）(3) v1 8 个 builder-* 在 §2.26.2 映射表全部找到归属 ✅（line 1424-1431）(4) T1/T2/T3/T4 四组触发条件均有"客观判定方式"列，无主观词 ✅（line 1444-1479）(5) §2.26.3 P1 候选 13 项与 §2.17 Deletion Test 推荐数量一致、顺序一致 ✅ |
 | 教训 | 与 TD-06 同 — prior session summary 描述"全部未勾选"基于 checkbox 字符状态而非内容状态。蓝图 checkbox 是文档惯例，验收应以内容实证为准。 |
-| 残留 | 蓝图 §2.26.4 的 5 个 `[ ]` checkbox 字符未勾选 — 文档漂移问题。**建议合并 TD-06/TD-07 残留为 1 个新 TD**：蓝图 checkbox 同步更新（见 §1 TD-10）。 |
+| 残留 | 已由 TD-10/TD-11 在 Batch 9 Commit 2 关闭：蓝图 §2.26.4 的 5 个 checkbox 字符已同步为 `[x]`。 |
 
 ### TD-08 — evolve-skill 提升至 P0（原"越界 29 vs 28 files"，决策为 Option B 纳入）
 
@@ -165,24 +165,28 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | doc-drift |
-| 状态 | in_progress |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | TD-06 / TD-07 walkthrough 残留（合并） |
-| 关闭条件 | 蓝图 §2.25.5（6 项）与 §2.26.4（5 项）的 `[ ]` checkbox 字符全部更新为 `[x]`，且与内容实证状态一致 |
+| 关闭条件 | 蓝图 §2.25.5（6 项）与 §2.26.4（5 项）的 `[ ]` checkbox 字符全部更新为 `[x]`，且与内容实证状态一致 ✅ |
 | 描述 | TD-06/TD-07 walkthrough 已实证两节内容全部 PASS。本 TD 与 TD-11（蓝图文件头状态陈旧）合并为单一 doc-drift 任务，在 Batch 9 Commit 2 一次性处理。 |
+| Evidence | Batch 9 Commit 2：`docs/vnext-blueprint.md` §2.25.5 6 项 checkbox 与 §2.26.4 5 项 checkbox 已同步为 `[x]`；验证摘要见本批最终报告。 |
 
 ### TD-11 — 蓝图 doc-drift 集中清理（文件头状态 + §2.25.5/§2.26.4 checkbox）
 
 | 字段 | 值 |
 | --- | --- |
 | 类别 | doc-drift |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | Codex Batch 7 review 反馈 + TD-06/TD-07 walkthrough 残留 |
-| 关闭条件 | (1) 蓝图 L5 `**状态**` 字段更新为 `Step 1-4 完成（详见 changelog）`；(2) §2.25.5 acceptance 6 个 `[ ]` → `[x]`；(3) §2.26.4 acceptance 5 个 `[ ]` → `[x]`；(4) 与内容实证状态一致 |
+| 关闭条件 | (1) 蓝图 L5 `**状态**` 字段更新为 `Step 1-4 完成（详见 §3 Change Log）` ✅；(2) §2.25.5 acceptance 6 个 `[ ]` → `[x]` ✅；(3) §2.26.4 acceptance 5 个 `[ ]` → `[x]` ✅；(4) 与内容实证状态一致 ✅ |
 | 描述 | Codex 反馈指出：蓝图 L5 `Step 1 + Step 2 完成，Step 3 + Step 4 待生成` 与 L1542-1543 changelog 标注的 `Step 3-D ✅ / Step 4 ✅` 矛盾。同时 TD-06/TD-07 walkthrough 已实证 §2.25.5/§2.26.4 内容全部 PASS，但 checkbox 字符仍为 `[ ]`。本 TD 合并处理。 |
 | 执行 spec | Batch 9 Commit 2（ADR 0002 + TD-11 + TD-13 同次 Codex 执行） |
 | 关联 | 合并 TD-10（关闭 TD-10 时同步关闭本 TD） |
+| Evidence | Batch 9 Commit 2：`docs/vnext-blueprint.md` L5、§2.25.5、§2.26.4、§3 Change Log 已同步；`npm run validate:builder-os` 通过。 |
 
 ### TD-12 — taxonomy 不一致（蓝图 §2.0 8-Bucket vs skill-authoring.md L188 6 桶）
 
@@ -314,3 +318,5 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | 登记 TD-11~TD-15（Codex Batch 7 review 反馈拆解）：TD-11 doc-drift / TD-12 taxonomy / TD-13 portability / TD-14 validator-hardening / TD-15 manifest；TD-10 合并至 TD-11 | claude + max.ling |
 | 2026-07-07 | 用户同意 Batch 9 三 commit 一起交 Codex（ADR 0002 / TD-11 / TD-13）；TD-12/14/15 进 Batch 10 | max.ling |
 | 2026-07-07 | TD-08 关闭为 done — ADR 0002 事实纳入：evolve-skill 提升至 P0，P0 Skill 11→12，manifest 28→29；验证输出见 Batch 9 Commit 1 记录 | codex |
+| 2026-07-07 | TD-10 关闭为 done — 蓝图 §2.25.5 / §2.26.4 checkbox 字符与 walkthrough 实证状态同步 | codex |
+| 2026-07-07 | TD-11 关闭为 done — 蓝图 L5 状态字段对齐 Step 3-D / Step 4 已完成事实，合并关闭 TD-10 | codex |

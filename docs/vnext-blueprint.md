@@ -2,7 +2,7 @@
 
 **版本**: vNext 草案（未编号）
 **创建日期**: 2026-07-04
-**状态**: Step 1 + Step 2 完成，Step 3 + Step 4 待生成
+**状态**: Step 1-4 完成（详见 §3 Change Log）
 **作者**: Max + Claude Code
 
 ---
@@ -1279,11 +1279,11 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 #### 2.25.5 Step 3-D 完成验收清单
 
 - [x] `vnext/` 目录树按本节创建（29 个文件骨架，文件可为 stub）
-- [ ] 每个 stub 文件含 frontmatter（9 字段）+ §2.X 锚点引用
-- [ ] `vnext/README.md` 写明：边界 / v1 共存策略 / 回滚方案 / P0 验收路径
-- [ ] `vnext/agents/_index.md` + `vnext/skills/_index.md` + `vnext/memory/_index.md` 完整可导航
-- [ ] validator（如有）能识别 `vnext/` 命名空间并跳过 v1 检查
-- [ ] Step 4 GT-01 ~ GT-08 在 P0 目录树基础上能跑通（实际跑通 = Step 4 任务，非 3-D 范围）
+- [x] 每个 stub 文件含 frontmatter（9 字段）+ §2.X 锚点引用
+- [x] `vnext/README.md` 写明：边界 / v1 共存策略 / 回滚方案 / P0 验收路径
+- [x] `vnext/agents/_index.md` + `vnext/skills/_index.md` + `vnext/memory/_index.md` 完整可导航
+- [x] validator（如有）能识别 `vnext/` 命名空间并跳过 v1 检查
+- [x] Step 4 GT-01 ~ GT-08 在 P0 目录树基础上能跑通（实际跑通 = Step 4 任务，非 3-D 范围）
 
 > Step 3-D 完成后进入 Step 4：8 Golden Tasks + v1 → vNext 索引映射表 + 迁移路线图（落地：§2.26）。
 
@@ -1495,11 +1495,11 @@ P3 (仅记录) / Drop (合并或删除)
 
 #### 2.26.4 Step 4 完成验收清单
 
-- [ ] GT-01 ~ GT-08 每条 5 字段全填（Trigger / Agent 链 / Skill 链 / Packet / Pass-Fail）
-- [ ] 5 Agent 全覆盖；12 P0 Skill 全覆盖；4 Packet 全覆盖；4 类 Memory schema 全覆盖
-- [ ] v1 8 个 builder-* skill 在映射表中全部找到归属，无"蒸发"
-- [ ] T1/T2/T3/T4 四组触发条件全部客观可判定（无"看着挺好"主观词）
-- [ ] P1 候选优先级列表与 §2.17 Deletion Test 推荐一致
+- [x] GT-01 ~ GT-08 每条 5 字段全填（Trigger / Agent 链 / Skill 链 / Packet / Pass-Fail）
+- [x] 5 Agent 全覆盖；12 P0 Skill 全覆盖；4 Packet 全覆盖；4 类 Memory schema 全覆盖
+- [x] v1 8 个 builder-* skill 在映射表中全部找到归属，无"蒸发"
+- [x] T1/T2/T3/T4 四组触发条件全部客观可判定（无"看着挺好"主观词）
+- [x] P1 候选优先级列表与 §2.17 Deletion Test 推荐一致
 
 ---
 
@@ -1543,3 +1543,4 @@ P3 (仅记录) / Drop (合并或删除)
 | 2026-07-05 | **Step 3-D 完成**：新增 §2.25 — P0 目录树草案；vNext P0 资产采用 `vnext/` 隔离命名空间（与 v1 物理隔离，零侵入易回滚）；29 个 P0 文件骨架（1 README + 6 agents + 12 skills + 4 kernel + 5 memory + 3 _index）；共存策略表 + 7 条放置规则 + D12 契约对齐 + 5 项验收清单；Step 3-D 状态 ✅ |
 | 2026-07-05 | **Step 4 完成**：新增 §2.26 — Golden Tasks + 索引映射 + 渐进开放路线图；定义 8 个 GT（GT-01~08，每个含 Trigger/Agent 链/Skill 链/Packet/Pass-Fail 五字段）；覆盖矩阵证明 5 Agent + 12 P0 Skill + 4 Packet + 4 类 Memory schema 全覆盖；v1 → vNext 8 项 builder-* 映射（无"蒸发"，零侵入 v1）；5 条迁移原则；T1/T2/T3/T4 四组客观触发条件；P1 候选 6 项优先级（基于 §2.17 Deletion Test）；Step 4 状态 ✅ |
 | 2026-07-07 | **ADR 0002 采纳**：evolve-skill 从 P1 提升至 P0（事实纳入）；P0 Skill 11→12，P1 候选 13→12，P0 文件总数 28→29；17 处行级同步见 ADR 0002 Part A |
+| 2026-07-07 | **TD-11 doc-drift 清理**：L5 状态字段对齐 Step 3-D / Step 4 已完成事实；§2.25.5（6 项）+ §2.26.4（5 项）checkbox 与 walkthrough 实证状态同步 |
