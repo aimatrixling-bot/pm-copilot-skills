@@ -1,5 +1,5 @@
 ---
-title: Audience Layering Iron Law（D12）— AI 输出受众分层
+title: Audience Layering Iron Law（D13）— AI 输出受众分层
 adr_id: 3
 status: Accepted
 phase_target: vnext-p0
@@ -17,7 +17,7 @@ related_td: TD-19
 supersedes: []
 ---
 
-# ADR 0003 — Audience Layering Iron Law（D12）
+# ADR 0003 — Audience Layering Iron Law（D13）
 
 ## Status
 
@@ -61,7 +61,7 @@ Batch 11B 收尾时，Claude 在向用户（非程序员）解释 Codex 执行�
 
 ## Decision
 
-### D1 — 新增 D12: Audience Layering Iron Law
+### D1 — 新增 D13: Audience Layering Iron Law
 
 **Iron Law 文字**：
 
@@ -76,21 +76,21 @@ Batch 11B 收尾时，Claude 在向用户（非程序员）解释 Codex 执行�
 | Iron Law | 约束什么 | 不约束什么 |
 | --- | --- | --- |
 | D9（如无必要勿增实体） | 创建前必须证明必要性 | 不禁止创建 |
-| D12（受众分层） | 输出前必须识别受众、混合必须分层 | 不强制每次都两层 |
+| D13（受众分层） | 输出前必须识别受众、混合必须分层 | 不强制每次都两层 |
 
-D12 仿照 D9 的"约束判断、不约束形式"模式。grill 不需要两层（受众单一）；Codex prompt 必须两层（混合受众）。
+D13 仿照 D9 的"约束判断、不约束形式"模式。grill 不需要两层（受众单一）；Codex prompt 必须两层（混合受众）。
 
-### D2 — D12 在蓝图中的承载位置
+### D2 — D13 在蓝图中的承载位置
 
 | 章节 | 改动 |
 | --- | --- |
-| §2.12 决策补录 | 追加 D12 行 |
-| §2.13 灵魂特质 #10 | 落地层从 "L1 Output Packet.audience 字段（D10）" 升级为 "L1 Iron Law D12 + Output Packet.audience 字段（D10）" |
-| 新增 §2.14.1 或 §2.14 后插入 §2.14a | "Audience Layering Iron Law（D12）"全文 + 自检 YAML |
-| §2.9 Output Packet | audience 字段说明补一行"何时 dual 由 Iron Law D12 强制" |
+| §2.12 决策补录 | 追加 D13 行 |
+| §2.13 灵魂特质 #10 | 落地层从 "L1 Output Packet.audience 字段（D10）" 升级为 "L1 Iron Law D13 + Output Packet.audience 字段（D10）" |
+| 新增 §2.14.1 或 §2.14 后插入 §2.14a | "Audience Layering Iron Law（D13）"全文 + 自检 YAML |
+| §2.9 Output Packet | audience 字段说明补一行"何时 dual 由 Iron Law D13 强制" |
 | §2.21 P0 Skill frontmatter | 加一行注释："面向用户的 Skill 在 Completion Criteria 中必须包含 audience 判断" |
 
-### D3 — D12 自检 YAML（写入 §2.14 或 §2.21 模板）
+### D3 — D13 自检 YAML（写入 §2.14 或 §2.21 模板）
 
 ```yaml
 audience_layering:
@@ -107,10 +107,10 @@ audience_layering:
 
 | 载体 | 文件 | 内容 |
 | --- | --- | --- |
-| Iron Law 全文 | `docs/vnext-blueprint.md` 新增 §2.14a 或 §2.14 末尾追加 | D12 完整文字 + 自检 YAML |
-| 决策记录 | §2.12 表格追加 D12 行 | 编号 / 内容 / 状态 |
-| 灵魂特质升级 | §2.13 #10 落地层 | "L1 Iron Law D12 + Output Packet.audience（D10）" |
-| Output Packet 关联 | §2.9 audience 字段说明 | "D12 决定何时 dual" |
+| Iron Law 全文 | `docs/vnext-blueprint.md` 新增 §2.14a 或 §2.14 末尾追加 | D13 完整文字 + 自检 YAML |
+| 决策记录 | §2.12 表格追加 D13 行 | 编号 / 内容 / 状态 |
+| 灵魂特质升级 | §2.13 #10 落地层 | "L1 Iron Law D13 + Output Packet.audience（D10）" |
+| Output Packet 关联 | §2.9 audience 字段说明 | "D13 决定何时 dual" |
 | 执行参考 | `vnext/references/audience-layering.md`（新建） | 触发条件表 + 示例（引用 memory/communication-style.md） |
 
 ### D5 — P0 Skill Completion Criteria 扩展
@@ -120,7 +120,7 @@ audience_layering:
 > 面向用户的 Skill（output_contract.audience ∈ {human, dual}）必须在 Completion Criteria 中：
 > 1. 显式列出 audience 判断条件
 > 2. dual 场景定义人话层最小集（要改什么 / 为什么 / 什么效果 / 风险）
-> 3. 引用 Iron Law D12 作为强制来源
+> 3. 引用 Iron Law D13 作为强制来源
 
 ### D6 — Agent output_contract 加固
 
@@ -134,7 +134,7 @@ audience_layering:
 | Reviewer | dual | 评审意见对人 + 修正指令对 Agent |
 | Evolver | dual | 元资产变更对人 + YAML 自检对 Agent |
 
-> 默认 dual 不意味着每次都两层——D12 自检 YAML 的 `audience_reason` 字段允许 Agent 在单一受众场景降级为单层（必须给出理由）。
+> 默认 dual 不意味着每次都两层——D13 自检 YAML 的 `audience_reason` 字段允许 Agent 在单一受众场景降级为单层（必须给出理由）。
 
 ## Consequences
 
@@ -143,7 +143,7 @@ audience_layering:
 - ✅ 把零散的 audience 元素（D10 / 灵魂特质 #10 / Claude memory）升级为统一元规则
 - ✅ 用户（非程序员）在所有 Agent 输出中都能获得"人话层"，符合产品哲学
 - ✅ Skill 设计阶段就被强制考虑受众，避免产出后才发现"用户看不懂"
-- ✅ grill / 简单问答等场景保留执行弹性（D12 自检 audience_reason）
+- ✅ grill / 简单问答等场景保留执行弹性（D13 自检 audience_reason）
 - ✅ 与 D9 形成"判断型 Iron Law"的对称设计，工程一致性高
 
 ### 负向 / 风险
@@ -155,8 +155,8 @@ audience_layering:
 
 ### Neutral
 
-- ADR 0001（Harness Knowledge Layering）不受影响；D12 是 L1 Kernel 协议层
-- ADR 0002（evolve-skill 提升至 P0）不受影响；evolve-skill 在 D12 下 audience=agent（写给 Evolver）
+- ADR 0001（Harness Knowledge Layering）不受影响；D13 是 L1 Kernel 协议层
+- ADR 0002（evolve-skill 提升至 P0）不受影响；evolve-skill 在 D13 下 audience=agent（写给 Evolver）
 
 ## Implementation Manifesto
 
@@ -166,11 +166,11 @@ audience_layering:
 
 | # | 章节 | 改动 |
 | --- | --- | --- |
-| A1 | §2.12 表格追加行 | `\| D12 \| Audience Layering Iron Law — AI 输出前必须判断受众，混合必须分层（人话先 / 技术后） \| ✅ 采纳 \|` |
-| A2 | §2.13 #10 落地层 | "L1 Output Packet.audience 字段（D10）" → "L1 Iron Law D12 + Output Packet.audience 字段（D10）" |
-| A3 | §2.14 后新增 §2.14a 或合并到 §2.14 | D12 完整文字 + 自检 YAML（见 D3） |
-| A4 | §2.9 audience 字段说明 | 追加 "何时 dual 由 Iron Law D12 强制" |
-| A5 | §2.21 P0 Skill frontmatter 注释 | "面向用户的 Skill 在 Completion Criteria 中必须包含 audience 判断（D12）" |
+| A1 | §2.12 表格追加行 | `\| D13 \| Audience Layering Iron Law — AI 输出前必须判断受众，混合必须分层（人话先 / 技术后） \| ✅ 采纳 \|` |
+| A2 | §2.13 #10 落地层 | "L1 Output Packet.audience 字段（D10）" → "L1 Iron Law D13 + Output Packet.audience 字段（D10）" |
+| A3 | §2.14 后新增 §2.14a 或合并到 §2.14 | D13 完整文字 + 自检 YAML（见 D3） |
+| A4 | §2.9 audience 字段说明 | 追加 "何时 dual 由 Iron Law D13 强制" |
+| A5 | §2.21 P0 Skill frontmatter 注释 | "面向用户的 Skill 在 Completion Criteria 中必须包含 audience 判断（D13）" |
 
 ### Part B — vnext/ 文件变更（3 处）
 
@@ -186,7 +186,7 @@ audience_layering:
 
 ```yaml
 output_contract:
-  audience: dual  # default per Iron Law D12; single-layer requires audience_reason
+  audience: dual  # default per Iron Law D13; single-layer requires audience_reason
 ```
 
 ### Part D — 验证命令
@@ -202,12 +202,12 @@ node scripts/validate-vnext.js
 - Commit message：
 
 ```
-feat(vnext): add Audience Layering Iron Law D12 (ADR 0003 / TD-19)
+feat(vnext): add Audience Layering Iron Law D13 (ADR 0003 / TD-19)
 
-- Blueprint §2.12/§2.13/§2.14/§2.9/§2.21: D12 Iron Law + soul-trait #10 upgrade
+- Blueprint §2.12/§2.13/§2.14/§2.9/§2.21: D13 Iron Law + soul-trait #10 upgrade
 - vnext/references/audience-layering.md: new (trigger table + examples)
 - vnext/references/skill-authoring.md: §X audience layering completion criteria
-- vnext/agents/*.md: output_contract.audience default = dual per D12
+- vnext/agents/*.md: output_contract.audience default = dual per D13
 - vnext/_surface.md: references row +1
 
 Refs: ADR 0003, TD-19, memory/communication-style.md
@@ -217,9 +217,9 @@ Refs: ADR 0003, TD-19, memory/communication-style.md
 
 ### Part F — Rollback
 
-若 D12 落地后发现执行开销过大或边界不可操作：
+若 D13 落地后发现执行开销过大或边界不可操作：
 
-1. **降级路径**：D12 状态从 ✅ 采纳 → ⏳ 暂定，把 Iron Law 退回 reference 层
+1. **降级路径**：D13 状态从 ✅ 采纳 → ⏳ 暂定，把 Iron Law 退回 reference 层
 2. **重新决策**：回 ADR 0003 讨论"是否改成纯 reference 而非 Iron Law"
 3. **保留物**：references/audience-layering.md 不删（独立有价值）
 
