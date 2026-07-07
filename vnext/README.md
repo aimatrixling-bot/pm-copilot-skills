@@ -12,7 +12,7 @@ status: draft
 ## Overview
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.15 -->
 - `vnext/` 是 AI Builder OS vNext 的隔离命名空间（namespace），当前只承载 P0 闭环骨架。
-- P0 范围包含 5 Agent、11 Skill、4 Kernel Packet、4 Memory schema 和必要索引（index）文件。
+- P0 范围包含 5 Agent、12 Skill、4 Kernel Packet、4 Memory schema 和必要索引（index）文件。
 - 本目录不改变 v1 runtime surface；所有 vNext 资产必须可被单独审计和删除。
 
 ## Coexistence
@@ -29,7 +29,7 @@ status: draft
 
 ## Validation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.25.5 -->
-- 结构性检查：28 个清单文件保持存在，且 frontmatter 保持冻结。
+- 结构性检查：29 个清单文件保持存在，且 frontmatter 保持冻结。
 - 内容检查：每个 section 保留 `SECTION_REF`，并包含可执行指导，而不是单行骨架（stub）。
 - repo 门控：每个有意义的批次后、review 前运行 `npm run validate:builder-os`。
 

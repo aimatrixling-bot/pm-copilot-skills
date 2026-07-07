@@ -40,7 +40,7 @@ forbidden:
 
 ## Can Invoke
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.20-Evolver -->
-- P0 可调用 `evolve-memory`；`evolve-skill`、`evolve-harness-audit`、`manage-eval-session` 作为后续能力保留契约引用。
+- P0 可调用 `evolve-memory`、`evolve-skill`；`evolve-harness-audit`、`manage-eval-session` 作为后续能力保留契约引用。
 - 修改 Skill 时必须读取 `vnext/references/skill-authoring.md`，并检查 description、completion criterion 和 failure modes。
 - 写入 Memory 前必须查重、判断 scope，并保留 detail_ref。
 

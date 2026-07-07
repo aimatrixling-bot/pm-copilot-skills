@@ -11,7 +11,7 @@ status: draft
 
 ## Purpose
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21 -->
-- `vnext/skills/` 索引（index）11 个为最小闭环选择的 P0 Skill。
+- `vnext/skills/` 索引（index）12 个为最小闭环选择的 P0 Skill。
 - 每个 Skill 保留 10 个 frontmatter 字段、5 个正文 section 和可执行 Step C 指导。
 - 本索引不授权创建 P1/P2/P3；未来扩展等待 Step D 和 Golden Task 证据。
 
@@ -21,7 +21,7 @@ status: draft
 - discover：`discover-research`。
 - craft：`craft-spec`、`craft-prototype`、`craft-agent-task`。
 - review：`review-doc`、`review-code`。
-- build/evolve：`build-commit`、`evolve-memory`。
+- build/evolve：`build-commit`、`evolve-memory`、`evolve-skill`。
 
 ## Leading Word Index
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->

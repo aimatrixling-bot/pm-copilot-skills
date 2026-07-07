@@ -546,9 +546,9 @@ create_gate:
 | review | review-code | P0 | Builder 自检 + Reviewer 主用 |
 | build | build-commit | P0 | Builder 闭环必备 |
 | evolve | evolve-memory | P0 | Memory 4 类回写 |
-| evolve | evolve-skill | P1 | Iron Law D9 已就位，evolve-skill 可 P1 补 |
+| evolve | evolve-skill | P0 | Iron Law D9 已就位；ADR 0002 事实纳入（2026-07-07） |
 
-> 实际 P0 = 11 项 Skill + 5 Agent + 1 套 Kernel Packet（Intent/Output/Evidence/Iron Law/4 类 Memory schema）。
+> 实际 P0 = 12 项 Skill + 5 Agent + 1 套 Kernel Packet（Intent/Output/Evidence/Iron Law/4 类 Memory schema）。
 
 ### 2.16 ChatGPT 评估采纳清单
 
@@ -598,7 +598,7 @@ ChatGPT 给出 8 项风险 + 7 项立即修正建议。逐项处理：
 | build-ui | UI 实现 = Builder 主职责；缺失则只能 craft-prototype | Lose | P1 |
 | **build-commit** | Builder 闭环（commit/merge/git）失效 | Lose | **P0** |
 | build-component | 组件开发走 evolve-component 反向（先有代码再沉淀） | Workaround | P2 |
-| evolve-skill | Evolver 失去核心元能力；Iron Law D9 无执行入口 | Lose | P1（D9 已就位可后补） |
+| evolve-skill | Evolver 失去核心元能力；Iron Law D9 无执行入口 | Lose | P0（ADR 0002 纳入） |
 | evolve-rules | rules 创建走 evolve-skill 子模式 | Workaround | P2 |
 | evolve-agent | agent 创建走 evolve-skill 子模式 | Workaround | P2 |
 | evolve-command | command 创建走 evolve-skill 子模式 | Workaround | P3 |
@@ -634,14 +634,14 @@ ChatGPT 给出 8 项风险 + 7 项立即修正建议。逐项处理：
 
 | 推荐 grade | 数量 | 说明 |
 | --- | --- | --- |
-| **P0** | 11 | 与 §2.15 一致 ✅ |
-| P1 | 13 | 验证 P0 后立即补（含合并后的 evolve-harness-audit） |
+| **P0** | 12 | 与 §2.15 一致 ✅ |
+| P1 | 12 | 验证 P0 后立即补（含合并后的 evolve-harness-audit） |
 | P2 | 17 | 长尾补完 |
 | P3 | 6 | 仅记录 |
 | **Drop / 合并** | 7 | craft-requirements → craft-spec；write-extract-* (5) → write-extract；evolve-doc-check + evolve-kb-check → evolve-harness-audit 子模式 |
 | **校正后总数** | 55 - 7 = **48 项实际建设** | 7 项合并消减 |
 
-> ChatGPT C2 风险（原标 62 项）经过 Deletion Test + doc/kb 合并已压缩到 **48 项实际建设 + 11 项 P0**。
+> ChatGPT C2 风险（原标 62 项）经过 Deletion Test + doc/kb 合并已压缩到 **48 项实际建设 + 12 项 P0**。
 
 ### 2.18 Step 3-B 验证 ② — 14 项 borrow 验收表
 
@@ -832,13 +832,13 @@ forbidden:
   - 删除 _index.md / _glossary.md / _memory.md 等系统文件
 ```
 
-### 2.21 Step 3-C ② — P0 Skill Frontmatter（11 项）
+### 2.21 Step 3-C ② — P0 Skill Frontmatter（12 项）
 
 > 每项填齐 §2.0 规定的 9 必填字段 + grade。`status` 默认 `draft`，验证后升 `stable`。
 >
 > **D12 硬要求**：含 step 的 skill 必须为每个 step 标注 `completion-criterion`（可检查 + 必要时穷尽）；纯 reference 类 skill 可豁免。详情见 §2.24。
 >
-> **Step D 清理说明（追溯：`vnext/references/codex-step-b-review-feedback.md` §C.1 / §C.2）**：P0 目录树只生成 11 个 P0 Skill 文件；`can-invoke` 可以保留已分级的 P1+ Skill 前向引用作为演化钩子，但不得把该引用计入 P0 文件清单。Writer / Helper 已按 D8 降级为 Skill bucket，不再作为 P0 Agent 出现在 `shared_with`。
+> **Step D 清理说明（追溯：`vnext/references/codex-step-b-review-feedback.md` §C.1 / §C.2）**：P0 目录树只生成 12 个 P0 Skill 文件；`can-invoke` 可以保留已分级的 P1+ Skill 前向引用作为演化钩子，但不得把该引用计入 P0 文件清单。Writer / Helper 已按 D8 降级为 Skill bucket，不再作为 P0 Agent 出现在 `shared_with`。
 >
 > **语言策略说明**：P0 SKILL 正文以中文为主；英文契约层（frontmatter 字段名、Section heading、leading word、Failure Mode signal name 等）规格见 `vnext/references/skill-authoring.md §13`。下方 description 字段采用"英文首词 + 中文主体"格式，遵循 §13.5 公式。
 
@@ -1106,7 +1106,7 @@ iron_law:
   enforcement: harness_gate             # 由 L3 Swiss Cheese 5 层护栏强制
 ```
 
-> **闭环验证**：5 Agent + 11 P0 Skill + Memory 4 类 + 4 Kernel Packet = P0 最小闭环可执行。下一步 Step 3-D 基于此生成 P0 目录树。
+> **闭环验证**：5 Agent + 12 P0 Skill + Memory 4 类 + 4 Kernel Packet = P0 最小闭环可执行。下一步 Step 3-D 基于此生成 P0 目录树。
 
 ---
 
@@ -1189,7 +1189,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 │   ├── reviewer.md                       # Agent 4：review-doc + review-code
 │   └── evolver.md                        # Agent 5：evolve-memory + evolve-skill（Iron Law §2.14）
 │
-├── skills/                               # 11 P0 Skill（§2.21）
+├── skills/                               # 12 P0 Skill（§2.21）
 │   ├── _index.md                         # Skill 路由表（按桶分组，含 leading word 索引）
 │   │
 │   ├── manage/                           # 桶：manage-*（3 项 P0）
@@ -1222,8 +1222,10 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 │   │   └── build-commit/
 │   │       └── SKILL.md
 │   │
-│   └── evolve/                           # 桶：evolve-*（1 项 P0）
-│       └── evolve-memory/
+│   └── evolve/                           # 桶：evolve-*（2 项 P0）
+│       ├── evolve-memory/
+│       │   └── SKILL.md
+│       └── evolve-skill/
 │           └── SKILL.md
 │
 ├── kernel/                               # P0 Kernel Packet（§2.23，4 项必交付）
@@ -1240,7 +1242,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
     └── reference.schema.md               # 外部资料 / 已验证链接
 ```
 
-**P0 文件总数**：1 README + 6 agent specs（含 _index）+ 11 skill SKILL.md + 1 skill _index + 4 kernel schemas + 5 memory files（含 _index）= **28 个文件**
+**P0 文件总数**：1 README + 6 agent specs（含 _index）+ 12 skill SKILL.md + 1 skill _index + 4 kernel schemas + 5 memory files（含 _index）= **29 个文件**
 
 #### 2.25.2 与 v1 的共存策略
 
@@ -1276,7 +1278,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 
 #### 2.25.5 Step 3-D 完成验收清单
 
-- [ ] `vnext/` 目录树按本节创建（28 个文件骨架，文件可为 stub）
+- [x] `vnext/` 目录树按本节创建（29 个文件骨架，文件可为 stub）
 - [ ] 每个 stub 文件含 frontmatter（9 字段）+ §2.X 锚点引用
 - [ ] `vnext/README.md` 写明：边界 / v1 共存策略 / 回滚方案 / P0 验收路径
 - [ ] `vnext/agents/_index.md` + `vnext/skills/_index.md` + `vnext/memory/_index.md` 完整可导航
@@ -1289,13 +1291,13 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 
 ### 2.26 Step 4 — Golden Tasks + v1 → vNext 索引映射表 + 渐进开放路线图
 
-> **本节目的**：把 §2.15 P0 闭环（5 Agent + 11 Skill + 4 Kernel Packet + 4 类 Memory schema）落到 8 条端到端"金标准"路径上；为 v1 → vNext 迁移给出索引级映射；为 P1/P2 候选给出"何时开放"的客观触发条件。三者共同构成 P0 上线前的"验收三件套"。
+> **本节目的**：把 §2.15 P0 闭环（5 Agent + 12 Skill + 4 Kernel Packet + 4 类 Memory schema）落到 8 条端到端"金标准"路径上；为 v1 → vNext 迁移给出索引级映射；为 P1/P2 候选给出"何时开放"的客观触发条件。三者共同构成 P0 上线前的"验收三件套"。
 
 #### 2.26.1 8 Golden Tasks（GT-01 ~ GT-08）
 
 **设计原则**：
 1. 每个 GT 必须覆盖 ≥1 个 Agent + ≥1 个 Skill + ≥1 个 Kernel Packet
-2. 8 个 GT 并集必须覆盖全部 5 Agent / 11 P0 Skill / 4 Packet / 4 类 Memory schema
+2. 8 个 GT 并集必须覆盖全部 5 Agent / 12 P0 Skill / 4 Packet / 4 类 Memory schema
 3. 每个 GT 给出：触发语 / Agent 链 / Skill 链 / 涉及 Packet / 涉及 borrow / pass 准则 / fail 信号
 4. GT 用于"骨架跑通"验证，不验证质量上限（质量上限由 P1 evolve-skill + evolve-harness-audit 后续验证）
 
@@ -1321,9 +1323,9 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | GT-05 | review-code / build-commit | Output (decision=request-changes) | B11 |
 | GT-06 | evolve-memory | Output (reply_mode=no_reply) | B2 / B4 |
 | GT-07 | craft-spec / review-doc / craft-prototype / build-commit / review-code | Intent + Output + Evidence | B8 (Layer 1+3) |
-| GT-08 | evolve-memory (Iron Law) | Output (evidence=iron-law-yaml) | B4 / D9 |
+| GT-08 | evolve-memory / evolve-skill (Iron Law) | Output (evidence=iron-law-yaml) | B4 / D9 |
 
-> 11 P0 Skill 全部被至少 1 个 GT 主路径覆盖 ✓；4 Packet 全覆盖；4 类 Memory（user/feedback/project/reference）由 GT-06（feedback）+ GT-08（project）+ GT-02（reference，discover-research 输出）+ GT-01（user，manage-grill 输出 user 假设）覆盖。
+> 12 P0 Skill 全部被至少 1 个 GT 主路径覆盖 ✓；4 Packet 全覆盖；4 类 Memory（user/feedback/project/reference）由 GT-06（feedback）+ GT-08（project）+ GT-02（reference，discover-research 输出）+ GT-01（user，manage-grill 输出 user 假设）覆盖。
 
 ---
 
@@ -1404,13 +1406,13 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Pass | (1) 端到端一次跑通；(2) B8 Swiss Cheese Layer 1（Intent）+ Layer 3（Output）每层至少 1 gate 通过；(3) commit_hash 进 Output；(4) 无人工介入兜底 |
 | Fail | 任一 Agent 卡住 / 任一 Layer 跳过 / 需人工修补 |
 
-**GT-08 — Evolver evolve-memory 写 project 类 + Iron Law 自检**
+**GT-08 — Evolver evolve-memory 写 project 类 + evolve-skill Iron Law 自检**
 
 | 字段 | 内容 |
 | --- | --- |
 | Trigger | 「记录本次迭代的决策」（project 类 memory 写入） |
 | Agent 链 | Supervisor → Evolver |
-| Skill 链 | evolve-memory（type=project）→ 触发 §2.14 Iron Law D9 YAML 自检 → 全 pass → 写入 project.schema.md |
+| Skill 链 | evolve-memory（type=project）→ evolve-skill 执行 §2.14 Iron Law D9 YAML 自检 → 全 pass → 写入 project.schema.md |
 | Packet | Output Packet：`type=memory-write` / `evidence=iron-law-yaml-passed` |
 | Pass | (1) project row 写入；(2) Iron Law YAML 全字段 pass（含 `hazard_signal` 字段为空）；(3) 不触发 Evolver 失控信号（无自动批量重写） |
 | Fail | Iron Law 字段缺失 / 触发 hazard 但仍写入 / Evolver 越权改其他文件 |
@@ -1452,13 +1454,12 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 
 **P1 候选优先级**（基于 §2.17 Deletion Test，逐项解锁）：
 
-1. `evolve-skill`（D9 Iron Law 已就位，仅缺执行入口；最高 ROI）
-2. `evolve-harness-audit`（含 doc/kb 子模式；GT-01~08 的 audit 基础设施）
-3. `craft-architecture` + `craft-test-case`（Builder/Reviewer 高频依赖）
-4. `build-ui`（UI 实现核心；B7 ui-reasoning.csv 落地）
-5. `review-e2e` + `review-ui` + `review-prototype`（Reviewer 完整能力）
-6. `manage-brainstorm` + `manage-eval-session`（早期 idea + 会话评估）
-7. `discover-competitive` + `discover-persona` + `craft-domain`（Researcher 增强）
+1. `evolve-harness-audit`（含 doc/kb 子模式；GT-01~08 的 audit 基础设施）
+2. `craft-architecture` + `craft-test-case`（Builder/Reviewer 高频依赖）
+3. `build-ui`（UI 实现核心；B7 ui-reasoning.csv 落地）
+4. `review-e2e` + `review-ui` + `review-prototype`（Reviewer 完整能力）
+5. `manage-brainstorm` + `manage-eval-session`（早期 idea + 会话评估）
+6. `discover-competitive` + `discover-persona` + `craft-domain`（Researcher 增强）
 
 **T2 — P1 → P2 升级触发条件**：
 
@@ -1481,9 +1482,9 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 **升级路径可视化**：
 
 ```
-P0 (11 Skill + 5 Agent)
+P0 (12 Skill + 5 Agent)
   ↓ T1 全满足
-P1 (+7 Skill 候选，分批解锁，最高优先 evolve-skill)
+P1 (+6 Skill 候选，分批解锁)
   ↓ T2 全满足
 P2 (+17 Skill 长尾补完)
   ↓ T3
@@ -1495,7 +1496,7 @@ P3 (仅记录) / Drop (合并或删除)
 #### 2.26.4 Step 4 完成验收清单
 
 - [ ] GT-01 ~ GT-08 每条 5 字段全填（Trigger / Agent 链 / Skill 链 / Packet / Pass-Fail）
-- [ ] 5 Agent 全覆盖；11 P0 Skill 全覆盖；4 Packet 全覆盖；4 类 Memory schema 全覆盖
+- [ ] 5 Agent 全覆盖；12 P0 Skill 全覆盖；4 Packet 全覆盖；4 类 Memory schema 全覆盖
 - [ ] v1 8 个 builder-* skill 在映射表中全部找到归属，无"蒸发"
 - [ ] T1/T2/T3/T4 四组触发条件全部客观可判定（无"看着挺好"主观词）
 - [ ] P1 候选优先级列表与 §2.17 Deletion Test 推荐一致
@@ -1513,13 +1514,13 @@ P3 (仅记录) / Drop (合并或删除)
 
 ### Step 3-C — P0 最小闭环（已在 §2.15 定义）
 - 5 Agent 契约模板（intent / can-invoke / output / on-fail / handoff）
-- 11 Skill P0 候选模板（含 frontmatter 8 字段 + grade=P0）
+- 12 Skill P0 候选模板（含 frontmatter 8 字段 + grade=P0）
 - Memory 4 类 schema（含扩展字段 type/scope/status/source/confidence/last_verified/detail_ref）
 - Kernel Packet 模板（Intent / Output 6 字段 / Evidence / Iron Law）
 
 ### Step 3-D — P0 目录树草案（仅 P0 资产）✅
-基于 §2.15 的 5 Agent + 11 Skill + Kernel，生成最小目录树。**禁止提前生成 P1/P2/P3 目录**。
-- 落地：§2.25（vnext/ 隔离命名空间 + 28 个 P0 文件骨架 + 共存策略 + 放置规则 + D12 契约对齐 + 验收清单）
+基于 §2.15 的 5 Agent + 12 Skill + Kernel，生成最小目录树。**禁止提前生成 P1/P2/P3 目录**。
+- 落地：§2.25（vnext/ 隔离命名空间 + 29 个 P0 文件骨架 + 共存策略 + 放置规则 + D12 契约对齐 + 验收清单）
 
 ### Step 4 — Golden Tasks + 迁移路线图 ✅
 - 8 Golden Tasks（GT-01 ~ GT-08）测试 P0 闭环
@@ -1539,5 +1540,6 @@ P3 (仅记录) / Drop (合并或删除)
 | 2026-07-05 | **Step 3-B Blueprint Validation 完成**：新增 §2.17 Deletion Test（57 项 Skill 全检；P0=11/P1=14/P2=17/P3=6/Drop=5）；新增 §2.18 14 项 borrow 验收表（B1-B14 全部带验证用例）；新增 §2.19 MECE 反向测试（10 反例 → 3 项合并 + 5 项保留 + 1 项校正）；总数从 57 → 51 项实际建设；§2.5 与 §2.11 数量不一致已识别（evolve-skill-health 漏数） |
 | 2026-07-05 | **D11 采纳**：evolve-doc-check + evolve-kb-check 合并入 evolve-harness-audit 子模式（type=docs/kb/skills/memory/full）；既有 doc-consistency-check / kb-health-check 内容保留为 references；§2.5 Evolver 列 12→10；§2.11 总数 57→55；Deletion Test 实际建设 51→48 |
 | 2026-07-05 | **D12 采纳 — mattpocock writing-great-skills 吸收（Plan B）**：本地化 mattpocock SKILL.md + GLOSSARY.md 至 `10_Library/13_Open_Source_Reference/mattpocock_skills/`；§2.0 frontmatter 8→9 必填字段（`disable-model-invocation` 升级）+ description 三规则；§2.21 step-based skill 必含 completion criterion；§2.18 新增 B15；§2.5 evolve-skill 注明吸收 11 leading words + 4 failure modes；新增 §2.24 完整落地（4 轴 11 词 + 6 落地点 + evolve-skill 吸收契约） |
-| 2026-07-05 | **Step 3-D 完成**：新增 §2.25 — P0 目录树草案；vNext P0 资产采用 `vnext/` 隔离命名空间（与 v1 物理隔离，零侵入易回滚）；28 个 P0 文件骨架（1 README + 6 agents + 11 skills + 4 kernel + 5 memory + 3 _index）；共存策略表 + 7 条放置规则 + D12 契约对齐 + 5 项验收清单；Step 3-D 状态 ✅ |
-| 2026-07-05 | **Step 4 完成**：新增 §2.26 — Golden Tasks + 索引映射 + 渐进开放路线图；定义 8 个 GT（GT-01~08，每个含 Trigger/Agent 链/Skill 链/Packet/Pass-Fail 五字段）；覆盖矩阵证明 5 Agent + 11 P0 Skill + 4 Packet + 4 类 Memory schema 全覆盖；v1 → vNext 8 项 builder-* 映射（无"蒸发"，零侵入 v1）；5 条迁移原则；T1/T2/T3/T4 四组客观触发条件；P1 候选 7 项优先级（基于 §2.17 Deletion Test）；Step 4 状态 ✅ |
+| 2026-07-05 | **Step 3-D 完成**：新增 §2.25 — P0 目录树草案；vNext P0 资产采用 `vnext/` 隔离命名空间（与 v1 物理隔离，零侵入易回滚）；29 个 P0 文件骨架（1 README + 6 agents + 12 skills + 4 kernel + 5 memory + 3 _index）；共存策略表 + 7 条放置规则 + D12 契约对齐 + 5 项验收清单；Step 3-D 状态 ✅ |
+| 2026-07-05 | **Step 4 完成**：新增 §2.26 — Golden Tasks + 索引映射 + 渐进开放路线图；定义 8 个 GT（GT-01~08，每个含 Trigger/Agent 链/Skill 链/Packet/Pass-Fail 五字段）；覆盖矩阵证明 5 Agent + 12 P0 Skill + 4 Packet + 4 类 Memory schema 全覆盖；v1 → vNext 8 项 builder-* 映射（无"蒸发"，零侵入 v1）；5 条迁移原则；T1/T2/T3/T4 四组客观触发条件；P1 候选 6 项优先级（基于 §2.17 Deletion Test）；Step 4 状态 ✅ |
+| 2026-07-07 | **ADR 0002 采纳**：evolve-skill 从 P1 提升至 P0（事实纳入）；P0 Skill 11→12，P1 候选 13→12，P0 文件总数 28→29；17 处行级同步见 ADR 0002 Part A |
