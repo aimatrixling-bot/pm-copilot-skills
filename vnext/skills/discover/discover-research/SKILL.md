@@ -1,6 +1,6 @@
 ---
 name: discover-research
-description: "Information Hierarchy when a topic needs evidence for a spec or decision, fails when claims lack source, confidence, recency, or handoff boundary."
+description: "Information Hierarchy 当某主题需要为 spec 或决策提供证据时触发，claims 缺少来源、置信度、时效性或移交边界时失败。"
 disable-model-invocation: false
 can-invoke: [manage-file, evolve-memory]
 paths: []
@@ -18,40 +18,40 @@ grade: P0
 
 ## Invocation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.0-discover-research -->
-- Invoke when `craft-spec`, Reviewer, Supervisor, or the user needs evidence before writing or accepting a document.
-- Use for current facts, technical references, repo evidence, market/user context, and source-backed comparisons.
-- Prefer official docs, primary sources, local source-of-truth files, code, datasets, and durable repo artifacts before summaries.
-- Do not write the spec, make final product judgment, or hide unsupported assumptions; route durable reference memory to `evolve-memory` only after confidence and scope are explicit.
+- 当 `craft-spec`、Reviewer、Supervisor 或用户在撰写或接受文档前需要证据（evidence）时调用。
+- 用于当前事实、技术参考、repo 证据、市场/用户上下文，以及有来源支持的比较。
+- 在摘要之前，优先使用官方文档、第一手来源、本地事实源（source-of-truth）文件、代码、数据集和 durable repo artifacts。
+- 不要撰写 spec、做最终产品判断，或隐藏无支持的假设（assumption）；只有在置信度和范围明确后，才将 durable reference memory 路由到 `evolve-memory`。
 
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-discover-research -->
-1. Define the research target and downstream interface. Completion: question, requester, decision/spec slot, required freshness, and handoff target are explicit.
-2. Search multiple source classes in priority order. Completion: local SoT/code, official or primary sources, and secondary summaries are each either checked or explicitly ruled out.
-3. Normalize findings into evidence rows. Completion: every row has claim, source path or URL, date or revision when available, source type, confidence, and limitation.
-4. Separate fact, inference, assumption, and unknown. Completion: high-confidence claims are not mixed with guesses, and every assumption is labeled with why it remains unverified.
-5. Package the handoff for `craft-spec` or review. Completion: evidence_table, recommended citations, unresolved questions, and use/do-not-use guidance are ready for the next Skill.
-6. Persist only durable outputs when needed. Completion: `manage-file` or `evolve-memory` is invoked only when the evidence artifact or reference memory has stable reuse value.
+1. 定义研究目标和下游接口。Completion: 问题、请求方、decision/spec slot、所需时效性和移交目标都已明确。
+2. 按优先级搜索多个来源类别。Completion: local SoT/code、官方或第一手来源、二手摘要均已检查或显式排除。
+3. 将发现规范化为证据行。Completion: 每一行都有 claim、source path 或 URL、可用时的 date 或 revision、source type、confidence 和 limitation。
+4. 分离事实、推断、假设和未知项。Completion: 高置信度 claims 不与 guesses 混合，并且每个假设都标注为何仍未验证。
+5. 为 `craft-spec` 或 review 打包移交材料。Completion: evidence_table、recommended citations、unresolved questions，以及 use/do-not-use guidance 已准备好交给下一个 Skill。
+6. 仅在需要时持久化 durable outputs。Completion: 只有当 evidence artifact 或 reference memory 具备稳定复用价值时，才调用 `manage-file` 或 `evolve-memory`。
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- `docs/vnext-blueprint.md §2.20` assigns research, PRD/spec delivery, and citation-required markdown output to Researcher.
-- `docs/vnext-blueprint.md §2.21` defines `discover-research` as the P0 evidence supplier with `manage-file` available for durable artifacts.
-- `docs/vnext-blueprint.md §2.22` defines reference memory fields when research evidence should be persisted beyond the task.
-- `docs/vnext-blueprint.md §2.24.2` defines Information Hierarchy and Context Pointer, both required for reloadable evidence.
-- `vnext/references/skill-authoring.md §4.1` requires sharp completion criteria; §8 names Context Pointer Miss and Bloat as failure modes.
+- `docs/vnext-blueprint.md §2.20` 将 research、PRD/spec delivery 和需要 citations 的 markdown output 分配给 Researcher。
+- `docs/vnext-blueprint.md §2.21` 将 `discover-research` 定义为 P0 证据供应 Skill，并允许 `manage-file` 用于 durable artifacts。
+- `docs/vnext-blueprint.md §2.22` 定义当 research evidence 应持久化到任务之外时使用的 reference memory fields。
+- `docs/vnext-blueprint.md §2.24.2` 定义信息层级（Information Hierarchy）和上下文指针（Context Pointer），二者都是可重新加载证据所需。
+- `vnext/references/skill-authoring.md §4.1` 要求尖锐的完成标准（Completion Criterion）；§8 将 Context Pointer Miss 和 Bloat 命名为 failure modes。
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-discover-research -->
-- Research target, downstream Skill, evidence threshold, and recency requirement are explicit.
-- Every key claim maps to reloadable citation data and a confidence level.
-- Facts, inferences, assumptions, unknowns, and limitations are separated before handoff.
-- Evidence table is usable by `craft-spec` without re-researching the same question.
-- Persisted files or memories are limited to durable artifacts; transient research remains in the task output.
+- 研究目标、下游 Skill、证据阈值和 recency requirement 都已明确。
+- 每个 key claim 都映射到可重新加载的 citation data 和 confidence level。
+- 事实、推断、假设、unknowns 和 limitations 已在 handoff 前分离。
+- 证据表可被 `craft-spec` 使用，且不需要重新研究同一问题。
+- 持久化 files 或 memories 仅限 durable artifacts；transient research 保留在 task output 中。
 
 ## Failure Modes
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- Signal: Untraceable Source - claim has no path, URL, revision, or source type that the next agent can reload.
-- Signal: Confidence Collapse - high-confidence evidence, inference, assumption, and open question are mixed in one paragraph.
-- Signal: Context Pointer Miss - citation text is vague, summary-only, stale, or missing enough detail to find the source again.
-- Signal: Recency Drift - time-sensitive claims lack retrieval date, source date, or explicit stale-risk note.
-- Signal: Handoff Gap - `craft-spec` receives findings without evidence_table, limitations, or unresolved questions.
+- Signal: Untraceable Source - claim 没有下一个 Agent 可重新加载的 path、URL、revision 或 source type。
+- Signal: Confidence Collapse - 高置信度证据、inference、假设和 open question 混在同一段中。
+- Signal: Context Pointer Miss - citation text 含糊、仅为摘要、已陈旧，或缺少足以再次找到来源的细节。
+- Signal: Recency Drift - time-sensitive claims 缺少 retrieval date、source date 或显式 stale-risk note。
+- Signal: Handoff Gap - `craft-spec` 收到 findings 时缺少 evidence_table、limitations 或 unresolved questions。
