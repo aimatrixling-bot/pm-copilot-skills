@@ -2,7 +2,9 @@
 name: codex-step-b-review-feedback
 type: reviewer-feedback
 status: stable
+reviewer: claude
 audience: codex
+date: 2026-07-07
 ---
 
 # Codex Step B Review Feedback

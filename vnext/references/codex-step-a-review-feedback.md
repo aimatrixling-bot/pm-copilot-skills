@@ -1,14 +1,17 @@
 ---
-title: Codex Step A Review Feedback
-audience: codex
+name: codex-step-a-review-feedback
+type: reviewer-feedback
+status: stable
 reviewer: claude
+audience: codex
 date: 2026-07-06
-status: APPROVED for Step B (conditional)
 ---
 
 # Codex Step A Skeleton — Review Feedback
 
 > **结论**: APPROVED for Step B conditional on Q1/Q2/Q3 clarification（详见下文）。整体质量优秀，28 文件结构符合蓝图 §2.25.1，frontmatter/section 占位规范一致。
+
+> **原始 status 语义保留**: APPROVED for Step B (conditional)。
 
 ---
 

@@ -36,6 +36,13 @@ const SKILL_SURFACE_GRADES = new Set(['P0', 'P1']);
 const SURFACE_STATUSES = new Set(['draft', 'stable', 'deprecated']);
 const SURFACE_STATUS_TYPES = new Set(['skill', 'kernel', 'memory']);
 
+// References frontmatter 子类按 type 字段路由；status 为开放命名空间（TD-16）。
+const REFERENCE_FIELDS_BY_TYPE = {
+  'design-decision': ['title', 'type', 'status', 'created_at', 'source', 'related_skills', 'related_blueprint_sections'],
+  'reviewer-feedback': ['name', 'type', 'status', 'reviewer', 'audience', 'date'],
+  spec: ['title', 'category', 'scope', 'type', 'status', 'owner_agent', 'shared_with', 'last_updated'],
+};
+
 function normalizePath(filePath) {
   return filePath.split(path.sep).join('/');
 }
@@ -442,6 +449,45 @@ function validateSurface(root) {
   return [];
 }
 
+function validateReferencesFrontmatter(root, filePath) {
+  const errors = [];
+  const frontmatter = parseFrontmatter(fs.readFileSync(filePath, 'utf8'));
+  const valuesResult = parseFrontmatterValues(root, filePath);
+  if (frontmatter.error) errors.push(fail(root, filePath, '[TD-16] references-frontmatter', frontmatter.error));
+  if (valuesResult.error) errors.push(valuesResult.error);
+  if (errors.length > 0) return errors;
+
+  const type = valuesResult.values.type;
+  const expectedFields = REFERENCE_FIELDS_BY_TYPE[type];
+  if (!expectedFields) {
+    errors.push(fail(root, filePath, '[TD-16] references-frontmatter', `unknown reference type "${type || 'missing'}"`));
+    return errors;
+  }
+
+  for (const key of frontmatter.duplicates) {
+    errors.push(fail(root, filePath, '[TD-16] references-frontmatter', `duplicate field "${key}"`));
+  }
+  const missing = expectedFields.filter((field) => !frontmatter.keys.includes(field));
+  const extra = frontmatter.keys.filter((field) => !expectedFields.includes(field));
+  if (missing.length > 0) errors.push(fail(root, filePath, '[TD-16] references-frontmatter', `missing fields: ${missing.join(', ')}`));
+  if (extra.length > 0) errors.push(fail(root, filePath, '[TD-16] references-frontmatter', `extra fields: ${extra.join(', ')}`));
+  if (valuesResult.values.status) {
+    console.warn(`[WARN] ${relativePath(root, filePath)}: [TD-16] status "${valuesResult.values.status}" 使用 reference open namespace（type=${type}）`);
+  }
+  return errors;
+}
+
+function validateReferencesByType(root) {
+  const referencesDir = path.join(root, 'vnext', 'references');
+  if (!fs.existsSync(referencesDir)) return [];
+  const errors = [];
+  for (const filePath of listMarkdownFiles(referencesDir).filter((item) => path.dirname(item) === referencesDir)) {
+    errors.push(...validateReferencesFrontmatter(root, filePath));
+    if (errors.length > 0) return errors;
+  }
+  return errors;
+}
+
 function validateVnext(root = path.resolve(__dirname, '..')) {
   const errors = [];
   const vnextDir = path.join(root, 'vnext');
@@ -482,6 +528,10 @@ function validateVnext(root = path.resolve(__dirname, '..')) {
 
   if (errors.length === 0) {
     errors.push(...validateSurface(root));
+  }
+
+  if (errors.length === 0) {
+    errors.push(...validateReferencesByType(root));
   }
 
   return { errors };

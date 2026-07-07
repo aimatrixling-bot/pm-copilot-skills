@@ -73,11 +73,13 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | references-cleanup |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | `vnext/references/manage-file-scope-decision.md` §5/§7（旧 TD-06） |
-| 关闭条件 | `vnext/skills/evolve-memory/SKILL.md` Step 6 与 `vnext/skills/manage-file/SKILL.md` Tier 2 中 `references/` 指向一致；无歧义 |
+| 关闭条件 | `vnext/skills/evolve-memory/SKILL.md` Step 6 与 `vnext/skills/manage/manage-file/SKILL.md` Tier 2 中 `references/` 指向一致；无歧义 ✅ |
 | 描述 | 两处 skill 对 `references/` 目录的引用语义不一致（一处指 vnext/references/，一处指项目级 references/）。需统一术语并加 SECTION_REF。 |
+| Evidence | references/ 路径约定（skill-local vs vnext-global）写入 `manage-file-scope-decision.md` Tier 2；`evolve-memory` Step 6 已用 `vnext/references/` 前缀；`manage-file` Tier 2 references 改为显式 skill-local 注解。 |
 
 ### TD-04 — blueprint drift（manage-grill & craft-agent-task 章节命名）
 
@@ -259,12 +261,14 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 字段 | 值 |
 | --- | --- |
 | 类别 | references-cleanup |
-| 状态 | open |
+| 状态 | done |
 | 添加日 | 2026-07-07 |
+| 关闭日 | 2026-07-07 |
 | 来源 | Codex Batch 10-revised Commit 2 review 发现（Bug-3） |
-| 关闭条件 | (1) 决策 references/*.md frontmatter `status` 字段是否纳入 validator enum 校验；(2) 若纳入，扫描所有 references/*.md 把非 enum 值（P0/P1/active 等）改为 draft/stable/deprecated；(3) 若不纳入，在 _surface.md 注释中明确"references status 是 open namespace"；(4) validator（TD-14 C3）相应调整 |
+| 关闭条件 | (1) 决策 references/*.md frontmatter `status` 字段是否纳入 validator enum 校验 ✅；(2) 不纳入 enum，按 `type` 子类冻结字段集合 ✅；(3) validator 接入 type-routed reference frontmatter 校验 ✅ |
 | 描述 | references/*.md 当前 status 字段值不统一（部分 P0/P1 表示优先级，部分 active 表示状态），与 skill/kernel/memory 的 draft/stable/deprecated enum 不同语义。TD-14 C3 暂跳过 reference 的 status 校验，需独立 ticket 评估：(a) 强制 references 也用 enum；(b) references status 走开放命名（允许 P0/P1/active 等），只在 _surface.md 注释说明 |
-| 决策待确认 | 需要用户决策 |
+| 决策 | references status 走开放命名空间，由 `type` 字段隐式约束；validator 强制 `type` 子类字段集合，不强制 status enum。 |
+| Evidence | `scripts/validate-vnext.js` 新增 `REFERENCE_FIELDS_BY_TYPE` 路由（design-decision / reviewer-feedback / spec）与 `validateReferencesByType`；5 个 `vnext/references/*.md` 文件按子类对齐 frontmatter；status 字段走开放命名空间，`type` 字段必填用于路由。 |
 | 执行 batch | Batch 11 |
 
 ### TD-17 — agent / kernel / memory 是否需要 grade 字段（ROI 评估）
@@ -387,3 +391,5 @@ source_of_truth_row: docs/source-of-truth-map.md#row-40
 | 2026-07-07 | TD-18 close done — vnext/references/doc-style.md 落地，heading 英 / content 中约定成型 | codex |
 | 2026-07-07 | TD-02 close done — manage-file frontmatter 已符合 "shared_with 移除 owner builder"，无需 body 修改 | codex |
 | 2026-07-07 | TD-04 close done — manage-grill/craft-agent-task description 首词对齐蓝图 §2.21 (User-Invokable / One-Click Trigger) | codex |
+| 2026-07-07 | TD-03 close done — references/ 路径术语统一：skill-local vs vnext-global 显式区分 | codex |
+| 2026-07-07 | TD-16 close done — references frontmatter 按 type 子类冻结（design-decision/reviewer-feedback/spec），validator 接入 validateReferencesByType | codex |

@@ -85,6 +85,8 @@ ChatGPT 推荐的"建议固化为 Rules"段落（命名规则、创建规则、�
 
 ### Tier 2 — references/ 补充（下一轮 evolve-skill 改进时，与 TD-06 同期）
 
+术语约定：`references/xxx.md` 相对路径指 skill-local references（例如 `vnext/skills/manage/manage-file/references/xxx.md`）；`vnext/references/xxx.md` 指跨 skill 共享的 vnext-global references，SKILL.md 中不得单独写含糊的 `references/`。
+
 在 `vnext/skills/manage/manage-file/references/` 下新增：
 
 ```

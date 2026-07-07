@@ -26,11 +26,11 @@ grade: P0
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-manage-file -->
 1. 分类文件操作。Completion: 已命名 create、move、rename、version、index 或 verify，并记录请求方 Agent 和目标制品（artifact）类型。
-2. 检查路径权限和放置规则。Completion: 目标是相对路径，位于 `paths` 内，位于请求方 scope 内，并由 index、blueprint、source map 或显式用户指令证明合理。当子路径放置有歧义或落在标准表之外时，查阅 `references/path-authority-map.md`。
-3. 应用命名和版本策略。Completion: 写入前已检查文件名、扩展名、slug/date/version marker 和目录约定。当 slug case、date marker 或 active/archive 状态有歧义时，查阅 `references/naming-rules.md` 和 `references/versioning-rules.md`。
+2. 检查路径权限和放置规则。Completion: 目标是相对路径，位于 `paths` 内，位于请求方 scope 内，并由 index、blueprint、source map 或显式用户指令证明合理。当子路径放置有歧义或落在标准表之外时，查阅 skill-local `vnext/skills/manage/manage-file/references/path-authority-map.md`。
+3. 应用命名和版本策略。Completion: 写入前已检查文件名、扩展名、slug/date/version marker 和目录约定。当 slug case、date marker 或 active/archive 状态有歧义时，查阅 skill-local `vnext/skills/manage/manage-file/references/naming-rules.md` 和 `vnext/skills/manage/manage-file/references/versioning-rules.md`。
 4. 检测冲突和回滚需求。Completion: 变更（mutation）前已记录现有目标、重复制品、过期版本，以及所需的备份/重命名决策。
 5. 执行最小文件变更。Completion: 只有预期路径集合发生变化；未引入大范围递归 move/delete 或无关格式化扰动（churn）。
-6. 在操作后产出证据。Completion: 已为调用方记录存在性检查、diff/stat、moved-from/moved-to 映射或 index 影响。对于非平凡操作（move、rename、version、archive），可选使用 `references/file-decision-template.md` 产出 File Decision Record，并按 `references/index-rules.md` 验证 `_index.md` 更新要求。
+6. 在操作后产出证据。Completion: 已为调用方记录存在性检查、diff/stat、moved-from/moved-to 映射或 index 影响。对于非平凡操作（move、rename、version、archive），可选使用 skill-local `vnext/skills/manage/manage-file/references/file-decision-template.md` 产出 File Decision Record，并按 `vnext/skills/manage/manage-file/references/index-rules.md` 验证 `_index.md` 更新要求。
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->

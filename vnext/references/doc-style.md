@@ -4,6 +4,7 @@ type: design-decision
 status: active
 created_at: 2026-07-07
 source: Batch 11A user decision + Batch 10-revised language audit
+related_skills: []
 related_blueprint_sections: [§2.25.1]
 ---
 

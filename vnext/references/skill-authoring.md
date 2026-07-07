@@ -2,10 +2,11 @@
 title: Skill Authoring Spec
 category: reference
 scope: vnext
+type: spec
 status: P1
 owner_agent: evolver
 shared_with: [reviewer, builder]
-last_updated: 2026-07-06
+last_updated: 2026-07-07
 ---
 
 # Skill Authoring Spec
