@@ -5,8 +5,8 @@ version: 1
 generated_at: 2026-07-07
 source_of_truth: docs/vnext-blueprint.md §2.25.1
 validator_consumes: scripts/validate-vnext.js
-total_assets: 30
-breakdown: "agent=5; skill=12; kernel=4; memory=4; reference=5"
+total_assets: 31
+breakdown: "agent=5; skill=12; kernel=4; memory=4; reference=6"
 grade_enforced_for: skill
 status_enforced_for: "skill, kernel, memory"
 ---
@@ -39,7 +39,7 @@ status_enforced_for: "skill, kernel, memory"
 | runtime_visible | bool | 是否对 runtime consumer 可见 | 全部 |
 | bucket | enum or `n/a` | 8-Bucket；agent/kernel/memory/reference 填 `n/a` | skill 必填；其他 n/a |
 
-## Assets（30 项）
+## Assets（31 项）
 
 <!-- Codex: 从实际 vnext/ 文件派生 actual 值。grade 仅 skill 类需要从 frontmatter 读取；其他类按 n/a 填入。 -->
 
@@ -74,7 +74,8 @@ status_enforced_for: "skill, kernel, memory"
 | reference | manage-file-scope-decision | references/manage-file-scope-decision.md | n/a | active | n/a | false | n/a |
 | reference | codex-step-a-review-feedback | references/codex-step-a-review-feedback.md | n/a | APPROVED for Step B (conditional) | n/a | false | n/a |
 | reference | codex-step-b-review-feedback | references/codex-step-b-review-feedback.md | n/a | stable | n/a | false | n/a |
-| reference | audience-layering | references/audience-layering.md | n/a | active | n/a | true | n/a |
+| reference | audience-layering | references/audience-layering.md | n/a | active | n/a | false | n/a |
+| reference | doc-style | references/doc-style.md | n/a | active | n/a | false | n/a |
 
 ## Total 约束
 
@@ -82,7 +83,7 @@ status_enforced_for: "skill, kernel, memory"
 - asset_type=skill: **12**（与 ADR 0002 P0 范围一致；含 evolve-skill P0）
 - asset_type=kernel: **4**
 - asset_type=memory: **4**
-- asset_type=reference: **5**
-- 总计：**30**
+- asset_type=reference: **6**
+- 总计：**31**
 
 任何增减必须先在 ADR 中取得用户确认，然后更新本 manifest，然后才能动 vnext/ 文件。
