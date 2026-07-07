@@ -1,6 +1,6 @@
 ---
 name: review-code
-description: "Information Hierarchy when code changes need review or Builder self-check, fails when tests, security, severity, or fix ownership are unclear."
+description: "Information Hierarchy 当 code changes 需要 review 或 Builder self-check 时触发，测试、安全、严重度或修复归属不清晰时失败。"
 disable-model-invocation: false
 can-invoke: [evolve-memory]
 paths: ["**/*.{ts,tsx,js,jsx,py,go,rs,java}"]
@@ -18,46 +18,46 @@ grade: P0
 
 ## Invocation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.0-review-code -->
-- Invoke when a PR, commit, branch diff, or Builder self-check needs code review before acceptance, handoff, or commit closeout.
-- Use for behavior-changing code, tests, refactors, security-sensitive work, generated scaffold review, and post-fix verification.
-- Review code against correctness, security, style, performance, and maintainability; include test evidence before PASS.
-- Return PASS, PASS_WITH_CAVEAT, or BLOCKED with ordered executable fixes; do not rewrite code in place or invoke build/craft work from Reviewer.
-- Persist reusable feedback through `evolve-memory` only when the finding is durable beyond the current diff.
+- 当 PR、commit、branch diff 或 Builder self-check 在 acceptance、handoff 或 commit closeout 前需要 code review 时调用。
+- 用于行为变更代码（behavior-changing code）、tests、refactors、security-sensitive work、generated scaffold review 和 post-fix verification。
+- 按正确性（correctness）、安全性（security）、风格（style）、性能（performance）和可维护性（maintainability）审查代码；在 PASS 前包含 test evidence。
+- 返回 PASS、PASS_WITH_CAVEAT 或 BLOCKED，并附带有序且可执行的 fixes；不要就地重写代码，也不要从 Reviewer 调用 build/craft work。
+- 只有当 finding 在当前 diff 之外仍具有持久性时，才通过 `evolve-memory` 持久化可复用反馈（reusable feedback）。
 
 ## Steps
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-review-code -->
-1. Bound the review target. Completion: branch/commit/PR/diff range, changed files, intended behavior, source spec, and reviewer role boundary are explicit.
-2. Load relevant context before judging. Completion: touched code, nearby tests, public API/schema/auth paths, and project rules are checked or ruled out with reason.
-3. Review five dimensions. Completion: correctness, security, style, performance, and maintainability each has PASS, caveat, or finding with evidence.
-4. Verify tests and commands. Completion: relevant test/typecheck/lint/build outputs are recorded, or missing verification is labeled as a caveat or blocker with reason.
-5. Classify findings by severity. Completion: every finding is tagged `blocker`, `major`, `minor`, or `nit`, and nits are separated from merge-blocking issues.
-6. Produce executable review output. Completion: final state is PASS, PASS_WITH_CAVEAT, or BLOCKED with ordered fix list, owner, evidence pointer, and suggested verification command.
-7. Route durable learning only when justified. Completion: `evolve-memory` is invoked only for reusable review patterns, not transient diff comments.
+1. 限定 review target。Completion: branch/commit/PR/diff range、changed files、intended behavior、source spec 和 reviewer role boundary 都是显式的。
+2. 在判断前加载相关上下文。Completion: touched code、nearby tests、public API/schema/auth paths 和 project rules 已检查，或已带理由排除。
+3. 审查五个维度。Completion: correctness、security、style、performance 和 maintainability 均有 PASS、caveat 或带 evidence 的 finding。
+4. 验证 tests 和 commands。Completion: 已记录相关 test/typecheck/lint/build outputs，或将缺失 verification 标记为 caveat 或 blocker 并说明理由。
+5. 按 severity 分类 findings。Completion: 每个 finding 都标记为 `blocker`、`major`、`minor` 或 `nit`，并将 nits 与 merge-blocking issues 分离。
+6. 产出可执行 review output。Completion: final state 是 PASS、PASS_WITH_CAVEAT 或 BLOCKED，并带有有序 fix list、owner、evidence pointer 和 suggested verification command。
+7. 只有在理由充分时路由持久学习（durable learning）。Completion: `evolve-memory` 仅为 reusable review patterns 调用，而不是为 transient diff comments 调用。
 
 ## Reference
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- `docs/vnext-blueprint.md §2.20` defines Reviewer responsibilities, Evidence Packet output, and no-build/no-merge boundary.
-- `docs/vnext-blueprint.md §2.21` defines `review-code` as the P0 code review Skill for Reviewer and Builder self-check.
-- `docs/vnext-blueprint.md §2.23` defines Evidence Packet fields used for findings, severity, risk, and next actions.
-- `docs/vnext-blueprint.md §2.26` uses `review-code` in GT-05 and GT-07 as the code quality and self-check gate.
-- `vnext/references/skill-authoring.md §4.1` requires sharp completion criteria; §8 covers premature completion and context pointer misses.
-- `C:\Users\max.ling\.claude\rules\common\coding-style.md` defines exact-change and readability expectations.
-- `C:\Users\max.ling\.claude\rules\common\security.md` defines mandatory checks for secrets, injection, XSS, authorization, and sensitive error leakage.
-- `C:\Users\max.ling\.claude\rules\common\testing.md` defines pragmatic verification expectations for critical paths and bug fixes.
-- `C:\Users\max.ling\.claude\rules\common\performance.md` is consulted when a diff touches hot paths, data volume, rendering, or IO.
+- `docs/vnext-blueprint.md §2.20` 定义 Reviewer responsibilities、Evidence Packet output 和 no-build/no-merge boundary。
+- `docs/vnext-blueprint.md §2.21` 将 `review-code` 定义为 Reviewer 和 Builder self-check 使用的 P0 code review Skill。
+- `docs/vnext-blueprint.md §2.23` 定义用于 findings、severity、risk 和 next actions 的 Evidence Packet 字段。
+- `docs/vnext-blueprint.md §2.26` 在 GT-05 和 GT-07 中使用 `review-code` 作为 code quality 和 self-check gate。
+- `vnext/references/skill-authoring.md §4.1` 要求 sharp completion criteria；§8 覆盖 premature completion 和 context pointer misses。
+- `C:\Users\max.ling\.claude\rules\common\coding-style.md` 定义 exact-change 和 readability expectations。
+- `C:\Users\max.ling\.claude\rules\common\security.md` 定义对 secrets、injection、XSS、authorization 和 sensitive error leakage 的 mandatory checks。
+- `C:\Users\max.ling\.claude\rules\common\testing.md` 定义 critical paths 和 bug fixes 的 pragmatic verification expectations。
+- `C:\Users\max.ling\.claude\rules\common\performance.md` 在 diff 触碰 hot paths、data volume、rendering 或 IO 时查阅。
 
 ## Completion Criteria
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.21-review-code -->
-- Frontmatter keeps the 9 required Skill fields plus `grade`, with `status: draft`, `grade: P0`, `owner_agent: reviewer`, and `shared_with` excluding the owner.
-- Description starts with `Information Hierarchy`, follows `X when Y, fails when Z`, and stays one sentence under 200 characters.
-- All five SECTION headings remain in order and keep `SECTION_REF` anchors to existing blueprint sections.
-- Every step has a `Completion:` criterion, and the review covers bounded scope, context load, five dimensions, verification evidence, severity split, executable fix list, and durable-feedback routing.
-- Final decision is PASS, PASS_WITH_CAVEAT, or BLOCKED; blockers and nits are separated, and Reviewer does not directly edit code.
+- Frontmatter 保持 9 个必填 Skill 字段加 `grade`，并保持 `status: draft`、`grade: P0`、`owner_agent: reviewer`，且 `shared_with` 不包含 owner。
+- `description` 以 `Information Hierarchy` 开头，遵循 `X when Y, fails when Z`，并保持一句话且少于 200 字符。
+- 五个 SECTION heading 全部按顺序保留，并保留指向现有 Blueprint sections 的 `SECTION_REF` 锚点。
+- 每个 step 都有 `Completion:` criterion，review 覆盖 bounded scope、context load、five dimensions、verification evidence、severity split、executable fix list 和 durable-feedback routing。
+- Final decision 是 PASS、PASS_WITH_CAVEAT 或 BLOCKED；blockers 和 nits 已分离，且 Reviewer 不直接编辑代码。
 
 ## Failure Modes
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.24 -->
-- Signal: Premature PASS - review approves without fresh test/typecheck/lint/build evidence or an explicit not-run caveat.
-- Signal: Security Blindness - injection, XSS, secret exposure, authz/authn, path traversal, or sensitive error leakage is not checked when relevant.
-- Signal: Style Nitpicking - formatting or preference comments block acceptance despite no correctness, security, performance, or maintainability risk.
-- Signal: Context Loss - review inspects an isolated hunk without loading surrounding code, tests, spec, schema, or public API impact.
-- Signal: Role Drift - Reviewer rewrites code, stages fixes, invokes craft/build work, or hides ownership instead of returning executable fixes.
+- Signal: Premature PASS - review 在没有 fresh test/typecheck/lint/build evidence 或显式 not-run caveat 的情况下批准。
+- Signal: Security Blindness - 在相关时未检查 injection、XSS、secret exposure、authz/authn、path traversal 或 sensitive error leakage。
+- Signal: Style Nitpicking - 尽管没有 correctness、security、performance 或 maintainability risk，formatting 或 preference comments 仍阻塞 acceptance。
+- Signal: Context Loss - review 在未加载 surrounding code、tests、spec、schema 或 public API impact 的情况下检查孤立 hunk。
+- Signal: Role Drift - Reviewer 重写代码、stage fixes、调用 craft/build work，或隐藏 ownership，而不是返回 executable fixes。
