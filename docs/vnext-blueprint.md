@@ -54,6 +54,40 @@
 
 ---
 
+## §0.5 Builder Kernel Loop 总览（Framing）
+
+> 本节是 framing 提示，不引入新 Iron Law / 新 schema / 新资产。全部条款已在 §2.13 / §2.15 / §2.26.1 / D9 / D13 中被具体落地。本节只把分散线索串成"运行时模型"。
+
+AI Builder OS vNext 不是 Agent / Skill / Template 的集合，而是 **goal-driven execution loop + governed self-improvement loop**。Canonical loop：
+
+```
+Understand → Contract → Dispatch → Execute → Evidence → State → Decide → Evolve
+```
+
+| Loop 阶段 | 由谁驱动 | 落地的现有结构 |
+| --- | --- | --- |
+| Understand | Supervisor | Intent Packet（§2.23）+ manage-prompt / manage-grill（§2.21） |
+| Contract | Supervisor | craft-agent-task（§2.21）+ Output Packet.audience（D10/D13） |
+| Dispatch | Supervisor | 8-Bucket 路由表（§2.0） |
+| Execute | Researcher / Builder | craft-spec / craft-prototype / build-commit（§2.21） |
+| Evidence | Reviewer | Evidence Packet（§2.23）+ HALO/Rationalization（§2.18 B11/B13） |
+| State | 全 Agent | Memory 4 类（§2.10 + §2.22）+ project.memory.schema merge/supersede |
+| Decide | Supervisor | Swiss Cheese 5 层（§2.9）+ Iron Law YAML（§2.14） |
+| Evolve | Evolver | evolve-memory + evolve-skill（D9 create_gate，§2.14） |
+
+**关键不变量**（loop 跑得通的最低条件）：
+1. Supervisor 必须**先**产出 Intent Packet 才能 Dispatch（无 Intent 不派发）
+2. Supervisor 不直接 Execute（不越权 craft/build/review）
+3. Reviewer 必须**先**产出 Evidence Packet 才能触发 release-gate
+4. Evolver 必须**先**通过 D9 create_gate 才能创建新资产
+5. Memory 写入必须 merge/supersede，不允许 duplicate
+6. Destructive / global / 3-failure 场景必须 stop 或 ask human
+7. audience=dual 输出必须 D13 分层（人话先 / 技术后）
+
+> 这 7 条不变量将在 §2.26.1 GT-01~GT-08 的 `loop_assertions` 字段中被显式验收（见 §2.26.1 设计原则第 5 条）。
+
+---
+
 ## §1 Step 1 — v1 现状 + 8 builder-* 基因拆解
 
 ### 1.1 v1 现状摘要
@@ -1331,6 +1365,14 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 2. 8 个 GT 并集必须覆盖全部 5 Agent / 12 P0 Skill / 4 Packet / 4 类 Memory schema
 3. 每个 GT 给出：触发语 / Agent 链 / Skill 链 / 涉及 Packet / 涉及 borrow / pass 准则 / fail 信号
 4. GT 用于"骨架跑通"验证，不验证质量上限（质量上限由 P1 evolve-skill + evolve-harness-audit 后续验证）
+5. 每个 GT 必须包含 `loop_assertions` 字段，显式验收 §0.5 七条 loop 不变量中适用于本 GT 的子集。`loop_assertions` 取值域：
+   - `intent_before_dispatch` — Supervisor 先产出 Intent Packet 才派发
+   - `no_supervisor_execute` — Supervisor 不越权直接 Execute
+   - `evidence_before_release` — Reviewer 先产出 Evidence Packet 才放行
+   - `d9_create_gate` — Evolver 先通过 D9 create_gate 才创建/写入
+   - `memory_merge_supersede` — Memory 写入是 merge/supersede，非 duplicate
+   - `destructive_stop_or_ask` — Destructive/global/3-failure 场景 stop 或 ask human
+   - `d13_audience_layering` — audience=dual 输出按 D13 分层
 
 **覆盖矩阵**（行=GT，列=P0 资产；✓=主路径覆盖，△=间接路径覆盖）：
 
@@ -1368,6 +1410,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor（独立完成） |
 | Skill 链 | manage-prompt（输入归一）→ B3 4 决策卡（scope/deadline/ambiguity/reversibility）→ manage-grill（ambiguity=high → probe_depth=deep，B1）→ craft-agent-task（输出 agent-readable spec，但**不派发**，待用户确认） |
 | Packet | Intent Packet：`probe_depth=deep` + 触发理由；Output Packet：`reply_mode=ask` + 3 个澄清问题 |
+| Loop assertions | `d13_audience_layering`（Output 给用户，受众单一可单层但必须声明 audience_reason）；Intent Packet 已生成但未触发 Dispatch（GT-01 是 Supervisor 独立完成的特例，不验 `intent_before_dispatch` 的派发形态） |
 | Pass | (1) 4 决策卡 4 字段全填；(2) probe_depth 升级有歧义证据支撑；(3) 输出 ≤3 个澄清问题，且每个问题可被用户一句话回答；(4) craft-agent-task spec 已生成但 status=draft，未派发 |
 | Fail | Supervisor 直接给方案（越权）/ 提问 >3 个 / 问题封闭（是/否） |
 
@@ -1379,6 +1422,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor（路由）→ Researcher（执行） |
 | Skill 链 | discover-research（收集 evidence）→ craft-spec（profile=prd） |
 | Packet | Output Packet：`type=spec` / `audience=eng` / `confidence ∈ {low,medium,high}` / `evidence_table ≥ 3 citations`（B6） |
+| Loop assertions | `intent_before_dispatch`（Supervisor → Researcher 派发前必须有 Intent）；`no_supervisor_execute`（Supervisor 不亲自写 PRD）；`d13_audience_layering`（audience=eng 但仍需声明 audience_reason） |
 | Pass | (1) PRD 含 6 元数据全填；(2) confidence 字段附评分依据；(3) evidence_table 每条 claim 可溯源；(4) GT-04 review-doc 跑 Layer 1 通过 |
 | Fail | 无 citations / confidence 缺依据 / 无 acceptance criteria |
 
@@ -1390,6 +1434,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor → Builder |
 | Skill 链 | craft-prototype（profile=hi-fi, mock-data=yes）→ build-commit（commit 到新分支）→ manage-file（产物路径登记） |
 | Packet | Output Packet：`type=artifact` / `audience=user` / `evidence={diff, commit_hash, run_command}` |
+| Loop assertions | `intent_before_dispatch`；`no_supervisor_execute`；`destructive_stop_or_ask`（build-commit 必须新 commit，禁止 amend 旧 commit / 强制 push）；`d13_audience_layering` |
 | Pass | (1) `pnpm dev`（或等价）能跑通；(2) git commit 信息符合 conventional commits；(3) Output evidence 字段含 commit_hash；(4) mock-data 隔离不污染真实数据 |
 | Fail | 原型跑不通 / 无 commit / mock 数据写入生产路径 |
 
@@ -1401,6 +1446,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor → Reviewer |
 | Skill 链 | review-doc（HALO 三型诊断 B11 + Rationalization Table B13） |
 | Packet | Output Packet：`type=review` / `decision=reject` / `halo ∈ {hallucination, omission, misalignment}` |
+| Loop assertions | `intent_before_dispatch`；`no_supervisor_execute`；`evidence_before_release`（Reviewer 必须先产出 Evidence Packet 才能否决）；`d13_audience_layering` |
 | Pass | (1) 3 类缺陷全被 flag；(2) 每条 flag 映射到 HALO 类（Rationalization Table 非空）；(3) Builder **未**被派发任务（否决 gate 生效） |
 | Fail | 直接放行 / HALO 未分类 / Builder 仍被派发 |
 
@@ -1412,6 +1458,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Builder（自检）→ Builder（修复） |
 | Skill 链 | review-code（自检）→ build-commit（修复后新 commit，非 amend） |
 | Packet | Output Packet：`type=review` / `decision=request-changes` / `halo=omission` |
+| Loop assertions | `evidence_before_release`（Builder 自检也要产出 Evidence）；`destructive_stop_or_ask`（修复必须新 commit，禁 amend）；`d13_audience_layering` |
 | Pass | (1) 2 处缺陷都被 flag；(2) 修复后 typecheck/lint 通过；(3) 新 commit 而非 amend；(4) Output evidence 含修复前后 commit_hash |
 | Fail | 漏报 / amend 旧 commit / 跳过 typecheck |
 
@@ -1423,6 +1470,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor → Evolver |
 | Skill 链 | evolve-memory（type=feedback，写入 feedback.schema.md） |
 | Packet | Output Packet：`type=memory-write` / `reply_mode=no_reply`（B2 Action-First） |
+| Loop assertions | `intent_before_dispatch`；`d9_create_gate`（Evolver 写 memory 前过 D9 create_gate）；`memory_merge_supersede`（feedback 必须按 source+key 合并，不重复写）；`d13_audience_layering` |
 | Pass | (1) feedback row 写入 memory；schema 字段全填（type/scope/status/source/confidence/last_verified/detail_ref）；(2) **不对用户产生对话回复**（仅写盘）；(3) 不破坏其他 3 类 memory schema |
 | Fail | 给用户输出冗余确认语 / schema 字段缺 / 写入错误类型 |
 
@@ -1434,6 +1482,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor → Researcher → Reviewer（doc Layer 1）→ Builder → Reviewer（code Layer 1） |
 | Skill 链 | craft-spec（mini）→ review-doc → craft-prototype → build-commit → review-code |
 | Packet | Intent + Output + Evidence 三 Packet 全程贯通；Evidence Packet 含 spec/diff/review-log |
+| Loop assertions | `intent_before_dispatch`；`no_supervisor_execute`；`evidence_before_release`；`destructive_stop_or_ask`；`d13_audience_layering`（GT-07 是端到端 loop 体检的最终验收点，覆盖最全） |
 | Pass | (1) 端到端一次跑通；(2) B8 Swiss Cheese Layer 1（Intent）+ Layer 3（Output）每层至少 1 gate 通过；(3) commit_hash 进 Output；(4) 无人工介入兜底 |
 | Fail | 任一 Agent 卡住 / 任一 Layer 跳过 / 需人工修补 |
 
@@ -1445,6 +1494,7 @@ vnext/                                    # P0 隔离命名空间（与 v1 共�
 | Agent 链 | Supervisor → Evolver |
 | Skill 链 | evolve-memory（type=project）→ evolve-skill 执行 §2.14 Iron Law D9 YAML 自检 → 全 pass → 写入 project.schema.md |
 | Packet | Output Packet：`type=memory-write` / `evidence=iron-law-yaml-passed` |
+| Loop assertions | `intent_before_dispatch`；`d9_create_gate`（evolve-skill 自检 YAML 全 pass 才写 project memory）；`memory_merge_supersede`（project 类按 project_key+updated_at 合并，不重复） |
 | Pass | (1) project row 写入；(2) Iron Law YAML 全字段 pass（含 `hazard_signal` 字段为空）；(3) 不触发 Evolver 失控信号（无自动批量重写） |
 | Fail | Iron Law 字段缺失 / 触发 hazard 但仍写入 / Evolver 越权改其他文件 |
 

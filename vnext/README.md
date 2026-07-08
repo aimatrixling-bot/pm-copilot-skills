@@ -9,6 +9,37 @@ status: draft
 <!-- P0 实现范围：见蓝图 §2.15 + §2.25.1 -->
 <!-- 终态扩展点：见蓝图 §2.26.3 -->
 
+## Runtime Model
+<!-- SECTION_REF: docs/vnext-blueprint.md#§0.5 -->
+<!-- SECTION_REF: docs/vnext-blueprint.md#§2.15 -->
+
+AI Builder OS vNext 是一个 **goal-driven execution loop + governed self-improvement loop**，不是 Agent / Skill / Template 的集合。Canonical loop：
+
+```
+Understand → Contract → Dispatch → Execute → Evidence → State → Decide → Evolve
+```
+
+各资产是 loop 的填充物，不是独立模块：
+
+| 资产 | 在 loop 中的角色 |
+| --- | --- |
+| Supervisor | kernel scheduler / 进程控制器 |
+| Agents (Researcher/Builder/Reviewer/Evolver) | role-bounded executors |
+| Skills | predictable procedures（被 Agent 调用） |
+| Packets (Intent/Output/Evidence/Iron Law) | runtime contracts / 控制平面 |
+| Memory (user/feedback/project/reference) | governed state |
+| Reviewer | evidence sensor / release-gate sensor |
+| Evolver | governed writeback / self-improvement controller（受 D9 约束） |
+
+**Loop governance**：
+- Supervisor 必须先产出 Intent Packet 才能 Dispatch（违反 = GT fail）
+- Reviewer 必须产出 Evidence Packet 才能触发 release-gate 决策
+- Evolver 必须通过 D9 create_gate 才能创建新资产
+- Output Packet.audience=dual 时必须 D13 分层（人话先 / 技术后）
+- Destructive / global / 3-failure 场景必须 stop 或 ask human
+
+P0 验证的是这个 loop 的最小可运行形态（见蓝图 §2.15 + §2.26.1 Golden Tasks）。
+
 ## Overview
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.15 -->
 - `vnext/` 是 AI Builder OS vNext 的隔离命名空间（namespace），当前只承载 P0 闭环骨架。
