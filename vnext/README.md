@@ -29,7 +29,7 @@ status: draft
 
 ## Validation
 <!-- SECTION_REF: docs/vnext-blueprint.md#§2.25.5 -->
-- 结构性检查：29 个清单文件保持存在，且 frontmatter 保持冻结。
+- 结构性检查：31 个清单文件保持存在，且 frontmatter 保持冻结。
 - 内容检查：每个 section 保留 `SECTION_REF`，并包含可执行指导，而不是单行骨架（stub）。
 - repo 门控：每个有意义的批次后、review 前运行 `npm run validate:builder-os`。
 
