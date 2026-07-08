@@ -1,6 +1,6 @@
 ---
 name: evolve-skill
-description: "Pruning when creating, improving, auditing, or deprecating skills, fails when Iron Law, acceptance checks, or failure-mode review are skipped."
+description: "Pruning 当需要创建、改进、审计或废弃 skill 时触发，Iron Law、验收标准或 failure-mode review 被跳过时失败。"
 disable-model-invocation: false
 can-invoke: [evolve-memory]
 paths: ["vnext/skills/**", "vnext/references/skill-authoring.md"]
